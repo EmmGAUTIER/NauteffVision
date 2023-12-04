@@ -1,0 +1,82 @@
+{
+  "title": "Nauteff Vision / Let's start ",
+  "ios": [
+    {
+      "file": "/home/emmanuel/tmp/tubeNV_1",
+      "label": "Nauteff AP",
+      "id": "E1"
+    },
+    {
+      "file": "/home/emmanuel/tmp/tubeNV_2",
+      "label": "Bus instruments",
+      "id": "E2"
+    }
+  ],
+  "computations": [
+    {
+      "type": "attitude",
+      "id": "att",
+      "source": "E1",
+      "destination": "S3"
+    }
+  ],
+  "instruments": [
+    {
+      "type": "compass",
+      "cell_origx": 1,
+      "cell_origy": 0,
+      "cell_width": 2,
+      "cell_height": 2
+    },
+    {
+      "type": "wind",
+      "cell_origx": 3,
+      "cell_origy": 0,
+      "cell_width": 2,
+      "cell_height": 2
+    },
+    {
+      "type": "windNear",
+      "cell_origx": 4,
+      "cell_origy": 2,
+      "cell_width": 2,
+      "cell_height": 1
+    },
+    {
+      "type": "tide",
+      "cell_origx": 1,
+      "cell_origy": 2,
+      "cell_width": 2,
+      "cell_height": 2
+    },
+    {
+      "type": "attitude",
+      "cell_origx": 0,
+      "cell_origy": 2,
+      "cell_width": 1,
+      "cell_height": 1
+    },
+    {
+      "type": "clock",
+      "cell_origx": 5,
+      "cell_origy": 0,
+      "cell_width": 2,
+      "cell_height": 2
+    },
+    {
+      "type": "APmotor",
+      "cell_origx": 4,
+      "cell_origy": 2,
+      "cell_width": 2,
+      "cell_height": 1
+    },
+    {
+      "type": "APcontrol",
+      "cell_origx": 4,
+      "cell_origy": 3,
+      "cell_width": 3,
+      "cell_height": 1
+    }
+  ]
+}
+
