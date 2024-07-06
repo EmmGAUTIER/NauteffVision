@@ -105,13 +105,14 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
     if d is not None: return d
 
     s = frame.split()
-
-    if s[0] == "HDG/M":
-        print("Data : cap")
-        val = int(s[1])
-        datah = Data("HDG/M", timeStamp, frame, "Nauteff/AP",
+    if len(s) >= 2 :
+        if s[0] == "HDG/M":
+            print("Data : cap")
+            val = int(s[1])
+            datah = Data("HDG/M", timeStamp, frame, "Nauteff/AP",
                               {"Heading/Mag":val})
-        return datah
+            return datah
+
 
     # return data
 
@@ -154,7 +155,7 @@ def dataDecodeNMEA0183(timeStamp, orig, frame) -> dataNMEA0183:
     elif ftype == "DBT":  # Depth below Transducer, obsolete
         pass
     elif ftype == "DPT":  # Depth of water
-        d.type = "DPT"
+        #d.type = "DPT"
         d = dataDPT(timeStamp, orig, frame)
         d.depth = float(ellist[1])
         d.offset = float(ellist[2])

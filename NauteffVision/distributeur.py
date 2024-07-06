@@ -60,7 +60,7 @@ class Distributeur:
         self.fileInputs = ios.ios(config["ios"], self.queue)
         self.dashboard = dashboard.DashBoard(config)
         self.tocante = tocante.Tocante(self.queue)
-        self.simulator = datasimulator.DataSimulator_i(self.queue)
+        #self.simulator = datasimulator.DataSimulator_i(self.queue)
         
 
         # List of data listeners and data emitters
@@ -71,7 +71,7 @@ class Distributeur:
         self.tocante.start()
         self.fileInputs.start()
         self.dashboard.start()
-        self.simulator.start()
+        #self.simulator.start()
 
         print("Début de boucle")
         while True:

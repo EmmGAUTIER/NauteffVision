@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 ###############################################################################
 #
 # This file is part of the Nauteff Autopilot project.
@@ -20,10 +21,12 @@
 ###############################################################################
 
 import time
-import threading
-# import os
+#import threading
+import os
+import sys
+import argparse
 
-import data
+#import data
 
 sw = [
 "$GPGLL,4835.1174,N,00350.1614,W,073214,A*36\r\n",
@@ -78,37 +81,30 @@ sw = [
 "$SDDPT,1.7,-0.5,*55\r\n"]
 
 
-class DataSimulator_i(threading.Thread):
 
-    def __init__(self, q):
-        super().__init__()
-        self.iloop = 0
-        self.queue = q
-        self.ihdg = 60
-        self.sens = +1
-        self.isw = 0
+if __name__ == '__main__':
 
-    def run(self):
-        while True:
-            t = time.time()
-            # Magnetic Heading data 
-            s = "HDG/M" + str(self.ihdg)
-            datah = data.Data("HDG/M", t, s, "Nauteff/AP",
-                              {"Heading/Mag":self.ihdg})
-            #self.queue.put(datah)
-            
-            # Wind Data
-            s = "MWV" + str(self.ihdg + 90)
-            datah = data.Data("MWV", t, s, "Nauteff/AP",
-                              {"WindAngle/App":self.ihdg/30 + 1,
-                               "WindSpeed/App":self.ihdg / 10})
-            self.queue.put(datah)
-            
-            if self.ihdg > 70:
-                self.sens = -1
-            if self.ihdg < 50:
-                self.sens = +1
-            self.ihdg = self.ihdg + self.sens
+    parser = argparse.ArgumentParser(description='Simulateur de données pour NauteffVision')
+    parser.add_argument('-o',        default = None)
+    args = vars(parser.parse_args())
+    outFileName = args["o"]
 
-            time.sleep(1)
+    print ("Sortie vers ", outFileName);
 
+    if outFileName == None:
+        outFile = sys.stdout
+        pass
+    else :
+        outFile = open(outFileName, buffering=1, mode = "w")
+        pass
+
+
+    print ("Bonjour\r\n", file=outFile)
+
+    i = 0
+    while True:
+        print (sw[i], file=outFile)
+        i = i+1 if i +1 < len(sw) else 0
+        time.sleep(0.5)
+
+    exit

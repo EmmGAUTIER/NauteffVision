@@ -2,7 +2,7 @@
   "title": "Nauteff Vision / Let's start ",
   "ios": [
     {
-      "file": "/home/manu/tmp/tubeNV",
+      "file": "data/tubeNV",
       "label": "Nauteff AP",
       "id": "E1"
     }
