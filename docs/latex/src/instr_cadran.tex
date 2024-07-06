@@ -1,0 +1,42 @@
+\begin{tikzpicture}[line cap=round, line width=3pt]
+%  \draw [line width = 1pt] (-2.5,-2.5) rectangle (2.5, 2.5);
+  \newcommand{\ecart}{0.8}
+  ecart = 0.5;
+  \draw [line width = 1pt] (-2.5, -2.5+\ecart) -- (-2.5, +2.5-\ecart) -- (-2.5+\ecart,+2.5) --
+                                          (+2.5-\ecart, +2.5) -- (+2.5, 2.5-\ecart) --
+                                          (+2.5, -2.5+\ecart)  -- (+2.5-\ecart, -2.5) -- (-2.5+\ecart,-2.5) -- cycle;
+  \draw [line width = 1pt](2.5-\ecart/4, 2.5-\ecart/4) circle (\ecart/5);
+  %\draw [line width = 1pt](2.5-(\ecart/4), 2.5-(\ecart/4)) -- (2.5-(\ecart/4), 2.5-(\ecart/4));
+%  \draw [line width = 1pt](2.5-\ecart/4, 2.5-\ecart/4) -- (\ecart/5);
+
+  \foreach \angle / \label in
+    {-30/8, 0/7, 30/6, 60/5, 90/4, 120/3, 150/2, 180/1,  210/0}
+  {
+    \draw (\angle:1.5cm) node{\textsf{\label}};
+  }
+
+%\draw (0:1.5cm) node{\textsf{Speed)}};
+\draw (0,0.8) node{\textsf{Speed}};
+\draw (0,-0.8) node{\textsf{4.3 kts}};
+\draw [line width=1pt, fill=orange](1,-2) circle (0.2);
+%\draw [line width=0.5pt, fill=green] (0,0) arc[0:90:2cm];
+% Zone verte et rouge, inutile pour la vitesse
+%\draw  [line width=0.4cm, line cap = butt, color=green] (210:1.9) arc(210:30:1.9cm);
+%\draw  [line width=0.4cm, line cap = butt, color=red] (30:1.9) arc(30:-30:1.9cm);
+
+\foreach \angle in {-30,-27,...,210}
+  {
+  \draw[line width = 1pt] (\angle:2.0cm) -- (\angle:2.1cm);
+  }
+\foreach \angle in {-30,-15,...,210}
+  {
+  \draw[line width = 1pt] (\angle:1.85cm) -- (\angle:2.1cm);
+  }
+\foreach \angle in {-30,0,...,210}
+  {
+  \draw[line width = 1pt] (\angle:1.7cm) -- (\angle:2.1cm);
+  }
+
+  \draw [->, line cap = round](0,0) -- (81:2.0cm);    % Arrow
+
+\end{tikzpicture}%

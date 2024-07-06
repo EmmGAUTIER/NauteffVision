@@ -1,0 +1,23 @@
+\begin{tikzpicture}[line cap=round, line width=1pt, x=1cm, y=1cm]
+
+  \newcommand{\instrSize}{5}
+  \newcommand{\instrCenterX}{0}
+  \newcommand{\instrCenterY}{0}
+  \newcommand{\instrMinX}{-\instrSize/2}
+  \newcommand{\instrMinY}{-\instrSize/2}
+  \newcommand{\instrMaxX}{\instrSize/2}
+  \newcommand{\instrMaxY}{\instrSize/2}
+  \newcommand{\instrCornerSize}{\instrSize*.1}
+
+  \draw [color = green, line width=1pt] (\instrMinX, \instrMaxY-\instrCornerSize) --
+                                                             (\instrMinX+\instrCornerSize, \instrMaxY) --
+                                                             (\instrMaxX-\instrCornerSize, \instrMaxY) --
+                                                             (\instrMaxX, \instrMaxY-\instrCornerSize) --
+                                                             (\instrMaxX, \instrMinY+\instrCornerSize) --
+                                                             (\instrMaxX-\instrCornerSize, \instrMinY) --
+                                                             (\instrMinX+\instrCornerSize, \instrMinY) --
+                                                             (\instrMinX, \instrMinY+\instrCornerSize) --
+                                                             cycle;
+
+%===== End of preambule ======
+

@@ -61,7 +61,7 @@ class ios(threading.Thread):
                 self.sel.register(f, selectors.EVENT_READ)
 
     def sendData(self, d):
-        print ("Donnée ", d)
+        # print ("Donnée ", d)
         pass
 
     def run(self):

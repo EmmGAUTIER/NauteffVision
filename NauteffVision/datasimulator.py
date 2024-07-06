@@ -95,7 +95,7 @@ class DataSimulator_i(threading.Thread):
             s = "HDG/M" + str(self.ihdg)
             datah = data.Data("HDG/M", t, s, "Nauteff/AP",
                               {"Heading/Mag":self.ihdg})
-            self.queue.put(datah)
+            #self.queue.put(datah)
             
             # Wind Data
             s = "MWV" + str(self.ihdg + 90)

@@ -1,0 +1,31 @@
+﻿\input{instr_preambule.tex}
+  \newcommand{\instrClockCenterX} {0}
+  \newcommand{\instrClockCenterY} {\instrMaxY*0.15}
+  \newcommand{\instrClockSize}{\instrSize*.35}
+  
+  %\draw [line width = 1pt] (\instrClockCenterX, \instrClockCenterY) circle(\instrClockSize*0.35);
+  
+  \foreach \angle in {0,6,...,354}
+  {
+    \draw [line width = 0.5pt](\instrClockCenterX, \instrClockCenterY)+(\angle:\instrClockSize*0.60)
+       -- ++(\angle:\instrClockSize*0.62);
+  }
+  \foreach \angle /\label in {0/3, 30/2, 60/1, 90/12, 120/11, 150/10, 180/9, 210/8, 240/7, 270/6, 300/5, 330/4}
+  {
+    \draw [line width = 1pt](\instrClockCenterX, \instrClockCenterY)+(\angle:\instrClockSize*0.60)
+       -- ++(\angle:\instrClockSize*0.72);
+    \draw (\instrClockCenterX, \instrClockCenterY)+(\angle:\instrClockSize*0.90) node{\large{\label}};
+  }
+  % Hour 
+  \draw [line width = 3pt](\instrClockCenterX, \instrClockCenterY)+(235:\instrClockSize*0.05)
+       -- ++(55:\instrClockSize*0.40);
+  % Minute
+  \draw [line width = 1.5pt](\instrClockCenterX, \instrClockCenterY)+(207:\instrClockSize*0.07)
+       -- ++(27:\instrClockSize*0.60);
+  % Second 
+  \draw [line width = 0.5pt](\instrClockCenterX, \instrClockCenterY)+(186:\instrClockSize*0.10)
+       -- ++(6:\instrClockSize*0.73);
+  % time numeric
+  \draw (\instrMinX*0, \instrMinY*0.8) node{\texttt{HH:MM:YY GMT}};
+
+\input{instr_prologue.tex}

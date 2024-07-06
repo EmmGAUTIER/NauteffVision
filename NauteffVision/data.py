@@ -61,7 +61,7 @@ class Data:
 
 
 def __str__(self):
-    return ""
+    return "Data"
 
 
 class dataNMEA0183(Data):
@@ -106,8 +106,13 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
 
     s = frame.split()
 
-    if s[0] == "HDG":
+    if s[0] == "HDG/M":
         print("Data : cap")
+        val = int(s[1])
+        datah = Data("HDG/M", timeStamp, frame, "Nauteff/AP",
+                              {"Heading/Mag":val})
+        return datah
+
     # return data
 
     # type = None

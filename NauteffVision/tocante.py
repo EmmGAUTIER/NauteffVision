@@ -19,12 +19,13 @@
 #
 ###############################################################################
 
-import queue
-import time
-import threading
 # from math import floor
 import math
+import threading
+import time
+
 import data
+
 
 class Tocante(threading.Thread):
     """ A clock that sends time tics to a queue """
@@ -39,10 +40,10 @@ class Tocante(threading.Thread):
             t = time.time()
             t = math.floor(10 * t)
             t = t / 10
-            
+
             dt = time.gmtime(t)
             dt = time.localtime()
-            
+
             toc = data.Data("SysTime", t, str(t), "SYS",
                             {"Time": t,
                              "Year": dt.tm_year,
@@ -53,6 +54,6 @@ class Tocante(threading.Thread):
                              "Second": dt.tm_sec,
                              "WeekDay": dt.tm_wday})
             self.queue.put(toc)
-            
+
             nextt = t + 0.1
             time.sleep(nextt - time.time())

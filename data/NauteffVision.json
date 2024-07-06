@@ -2,14 +2,9 @@
   "title": "Nauteff Vision / Let's start ",
   "ios": [
     {
-      "file": "/home/emmanuel/tmp/tubeNV_1",
+      "file": "/home/manu/tmp/tubeNV",
       "label": "Nauteff AP",
       "id": "E1"
-    },
-    {
-      "file": "/home/emmanuel/tmp/tubeNV_2",
-      "label": "Bus instruments",
-      "id": "E2"
     }
   ],
   "computations": [

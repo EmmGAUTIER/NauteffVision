@@ -22,14 +22,18 @@
 
 import json
 import sys
-#import tkinter
-#from dashboard import *
-#from tocante import Tocante
 from distributeur import Distributeur
+import argparse
 
 if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser(description='df_report: statistiques exploratoires pour aborder un jeu de données.')
+    parser.add_argument('--config',        default = 'NauteffVision.json')
+    args = vars(parser.parse_args())
+    cfgfilename  = args["config"]
+
     print("Nauteff Vision Let's go!")
-    file = open("NauteffVision.json", "r")
+    file = open(cfgfilename, "r")
     NVConfig = json.load(file)
     file.close()
 

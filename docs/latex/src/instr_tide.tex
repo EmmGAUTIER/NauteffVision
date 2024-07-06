@@ -1,0 +1,39 @@
+
+\input{instr_preambule.tex}
+
+\draw [color=black] (\instrMinX * 0.8,\instrMinY * 0.8)  --(\instrMinX * 0.8,\instrMaxY * 0.3) ;
+\draw [color=black] (\instrMinX * 0.8,\instrMinY * 0.8)  --(\instrMaxX * 0.8,\instrMinY * 0.8) ;
+
+\draw (\instrMinX*.6, \instrMaxY*0.65) node{\textsf{\fbox{\large{08h05}}}};
+\draw (\instrMaxX*.4, \instrMaxY*0.65) node{\textsf{\fbox{\large{14h27}}}};
+
+\draw (\instrMinX*.6, \instrMaxY*0.4) node{\textsf{\fbox{\large{1.3 m}}}};
+\draw (\instrMaxX*.4, \instrMaxY*0.4) node{\textsf{\fbox{\large{9.4 m}}}};
+
+
+
+%\begin{tikzpicture}[domain=-2:2]
+ % \draw[very thin,color=gray] (\instrMinX * 0.8,\instrMinY * 0.8, 2,1) grid (4,4);
+
+ % \draw[color=blue]   plot (\x,{sin(\x r)}) ;   node[right] {$h$};
+
+   %\draw[->] (-0.2,0) -- (4.2,0) node[right] {$x$};
+  %\draw[->] (0,-1.2) -- (0,4.2) node[above] {$f(x)$};
+
+%  \draw[color=red]    plot (\x,\x)             node[right] {$f(x) =x$};
+  % \x r means to convert '\x' from degrees to _r_adians:
+%  \draw[color=blue]   plot (\x,{sin(\x r)})    node[right] {$f(x) = \sin x$};
+ % \draw[color=orange] plot (\x,{0.05*exp(\x)}) node[right] {$f(x) = \frac{1}{20} \mathrm e^x$};
+%\end{tikzpicture}
+
+
+
+
+%\draw [fill = brown, line width = 1pt] (\instrMinX * 0.8, \instrMinY*0.1) rectangle
+%((\instrMinX * 0.2, \instrMinY*0.8) ;
+%\draw [fill = cyan, line width = 1pt] (\instrMinX * 0.8, \instrMinY*0.1) rectangle
+%((\instrMinX * 0.2, \instrMaxY*0.6) ;
+%\draw (\instrMaxX*.4, 0) node{\textsf{\fbox{\Huge{4.3 m}}}};
+%\draw [color = red](\instrMaxX*.4, \instrMaxY*0.5) node{\textsf{\fbox{\Huge{Depth}}}};
+
+\input{instr_prologue.tex}

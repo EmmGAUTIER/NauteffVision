@@ -1,0 +1,6 @@
+__pycache__
+.vscode
+NauteffVision/__pycache__
+tmp
+docs/latex/build/*
+docs/latex/temp/*

@@ -34,6 +34,9 @@ from numpy.distutils.fcompiler import none
 
 
 def arrow_coords_create1 (origin, angle, l1, style):
+    """
+    
+    """
     x0 = origin[0]
     y0 = origin[1]
     cosinus = math.cos(angle)
