@@ -4,9 +4,19 @@
     {
       "file": "data/tubeNV",
       "label": "Nauteff AP",
-      "id": "E1"
+      "id": "E1",
+      "direction" : "in"
+    },
+    {
+      "file": "data/data.log",
+      "label": "Log file",
+      "id": "LOG",
+      "direction" : "out",
+      "dtype" : "all",
+      "format": "log"
     }
   ],
+
   "computations": [
     {
       "type": "attitude",

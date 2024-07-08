@@ -27,7 +27,7 @@ import time
 import data
 
 
-class Tocante(threading.Thread):
+class Tocante(threading.Thread, data.DataEmitter):
     """ A clock that sends time tics to a queue """
 
     def __init__(self, q):

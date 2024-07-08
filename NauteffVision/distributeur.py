@@ -54,15 +54,22 @@ class DataEmitter:
 
 
 class Distributeur:
+    """
+    Le Distributeur reçoit des données, les distribue aux instruments
+    du tableau de bord ou Listeners et les envoie vers les fichiers.
+    Les Listensers sont les instruments et modules de calculs.
+    Les fichiers sont les fichiers au sens unix (disque, tubes, ...).
+    Le distributeur ne réalise pas de traitement.
+    """
     def __init__(self, config):
         # Création des objets
-        self.queue = queue.Queue()
+        self.queue = queue.Queue() # Create the queue to receive datas
         self.fileInputs = ios.ios(config["ios"], self.queue)
+        self.fileOutputs = None #ios.ios(config["ios"], self.queue)
         self.dashboard = dashboard.DashBoard(config)
         self.tocante = tocante.Tocante(self.queue)
         #self.simulator = datasimulator.DataSimulator_i(self.queue)
         
-
         # List of data listeners and data emitters
         self.listeners = self.dashboard.instruments
         self.emitters = []
@@ -73,7 +80,7 @@ class Distributeur:
         self.dashboard.start()
         #self.simulator.start()
 
-        print("Début de boucle")
+        print("Distributeur : Début de boucle")
         while True:
             d = self.queue.get(timeout=1.0)
             self.fileInputs.sendData(d)
@@ -84,4 +91,5 @@ class Distributeur:
                 if d.type in l.get_data_list_in() :
                     #print (":::: ", l)
                     l.put_data(d)
+            
                     

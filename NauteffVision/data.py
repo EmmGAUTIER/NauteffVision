@@ -1,46 +1,54 @@
-###############################################################################
-#
-# This file is part of the Nauteff Autopilot project.
-#
-# Copyright (C) 2023 Nauteff https://nauteff.com
-#
-# This library is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This library is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this library.  If not, see <http://www.gnu.org/licenses/>.
-#
-###############################################################################
 
-# import time
+"""
+This file is part of the Nauteff Autopilot project.
+
+ Copyright (C) 2023 Nauteff https://nauteff.com
+
+This library is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This library is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this library.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+
+"""
+Autre documentation : à rédiger
+"""
+
+
+from abc import ABC, abstractmethod # Abstract methods
 
 class DataListener:
 
-    def get_data_list_in(self):
+    @abstractmethod
+    def get_data_list_in(self) -> list :
         return []
 
+    @abstractmethod
     def put_data(self, data):
         return
 
 
 class DataEmitter:
-    def __init__(self):
+    def __init__(self, queue=None):
         self.queue = None
 
-    def get_data_list_out(self):
+    @abstractmethod
+    def get_data_list_out(self) -> list:
         return []
 
+    @abstractmethod
     def setDataQueue(self, queue):
         self.queue = queue
         return
-
 
 class dataType:
 
@@ -52,6 +60,11 @@ class dataType:
 class Data:
     def __init__(self, dtype="?", timestamp=None, originalFrame=None,
                  provenance=None, values=None):
+        """
+        Data encapsulate data. It contains the type, raw data,
+        cooked data, origin and time stamp.
+
+        """
         self.type = dtype
         self.valid = None
         self.timestamp = timestamp
@@ -81,7 +94,6 @@ class dataDPT(dataNMEA0183):
 class dataSysTime(Data):
     def __init__(self, timeStamp):
         super().__init__(timeStamp, "SYS", "")
-
         self.type = "TIME"
 
 
