@@ -3,5 +3,6 @@ __pycache__
 nohup.out
 NauteffVision/__pycache__
 tmp
+build
 docs/latex/build/*
 docs/latex/temp/*
