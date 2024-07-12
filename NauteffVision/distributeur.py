@@ -1,4 +1,4 @@
-###############################################################################
+"""
 #
 # This file is part of the Nauteff Autopilot project.
 #
@@ -17,16 +17,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 #
-###############################################################################
+"""
 
 import queue
-import ios
+import inputfiles
+import outputfiles
 import dashboard
 import tocante
-import datasimulator
-#import time
-#import data
-
 
 class DataType:
     def __init__(self, id):
@@ -35,7 +32,6 @@ class DataType:
 
 
 dataTypes = []
-
 
 class DataListener:
     def __init__(self):
@@ -61,35 +57,35 @@ class Distributeur:
     Les fichiers sont les fichiers au sens unix (disque, tubes, ...).
     Le distributeur ne réalise pas de traitement.
     """
+
     def __init__(self, config):
+
         # Création des objets
-        self.queue = queue.Queue() # Create the queue to receive datas
-        self.fileInputs = ios.ios(config["ios"], self.queue)
-        self.fileOutputs = None #ios.ios(config["ios"], self.queue)
-        self.dashboard = dashboard.DashBoard(config)
-        self.tocante = tocante.Tocante(self.queue)
-        #self.simulator = datasimulator.DataSimulator_i(self.queue)
-        
-        # List of data listeners and data emitters
-        self.listeners = self.dashboard.instruments
-        self.emitters = []
+        self.MainQueue = queue.Queue() # Create the queue to receive datas
+        self.inputFiles = inputfiles.InputFiles(config["ios"], self.MainQueue)
+        self.dashboard = dashboard.DashBoard(config["dashboard"], self.MainQueue)
+        self.outputFiles = outputfiles.OutputFiles(config["ios"], self.MainQueue)
+        self.tocante = tocante.Tocante(self.MainQueue)
+
+        self.dataListeners = []
+        self.dataListeners.append(self.dashboard)
+        self.dataListeners.append(self.outputFiles)
 
         # Activation des objets
+        print (" ===> 1")
         self.tocante.start()
-        self.fileInputs.start()
+        print (" ===> 2")
+        self.inputFiles.start()
+        print (" ===> 3")
         self.dashboard.start()
-        #self.simulator.start()
+        print (" ===> 4")
 
         print("Distributeur : Début de boucle")
         while True:
-            d = self.queue.get(timeout=1.0)
-            self.fileInputs.sendData(d)
-            #print("--------------------------------------------------------")
-            #print("Type de donnée reçue : ", d.type)
-            for l in self.listeners :
-                #print("  --: ", l.get_data_list_in())
-                if d.type in l.get_data_list_in() :
-                    #print (":::: ", l)
-                    l.put_data(d)
-            
-                    
+            data = self.MainQueue.get(timeout=1.0)
+            self.outputFiles.putData(data)
+            print("Type de donnée reçue : ", data.type)
+            for l in self.dataListeners:
+                l.putData(data)
+
+

@@ -85,7 +85,7 @@ sw = [
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Simulateur de données pour NauteffVision')
-    parser.add_argument('-o',        default = None)
+    parser.add_argument('-o',  help="Nom du fichier de sortie",      default = None)
     args = vars(parser.parse_args())
     outFileName = args["o"]
 

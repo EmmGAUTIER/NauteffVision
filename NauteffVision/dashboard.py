@@ -143,11 +143,12 @@ class Gauje():
             return
 
 
-class DashBoard(threading.Thread):
+class DashBoard(threading.Thread, data.DataListener):
 
-    def __init__(self, config):
+    def __init__(self, config, queue):
         super(DashBoard, self).__init__()
         self.config = config
+        self.queue = queue
         self.display_mode = 0
         self.tk = None
         self.fen = None
@@ -177,7 +178,7 @@ class DashBoard(threading.Thread):
 
     def configure_event(self, event):
 
-        print(event)
+        print("--> Évènement :", event)
         
         #  print(self.fen.winfo_width(), self.fen.winfo_height())
         # if self.framesize_x == self.fen.winfo_width() and self.framesize_y == self.fen.winfo_height():
@@ -230,7 +231,7 @@ class DashBoard(threading.Thread):
         return
 
     def run(self):
-
+        print (" ----> Démarrage dashboard : run()")
         self.fen = tkinter.Tk()
         self.fen.title("N A U T E F F")
         self.fen.bind('<Configure>', self.configure_event, add=None)
@@ -266,7 +267,10 @@ class DashBoard(threading.Thread):
 
         self.fen.mainloop()
         
-
+    def putData(self, data):
+        print (f"Dashboard : Réception de {data.type}")
+        return
+    
     def function(self, v):
         return (v + 1)
 

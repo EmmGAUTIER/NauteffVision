@@ -26,7 +26,7 @@ import threading
 import time
 import data
 
-class ios(threading.Thread):
+class InputFiles(threading.Thread):
     """
     ios manages the inputs and outputs of data. It runs whitin a thread.
     Data come from files and are send to files.
@@ -34,45 +34,47 @@ class ios(threading.Thread):
     named pipes. 
     ios listen one or more files and send data to a queue
     """
-    def __init__(self, cfg, q):
+    def __init__(self, pConfig, pQueue):
         """
         Initialise the ios. cfg is the "ios" section of the json config file.
         ios opens each file in non blocking mode and initiates a selector on files.
         q is the queue to send data. 
         """
         super().__init__()
-        self.fds = []
-        self.ids = []
-        self.labels = []
-        self.sel = selectors.DefaultSelector() # 
-        self.queue = q  # Queue for messages to send
+        self.pipe = os.pipe()
+        self.fds = []     # File descriptors
+        self.ids = []     # Identifiers of files 
+        self.labels = []  # File labels
+        self.selector = selectors.DefaultSelector() # 
+        self.queue = pQueue  # Queue for messages to send
 
-        for io in cfg:
-            print("IO : ", io["file"])
-            o_mode = os.O_NONBLOCK
-            if "direction" in io:
-                direction = io["direction"]
-            else:
-                direction = "in"
-            if direction == "in":
-                o_mode = o_mode | os.O_RDONLY
-            elif direction == "out":
-                o_mode = o_mode | os.O_WRONLY | os.O_APPEND | os.O_CREAT
-            elif direction == "inout":
-                o_mode = o_mode | os.O_RDONLY | os.O_WRONLY | os.O_APPEND | os.O_CREAT
-            else:
-                return
-            fd = os.open(io["file"], o_mode)
-            f = open(fd, "r")
-            self.fds.append(f)
-            self.ids.append(io["id"])
-            self.labels.append(io["label"])
-            if direction in ("in", "inout"):
-                self.sel.register(f, selectors.EVENT_READ)
+        for io in pConfig:
+            try :
+                fileName = io["file"]
+                #print ("Fichier : ", fileName)
+                fileDirection = io["direction"]
+                fileDTypes = io.get("dtypes")
+                fileFormat = io.get("format")
+                fileLabel = io.get("label")
+                fileId = io.get("id")
+                # L'ouverture d'un tube nommé bloque sans l'option os.O_NONBLOCK
+                # File has to be first opened with os.open and this flag,
+                # and after with builin function open
+                if fileDirection == "in":
+                    df = os.open(fileName, os.O_RDONLY | os.O_NONBLOCK)
+                    fileHandler = open (df, "rt")
+                    print ("Ouvert : ", fileName)
+                    self.fds.append(fileHandler)
+                    self.ids.append(io["id"])
+                    self.labels.append(io["label"])
+                    self.selector.register(fileHandler, selectors.EVENT_READ)                
 
-    def sendData(self, d):
-        # print ("Donnée ", d)
-        pass
+            except Exception as e:
+                print(f"Exception : '{e.args[0]}'")
+            except KeyError as e:
+                print(f"KeyError: Description de fichier : la rubrique '{e.args[0]}' est manquante.")
+            finally:
+                pass
 
     def run(self):
         """
@@ -81,8 +83,14 @@ class ios(threading.Thread):
         and send it to the main queue.
         """
         while True:
-            events = self.sel.select()
+            events = self.selector.select()
             for file, mask in events:
+                """
+                if file == self.pipe :
+                    if file.fileobj.readline() == "Terminate":
+                        self.closeFiles()
+                        return
+                """
                 # event should be selectors.EVENT_READ, so let's read
                 line = file.fileobj.readline()
                 ts = time.time()
@@ -91,3 +99,16 @@ class ios(threading.Thread):
                 org = self.ids[num] + "," + self.labels[num]
                 d = data.dataDecode(ts, org, line)
                 self.queue.put(d)
+
+    def closeFiles ():
+        """
+        Close all input files when terminating
+        """
+        print ("Fermeture des fichiers")
+        for file in self.fds:
+            file.close()
+        pass
+
+    def terminate(self) :
+        self.pipe.write("Terminate\n")
+        pass

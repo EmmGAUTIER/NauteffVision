@@ -22,12 +22,13 @@
 
 import json
 import sys
-from distributeur import Distributeur
+#from distributeur import Distributeur
+import distributeur
 import argparse
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='df_report: statistiques exploratoires pour aborder un jeu de données.')
+    parser = argparse.ArgumentParser(description='NauteffVision : Navigation data visualisation.')
     parser.add_argument('--config',        default = 'NauteffVision.json')
     args = vars(parser.parse_args())
     cfgfilename  = args["config"]
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     NVConfig = json.load(file)
     file.close()
 
-    distributeur = Distributeur(NVConfig)
+    distributeur = distributeur.Distributeur(NVConfig)
 
     print("Nauteff Vision , good bye!")
     sys.exit(0)

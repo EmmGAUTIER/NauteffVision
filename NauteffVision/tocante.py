@@ -27,12 +27,12 @@ import time
 import data
 
 
-class Tocante(threading.Thread, data.DataEmitter):
+class Tocante(threading.Thread):
     """ A clock that sends time tics to a queue """
 
-    def __init__(self, q):
+    def __init__(self, queue):
         super().__init__()
-        self.queue = q
+        self.queue = queue
         # self.msec = 100
 
     def run(self):
@@ -54,6 +54,7 @@ class Tocante(threading.Thread, data.DataEmitter):
                              "Second": dt.tm_sec,
                              "WeekDay": dt.tm_wday})
             self.queue.put(toc)
+            print ("Tic! Tac!") # Pour mise au point
 
             nextt = t + 0.1
             time.sleep(nextt - time.time())

@@ -2,18 +2,18 @@
   "title": "Nauteff Vision / Let's start ",
   "ios": [
     {
-      "file": "data/tubeNV",
-      "label": "Nauteff AP",
-      "id": "E1",
-      "direction" : "in"
-    },
-    {
       "file": "data/data.log",
       "label": "Log file",
       "id": "LOG",
       "direction" : "out",
-      "dtype" : "all",
+      "dtypes" : "all",
       "format": "log"
+    },
+    {
+      "file": "data/tubeNV",
+      "label": "Nauteff AP",
+      "id": "AP1",
+      "direction" : "in"
     }
   ],
 
@@ -25,13 +25,17 @@
       "destination": "S3"
     }
   ],
+
+  "dashboard" : {
+  "title" : "Nauteff Vision for Kreiz Avel",
   "instruments": [
     {
       "type": "compass",
       "cell_origx": 1,
       "cell_origy": 0,
       "cell_width": 2,
-      "cell_height": 2
+      "cell_height": 2,
+      "origin" : "AP1"
     },
     {
       "type": "wind",
@@ -83,5 +87,7 @@
       "cell_height": 1
     }
   ]
+  }
+
 }
 

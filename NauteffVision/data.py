@@ -33,13 +33,13 @@ class DataListener:
         return []
 
     @abstractmethod
-    def put_data(self, data):
+    def putData(self, data):
         return
 
 
 class DataEmitter:
-    def __init__(self, queue=None):
-        self.queue = None
+    def __init__(self, queue):
+        self.queue = queue
 
     @abstractmethod
     def get_data_list_out(self) -> list:
@@ -74,7 +74,7 @@ class Data:
 
 
 def __str__(self):
-    return "Data"
+    return self.timestamp + '\t' + self.provenance + '\t' + self.originalFrame
 
 
 class dataNMEA0183(Data):
