@@ -80,7 +80,21 @@ sw = [
 "$SDDBT,5.6,f,1.7,M,0.9,F*0A\r\n",
 "$SDDPT,1.7,-0.5,*55\r\n"]
 
-
+sw = [
+"""
+"ATTITUDE 0.232222 0.224444 -0.05",
+"ATTITUDE 0.232222 0.224444 -0.04",
+"ATTITUDE 0.232222 0.224444 +0.03",
+"ATTITUDE 0.232222 0.224444 +0.02",
+"""
+"ATTITUDE 0.0 0.224444 -0.01",
+"ATTITUDE 0.05 0.264444 -0.0",
+"ATTITUDE 0.10 0.264444 -0.03",
+"ATTITUDE 0.15 0.154444 -0.06",
+"ATTITUDE 0.232222 0.10 -0.09",
+"ATTITUDE 0.432222 0.0 -0.12",
+"ATTITUDE 0.832222 -0.10 -0.15"
+]
 
 if __name__ == '__main__':
 
@@ -98,8 +112,7 @@ if __name__ == '__main__':
         outFile = open(outFileName, buffering=1, mode = "w")
         pass
 
-
-    print ("Bonjour\r\n", file=outFile)
+    #print ("Bonjour\r\n", file=outFile)
 
     i = 0
     while True:

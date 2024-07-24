@@ -22,5 +22,24 @@
 import math
 
 def deg2rad(angle):
-    return ((math.pi * 2 * angle) / 360.) - math.pi / 2.
+
+    anglerad = math.pi/2.0 - (math.pi/180) * angle
+
+    if anglerad >= 0.:
+        anglerad = math.fmod(anglerad, 2.0 * math.pi)
+    else:
+        anglerad = 2.0 * math.pi + math.fmod(anglerad, 2.0 *math.pi)
+
+    return anglerad
+
+def rad2deg(angle):
+
+    angledeg = 90. - (180/math.pi) * angle
+
+    if angledeg >= 0. :
+        angledeg = math.fmod(angledeg, 360.)
+    else:
+        angledeg = 360. + math.fmod(angledeg, 360.)
+
+    return angledeg
 

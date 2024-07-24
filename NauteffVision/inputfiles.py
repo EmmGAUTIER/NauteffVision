@@ -94,13 +94,13 @@ class InputFiles(threading.Thread):
                 # event should be selectors.EVENT_READ, so let's read
                 line = file.fileobj.readline()
                 ts = time.time()
-                # print(l)
+                #print(f"FileInput lecture de : {line}")
                 num = self.fds.index(file.fileobj)
-                org = self.ids[num] + "," + self.labels[num]
+                org = self.ids[num]# + "," + self.labels[num]
                 d = data.dataDecode(ts, org, line)
                 self.queue.put(d)
 
-    def closeFiles ():
+    def closeFiles (self):
         """
         Close all input files when terminating
         """
@@ -110,5 +110,6 @@ class InputFiles(threading.Thread):
         pass
 
     def terminate(self) :
-        self.pipe.write("Terminate\n")
+        #self.pipe.write("Terminate\n")
+        self.closeFiles()
         pass

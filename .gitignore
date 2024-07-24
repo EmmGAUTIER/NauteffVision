@@ -1,8 +1,13 @@
 __pycache__
 .vscode
+pyvenv.cfg
 nohup.out
 NauteffVision/__pycache__
 tmp
 build
 docs/latex/build/*
 docs/latex/temp/*
+bin
+lib
+lib64
+.idea

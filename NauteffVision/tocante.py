@@ -33,6 +33,7 @@ class Tocante(threading.Thread):
     def __init__(self, queue):
         super().__init__()
         self.queue = queue
+        self.daemon = True
         # self.msec = 100
 
     def run(self):
@@ -54,7 +55,7 @@ class Tocante(threading.Thread):
                              "Second": dt.tm_sec,
                              "WeekDay": dt.tm_wday})
             self.queue.put(toc)
-            print ("Tic! Tac!") # Pour mise au point
+            #print ("Tic! Tac!") # Pour mise au point
 
             nextt = t + 0.1
             time.sleep(nextt - time.time())

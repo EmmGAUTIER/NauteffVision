@@ -6,7 +6,7 @@
       "label": "Log file",
       "id": "LOG",
       "direction" : "out",
-      "dtypes" : "all",
+      "types" : "all",
       "format": "log"
     },
     {
@@ -53,17 +53,20 @@
     },
     {
       "type": "tide",
-      "cell_origx": 1,
-      "cell_origy": 2,
-      "cell_width": 2,
-      "cell_height": 2
-    },
-    {
-      "type": "attitude",
       "cell_origx": 0,
       "cell_origy": 2,
       "cell_width": 1,
       "cell_height": 1
+    },
+    {
+      "type": "attitude",
+      "cell_origx": 1,
+      "cell_origy": 2,
+      "cell_width": 3,
+      "cell_height": 2,
+      "title" : "Assiette",
+      "origin" : "AP1"
+
     },
     {
       "type": "clock",

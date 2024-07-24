@@ -71,6 +71,7 @@ class OutputFiles():
         self.fds = []        # File descriptors
         self.ids = []        # Identifiers of files 
         self.labels = []     # File labels
+        self.filtertypes = []
         self.queue = pQueue  # Queue for messages to send
 
         for io in pConfig:
@@ -84,7 +85,7 @@ class OutputFiles():
                 fileId = io.get("id")
                 # L'ouverture d'un tube nommé bloque sans l'option os.O_NONBLOCK
                 # File has to be first opened with os.open and this flag,
-                # and after with builin function open
+                # and after with builtin function open
                 if fileDirection == "out":
                     df = os.open(fileName, os.O_WRONLY | os.O_CREAT, mode=0o640)
                     fileHandler = open (df, "wt")
@@ -92,17 +93,30 @@ class OutputFiles():
                     self.fds.append(fileHandler)
                     self.ids.append(io["id"])
                     self.labels.append(io["label"])
+                    ts = io.get("types")
+                    if ts == "all" or ts == None:
+                        self.filtertypes.append(None)
+                    else:
+                        self.filtertypes.append(ts.split(','))
 
             except Exception as e:
-                print(f"Error opening {self.filename}'{e.args[0]}'")
+                print(f"Error opening {fileName}'{e.args[0]}'")
             except KeyError as e:
                 print(f"KeyError: Description de fichier : la rubrique '{e.args[0]}' est manquante.")
             finally:
                 pass
 
     def putData (self, pData) :
-        
-        pass
+        if pData.origin != "SYS":
+            for file, filter in zip (self.fds, self.filtertypes) :
+                if filter == None or pData in filter :
+                    s = pData.str4log()
+                    #print("### outputFile écriture d'une donnée : ", s)
+                    file.write(s + '\n')
+                    file.flush()
+                    #print (s, file=file)
+                    os.fsync(file)
+        return
  
     def closeFiles (self):
         """

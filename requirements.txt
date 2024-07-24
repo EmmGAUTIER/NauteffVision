@@ -1,5 +1,0 @@
-# Exemple de dépendances
-numpy
-pandas
-requests
-sphinx

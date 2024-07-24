@@ -72,20 +72,21 @@ class Distributeur:
         self.dataListeners.append(self.outputFiles)
 
         # Activation des objets
-        print (" ===> 1")
         self.tocante.start()
-        print (" ===> 2")
         self.inputFiles.start()
-        print (" ===> 3")
         self.dashboard.start()
-        print (" ===> 4")
 
         print("Distributeur : Début de boucle")
         while True:
             data = self.MainQueue.get(timeout=1.0)
-            self.outputFiles.putData(data)
-            print("Type de donnée reçue : ", data.type)
+            #data = self.MainQueue.get()
+            if type(data) == str and data=="STOP":
+                break
+            #self.outputFiles.putData(data)
+            #print("Type de donnée reçue : ", data.type)
             for l in self.dataListeners:
                 l.putData(data)
-
+        self.tocante = None
+        self.inputFiles.terminate()
+        self.outputFiles.terminate()
 
