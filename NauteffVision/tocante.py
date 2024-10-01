@@ -23,29 +23,41 @@
 import math
 import threading
 import time
-
 import data
 
 
-class Tocante(threading.Thread):
-    """ A clock that sends time tics to a queue """
+class Tocante(data.DataInterface):
+    """ A clock that sends time tics every second to a queue """
 
-    def __init__(self, queue):
-        super().__init__()
-        self.queue = queue
-        self.daemon = True
-        # self.msec = 100
+    def __init__(self, config, queue_out):
+        super().__init__(config, queue_out)
+        self._stop_event = threading.Event()
+        return
+
+    def put_data(self, data):
+        # Nothing to do with data
+        return 0
+
+    def get_data_list_in(self) -> list:
+        # Nothing to do with data
+        return []
+
+    def get_data_list_out(self) -> list:
+        return ["SYS"]
 
     def run(self):
-        while True:
+        while not self._stop_event.is_set():
             t = time.time()
+
             t = math.floor(10 * t)
             t = t / 10
 
-            dt = time.gmtime(t)
+            """
+
+            # dt = time.gmtime(t)
             dt = time.localtime()
 
-            toc = data.Data("SysTime", t, str(t), "SYS",
+            toc = data.DataSysTime("SysTime", t, str(t), "SYS",
                             {"Time": t,
                              "Year": dt.tm_year,
                              "Month": dt.tm_mon,
@@ -54,8 +66,17 @@ class Tocante(threading.Thread):
                              "Minute": dt.tm_min,
                              "Second": dt.tm_sec,
                              "WeekDay": dt.tm_wday})
-            self.queue.put(toc)
-            #print ("Tic! Tac!") # Pour mise au point
+            self.queue_out.put(toc)
+            
+            """
+            ts = data.DataSysTime(t, origin = "Tocante")
+            self.queue_out.put(ts)
 
-            nextt = t + 0.1
-            time.sleep(nextt - time.time())
+            # print(f"----> Tocante : tic {ts}") # used for debugging only
+
+            next_tic = t + 1.0
+            self._stop_event.wait(next_tic - time.time())
+        return
+
+    def terminate(self) -> None:
+        self._stop_event.set()

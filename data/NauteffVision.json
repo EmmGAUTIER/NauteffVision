@@ -1,95 +1,104 @@
 {
   "title": "Nauteff Vision / Let's start ",
-  "ios": [
-    {
-      "file": "data/data.log",
-      "label": "Log file",
-      "id": "LOG",
-      "direction" : "out",
-      "types" : "all",
-      "format": "log"
-    },
-    {
-      "file": "data/tubeNV",
-      "label": "Nauteff AP",
-      "id": "AP1",
-      "direction" : "in"
-    }
-  ],
+  "ios": {
+  "LOG" :
+{
+  "filename": "data/data.log",
+  "label": "Log file",
+  "direction": "out",
+  "dtypes": "all",
+  "format": "log"
+},
+"AP1" : {
+"filename": "data/tubeNV",
+"label": "Nauteff AP",
+"id": "AP1",
+"direction": "in"
+}
+},
 
-  "computations": [
-    {
+  "computations": {
+    "att": {
       "type": "attitude",
       "id": "att",
       "source": "E1",
       "destination": "S3"
     }
-  ],
-
+  },
   "dashboard" : {
   "title" : "Nauteff Vision for Kreiz Avel",
-  "instruments": [
-    {
-      "type": "compass",
-      "cell_origx": 1,
-      "cell_origy": 0,
-      "cell_width": 2,
-      "cell_height": 2,
-      "origin" : "AP1"
-    },
-    {
-      "type": "wind",
-      "cell_origx": 3,
-      "cell_origy": 0,
-      "cell_width": 2,
-      "cell_height": 2
-    },
-    {
-      "type": "windNear",
-      "cell_origx": 4,
-      "cell_origy": 2,
-      "cell_width": 2,
-      "cell_height": 1
-    },
-    {
-      "type": "tide",
-      "cell_origx": 0,
-      "cell_origy": 2,
-      "cell_width": 1,
-      "cell_height": 1
-    },
-    {
-      "type": "attitude",
-      "cell_origx": 1,
-      "cell_origy": 2,
-      "cell_width": 3,
-      "cell_height": 2,
-      "title" : "Assiette",
-      "origin" : "AP1"
+  "instruments": {
+"COMPASS_1":{
+  "type": "compass",
+  "cell_origx": 1,
+  "cell_origy": 0,
+  "cell_width": 2,
+  "cell_height": 2,
+  "origin": "AP1"
+},
+"WND_1":{
+"type": "wind",
+"cell_origx": 3,
+"cell_origy": 0,
+"cell_width": 2,
+"cell_height": 2
+},
+"SPEED":{
+"type": "speed",
+"cell_origx": 5,
+"cell_origy": 0,
+"cell_width": 2,
+"cell_height": 2,
+"unit" : "kts",
+"min_val" : 0,
+"max_val" : 16
+}, 
 
-    },
-    {
-      "type": "clock",
-      "cell_origx": 5,
-      "cell_origy": 0,
-      "cell_width": 2,
-      "cell_height": 2
-    },
-    {
-      "type": "APmotor",
-      "cell_origx": 4,
-      "cell_origy": 2,
-      "cell_width": 2,
-      "cell_height": 1
-    },
-    {
-      "type": "APcontrol",
-      "cell_origx": 4,
-      "cell_origy": 3,
-      "cell_width": 3,
-      "cell_height": 1
-    }
-  ]
+"ATT_1" :
+{
+"type": "attitude",
+"cell_origx": 1,
+"cell_origy": 2,
+"cell_width": 3,
+"cell_height": 2,
+"title": "Assiette",
+"origin": "AP1"
+},
+  "CLOCK_LOCAL" : {
+    "type":       "clock",
+    "cell_origx": 6,
+    "cell_origy": 2,
+    "cell_width": 1,
+    "cell_height": 1,
+    "title" :     "Brest",
+    "time_zone" : "Europe/Paris"
+},
+
+  "CLOCK_RUN" : {
+    "type":       "clock",
+    "cell_origx": 5,
+    "cell_origy": 2,
+    "cell_width": 1,
+    "cell_height": 1,
+    "title" :     "Saint Denis de la Réunion",
+    "time_zone" : "Indian/Reunion"
+},
+    "AP_MOT":
+{
+"type": "APmotor",
+"cell_origx": 4,
+"cell_origy": 2,
+"cell_width": 1,
+"cell_height": 1
+}, "AP_CTL" :
+{
+"type": "APcontrol",
+"cell_origx": 4,
+"cell_origy": 3,
+"cell_width": 3,
+"cell_height": 1
+}
+}
   }
 
 }

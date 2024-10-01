@@ -18,34 +18,35 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
-"""
-Quelques fct
-"""
-import math
 
-def deg2rad(angle):
-    """
-    Conversion
-    """
-    anglerad = math.pi/2.0 - (math.pi/180) * angle
+import os
+import queue
+import selectors
+import threading
+import time
+import data
 
-    if anglerad >= 0.:
-        anglerad = math.fmod(anglerad, 2.0 * math.pi)
-    else:
-        anglerad = 2.0 * math.pi + math.fmod(anglerad, 2.0 *math.pi)
 
-    return anglerad
+class DataProcess(data.DataInterface):
+    def __init__(self, config, queue_out):
+        super().__init__(config, queue_out)
 
-def rad2deg(angle):
-    """
-    Conversion
-    """
-    angledeg = 90. - (180/math.pi) * angle
+    def put_data(self, data):
+        res = 0
+        if self.direction == "out":
+            res = self.file_out.write(data.str4log() + '\n')
+            self.file_out.flush()
+        return res
 
-    if angledeg >= 0. :
-        angledeg = math.fmod(angledeg, 360.)
-    else:
-        angledeg = 360. + math.fmod(angledeg, 360.)
+    def get_data_list_in(self) -> list:
+        # do not listen
+        return []
 
-    return angledeg
+    def get_data_list_out(self) -> list:
+        return ["all"]
 
+    def run(self):
+        return
+
+    def terminate(self):
+        pass

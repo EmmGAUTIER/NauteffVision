@@ -20,73 +20,65 @@
 """
 
 import queue
-import inputfiles
-import outputfiles
+import datafile
 import dashboard
 import tocante
-
-class DataType:
-    def __init__(self, id):
-        self.Id = id
-        pass
-
-
-dataTypes = []
-
-class DataListener:
-    def __init__(self):
-        pass
-
-    def getListenedDataTypes(self):
-        return []
-
-
-class DataEmitter:
-    def __init__(self):
-        pass
-
-    def getEmittedDataTypes(self):
-        return []
 
 
 class Distributeur:
     """
-    Le Distributeur reçoit des données, les distribue aux instruments
-    du tableau de bord ou Listeners et les envoie vers les fichiers.
-    Les Listensers sont les instruments et modules de calculs.
-    Les fichiers sont les fichiers au sens unix (disque, tubes, ...).
+    Le Distributeur reçoit des données, et les distribue aux entités de type
+    DataInterface. Ces entités sont des fichiers au sens unix
+    (sur disque, tubes, ...), des modules de calcul, et l'interface graphique
+    de type DashBoard.
     Le distributeur ne réalise pas de traitement.
     """
 
     def __init__(self, config):
-
+        """
+        Initialisation selon indications contenues dans config. config est
+        un dictionnaire décrivant les fichiers, les calculs et le tableau de bord.
+        """
+        self.config = config
         # Création des objets
-        self.MainQueue = queue.Queue() # Create the queue to receive datas
-        self.inputFiles = inputfiles.InputFiles(config["ios"], self.MainQueue)
-        self.dashboard = dashboard.DashBoard(config["dashboard"], self.MainQueue)
-        self.outputFiles = outputfiles.OutputFiles(config["ios"], self.MainQueue)
-        self.tocante = tocante.Tocante(self.MainQueue)
+        self.main_queue = queue.Queue()  # Create the queue to receive data
+        self.data_interfaces = []
 
-        self.dataListeners = []
-        self.dataListeners.append(self.dashboard)
-        self.dataListeners.append(self.outputFiles)
+        # DataInterfaces creation
 
-        # Activation des objets
-        self.tocante.start()
-        self.inputFiles.start()
-        self.dashboard.start()
+        # tocante
+        self.data_interfaces.append(tocante.Tocante(None, self.main_queue))
 
-        print("Distributeur : Début de boucle")
+        # Fichiers
+        for file_id, file_cfg in config.get("ios").items():
+            print(f"Ouverture du fichier {file_id:12s} : {file_cfg.get('filename')}")
+            self.data_interfaces.append(datafile.DataFile(file_cfg, self.main_queue))
+
+        self.data_interfaces.append(dashboard.Dashboard(config.get("dashboard"), self.main_queue))
+
+    def loop(self):
+        """
+        loop ()
+        Boucle du distributeur. Démarre toutes les instances DataInterfaces
+        lit sur la file les données et les distribue aux instances DataInterfaces.
+        Cette boucle se termine par break lorsqu'elle reçoit le message "Terminate"
+        Elle arrête alors les DaraInterfaces.
+        """
+        # Start all data interfaces (which run in threads)
+        for di in self.data_interfaces:
+            di.start()
+
+        # print("Distributeur : Début de boucle") # Pour mise au point
+        # Boucle infinie, sortie par instruction break
         while True:
-            data = self.MainQueue.get(timeout=1.0)
-            #data = self.MainQueue.get()
-            if type(data) == str and data=="STOP":
+            data = self.main_queue.get()
+            if type(data) == str and data == "Terminate":
+                print("Fin détectée")
                 break
-            #self.outputFiles.putData(data)
-            #print("Type de donnée reçue : ", data.type)
-            for l in self.dataListeners:
-                l.putData(data)
-        self.tocante = None
-        self.inputFiles.terminate()
-        self.outputFiles.terminate()
+            # print(data.str4log())
+            for di in self.data_interfaces:
+                di.put_data(data)
 
+        # End loop , stop all data_interfaces : tocante, dashboard, files, computers
+        for di in self.data_interfaces:
+            di.terminate()
