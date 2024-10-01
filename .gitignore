@@ -3,11 +3,12 @@ __pycache__
 pyvenv.cfg
 nohup.out
 NauteffVision/__pycache__
+test/__pycache__
 tmp
 build
-docs/latex/build/*
-docs/latex/temp/*
+docs
 bin
 lib
 lib64
 .idea
+data/data.log

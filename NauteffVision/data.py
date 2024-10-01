@@ -17,42 +17,44 @@ You should have received a copy of the GNU Lesser General Public License
 along with this library.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-"""
-Autre documentation : à rédiger
-"""
-
+import threading
 from abc import abstractmethod  # Abstract methods
-import time
+from datetime import datetime
 
-class DataListener:
+
+class DataInterface(threading.Thread):
+    def __init__(self, config, queue_out) -> None:
+        super().__init__()
+        self.config = config
+        self.list_out_types = []
+        self.list_in_types = []
+        self.ready = False
+        self.queue_out = queue_out
+        return
+
+    def set_queue(self, queue_out) -> None:
+        self.queue_out = queue_out
+        return
+
+    @abstractmethod
+    def put_data(self, data):
+        return 0
 
     @abstractmethod
     def get_data_list_in(self) -> list:
         return []
 
     @abstractmethod
-    def putData(self, data):
-        return
-
-class DataEmitter:
-    def __init__(self, queue):
-        self.queue = queue
-
-    @abstractmethod
     def get_data_list_out(self) -> list:
         return []
 
     @abstractmethod
-    def setDataQueue(self, queue):
-        self.queue = queue
+    def terminate(self) -> None:
         return
 
-
-class dataType:
-
-    def __init__(self, n, t):
-        self.type = t
-        self.name = n
+    @abstractmethod
+    def run(self) -> None:
+        pass
 
 
 class Data:
@@ -69,24 +71,28 @@ class Data:
         self.origin = origin  # str : Id of file or syst. of origin
         self.values = values  # dict :  converted values
 
-    def head4log(self, sep = ' ') -> str :
-        time_struct = time.localtime(self.timestamp)
-        time_str = time.strftime("%Y-%m-%d %H:%M:%S", time_struct)
-        s = time_str + sep + self.type + sep + self. origin
+    def get_timestamp(self):
+        return self.timestamp
+
+    def head4log(self, sep=' ') -> str:
+        dt = datetime.fromtimestamp(self.timestamp)
+        #time_struct = time.localtime(self.timestamp)
+        time_str = dt.strftime("%Y-%m-%d %H:%M:%S,%f")[:-3]
+        s = time_str + sep + self.type + sep + self.origin
         return s
 
-    def str4log(self, sep =  ' ') -> str :
+    def str4log(self, sep=' ') -> str:
         s = self.head4log(sep) + sep + str(self.values)
         return s
 
-def __str__(self):
-    return self.timestamp + '\t' + self.provenance + '\t' + self.originalFrame
+    def __str__(self):
+        return str(self.timestamp) + '\t' + self.origin + '\t' + self.initialFrame
 
 
 class dataNMEA0183(Data):
     def __init__(self, timeStamp, provenance, originalFrame):
         super().__init__(timeStamp, provenance, originalFrame)
-        self.type = "NMEA"
+        self.type = "NMEA0183"
 
 
 class dataDPT(dataNMEA0183):
@@ -97,10 +103,11 @@ class dataDPT(dataNMEA0183):
         self.offset = 0.
 
 
-class dataSysTime(Data):
-    def __init__(self, timeStamp):
-        super().__init__(timeStamp, "SYS", "")
-        self.type = "TIME"
+class DataSysTime(Data):
+    def __init__(self, time_stamp, origin):
+        # super().__init__(timeStamp, "SYS", "")
+        super().__init__(dtype="SysTime", timestamp=time_stamp, initialFrame="", origin=origin, values=time_stamp)
+        self.type = "SysTime"
 
 
 class dataNauteff(Data):
@@ -123,14 +130,62 @@ class dataAPCommand(Data):
         print("--> (1) :", self)
 
     def str4log(self, sep=' ') -> str:
-        print ("--> (2) :", self)
-        s = super().head4log(sep)# + sep + self.command
+        print("--> (2) :", self)
+        s = super().head4log(sep)  # + sep + self.command
         return s
 
-class dataAttitude(Data):
+
+class dataLog(Data):
+    user_text: str
+
+    def __init__(self, timestamp, provenance, user_text):
+        super().__init__("DashBoard", timestamp, provenance, user_text)
+        self.user_text = user_text
+
+    def str4log(self, sep=' ') -> str:
+        s = super().head4log(sep) + sep + self.user_text
+        return s
+
+
+class DataWind(Data):
+    """
+    Wind speed and direction
+    """
+
+    def __init__(self, timestamp, origin, initialFrame, splittedFrame):
+        """
+        Initialization
+        """
+        super().__init__("WIND", timestamp, initialFrame, origin)
+        try:
+            self.direction = float(splittedFrame[1])
+            self.speed = float(splittedFrame[2])
+            self.valid = True
+            pass
+        except:
+            self.speed = None
+            self.direction = None
+            self.valid = False
+            pass
+        finally:
+            pass
+
+    def str4log(self, sep=' ') -> str:
+        s = super().head4log(sep) + sep + f"{self.speed}{sep}{self.direction}"
+        return s
+
+    def get_speed(self):
+        return self.speed
+
+    def get_direction(self):
+        return self.direction
+
+
+class DataAttitude(Data):
     """
     Attitude of the ship including heading, roll and pitch
     """
+
     def __init__(self, timestamp, origin, initialFrame, splittedFrame):
         """
         Initialization
@@ -155,6 +210,15 @@ class dataAttitude(Data):
         s = super().head4log(sep) + sep + f"{self.heading}{sep}{self.roll}{sep}{self.pitch}"
         return s
 
+    def get_heading(self):
+        return self.heading
+
+    def get_pitch(self):
+        return self.pitch
+
+    def get_roll(self):
+        return self.roll
+
 
 def dataDecode(timeStamp, orig, frame: str) -> Data:
     #print(f"Trame : {int(timeStamp)} origine \"{orig}\" \"{frame}\"")
@@ -174,7 +238,10 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
             return dataH
 
         if s[0] == "ATTITUDE":
-            return dataAttitude(timeStamp, orig, frame, s)
+            return DataAttitude(timeStamp, orig, frame, s)
+
+        if s[0] == "WIND":
+            return DataWind(timeStamp, orig, frame, s)
 
     d = Data()
     d.timestamp = timeStamp
