@@ -50,3 +50,7 @@ class DataProcess(data.DataInterface):
 
     def terminate(self):
         pass
+
+class computeDrift (DataProcess):
+    def __init__(self, config, queue_out):
+        super().__init__(config, queue_out)

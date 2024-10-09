@@ -26,7 +26,12 @@ import argparse
 import distributeur
 
 if __name__ == '__main__':
-
+    """
+    Point d'entrée de NauteffVision.
+    Le fonction __main__ initialise NauteffVision.
+    Elle analyse les options de la ligne de commande,
+    lit le fichier de configuration et lance le distributeur.
+    """
     parser = argparse.ArgumentParser(description='NauteffVision : Navigation data visualisation.')
     parser.add_argument('--config', default='NauteffVision.json', help="préciser le fichier de configuration")
     # parser.add_argument('--demo', action='store_true', help="Activer le mode démo")

@@ -19,13 +19,17 @@
 #
 ###############################################################################
 """
-Quelques fct
+Quelques fonctions auxiliaires de calcul.
 """
 import math
 
 def deg2rad(angle):
     """
-    Conversion
+    Conversion : converts clockwise degrees from north to
+    counterclockwise radians from X  axis (Est).
+    degrees are meant for human displays wheras radian
+    are used by math libraries.
+    see : rad2deg()
     """
     anglerad = math.pi/2.0 - (math.pi/180) * angle
 
@@ -38,7 +42,11 @@ def deg2rad(angle):
 
 def rad2deg(angle):
     """
-    Conversion
+    Conversion : converts counterclockwise radians from X  axis (Est)
+    to clockwise degrees from north
+    degrees are meant for human disays wheras radian
+    are used by math libraries.
+    see : rad2deg()
     """
     angledeg = 90. - (180/math.pi) * angle
 

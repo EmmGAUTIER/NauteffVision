@@ -76,7 +76,7 @@ class Data:
 
     def head4log(self, sep=' ') -> str:
         dt = datetime.fromtimestamp(self.timestamp)
-        #time_struct = time.localtime(self.timestamp)
+        # time_struct = time.localtime(self.timestamp)
         time_str = dt.strftime("%Y-%m-%d %H:%M:%S,%f")[:-3]
         s = time_str + sep + self.type + sep + self.origin
         return s
@@ -221,7 +221,7 @@ class DataAttitude(Data):
 
 
 def dataDecode(timeStamp, orig, frame: str) -> Data:
-    #print(f"Trame : {int(timeStamp)} origine \"{orig}\" \"{frame}\"")
+    # print(f"Trame : {int(timeStamp)} origine \"{orig}\" \"{frame}\"")
     # ts = time.time()
 
     d = dataDecodeNMEA0183(timeStamp, orig, frame)
@@ -251,21 +251,65 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
     d.values = None
     return d
 
+class NotNMEA0183(Exception):
+    """
+    Frame format is not NMEA0183
+    """
 
+class NMEA0183ChecksumError(Exception):
+    """
+    NMEA0183 frame with checksum error
+    """
 def dataDecodeNMEA0183(timeStamp, orig, frame):
+
     d = None
     l = len(frame)
-    # print("Taille : ", l, type(l))
-    if l < 10 or l > 82:
-        return None
-    if frame[0] != "$":
-        return None
-    if frame[l - 1] == '\n' or frame[l - 1] == '\r':
-        l = l - 1
-    if frame[l - 1] == '\n' or frame[l - 1] == '\r':
-        l = l - 1
-    # checksum = frame[l - 3: l]
-    # print("checksum : ", checksum)
+
+
+    try :
+        # check : length
+        if l < 10 or l > 82:
+            raise NotNMEA0183
+
+        # Terminating <CR> and <LF> are meaningless, so they are removed for decoding
+        if frame[l - 1] == '\n' or frame[l - 1] == '\r':
+            l = l - 1
+        if frame[l - 1] == '\n' or frame[l - 1] == '\r':
+            l = l - 1
+
+        # Frames we decode start with a $ sign and have a * before checksum,
+        # so check them
+        # Some NMEA0183 start with a !
+        if frame[0] != "$":
+            raise NotNMEA0183("Does not start with $")
+        if frame[l-3] != '*':
+            raise NotNMEA0183("Does not have a * before checksum")
+
+        payload = frame[1: l-3]
+
+        # Checksum
+        checksum = frame[l - 2: l]
+        print("checksum : ", checksum)
+
+        csum = 0
+        for c in payload:
+            csum ^= ord(c)
+        # print (f"<{payload}>")
+        # print (f"  {csum:02X} {checksum}")
+        if  f"{csum:02X}" != checksum:
+            raise NMEA0183ChecksumError
+
+
+    except NotNMEA0183:
+        print (f"N'est pas une trame NMEA bien formée")
+        pass
+
+    except Exception: # System mustn't crash if an unexpected exception is thrown
+        pass
+
+
+    checksum = frame[l - 3: l]
+    print("checksum : ", checksum)
     frame = frame[0: l - 3]
     ellist = frame.split(',')
     ftype = ellist[0][3:]

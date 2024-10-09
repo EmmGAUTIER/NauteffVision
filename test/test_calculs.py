@@ -2,9 +2,9 @@
 
 import calculs
 import math
-from cmpfloats import cmpFloats
+from cmpfloats import cmpFloats # Comparing floats
 
-def test_answer():
+def test_calculs():
 
     # radians of angles start from left and grow counterclockwise
     # degrees of angles start fom top and grow clockwise.
@@ -12,7 +12,7 @@ def test_answer():
     ############################################################
     # Test de la fonction rad2deg converting radians to degrees.
     ############################################################
-    assert (cmpFloats(calculs.rad2deg(0)            ,  90.0) == True)
+    assert cmpFloats(calculs.rad2deg(0)            ,  90.0) == True
     assert cmpFloats(calculs.rad2deg(math.pi/2.)   ,   0.0) == True
     assert cmpFloats(calculs.rad2deg(math.pi/4.)   ,  45.0) == True
     assert cmpFloats(calculs.rad2deg(math.pi)      , 270.0) == True

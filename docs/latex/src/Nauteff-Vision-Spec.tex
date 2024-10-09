@@ -7,14 +7,16 @@
 \usepackage{varioref}
 \usepackage{numprint}
 \usepackage{multirow}
+\usepackage{caption}
 \usepackage{hyperref}
 \usepackage[toc]{glossaries}
 \usepackage{pgf,tikz}
 \usepackage{graphicx}
+%\usepackage{parskip}
 %\usepackage{syntax}
 
 \title{Nauteff-Vision Spécification}
-\author{Emmanuel Gautier}
+\author{Emmanuel \textsc{Gautier}}
 
 \input{Nauteff-Glossaire.tex}
 
@@ -39,11 +41,14 @@ Ce document contient la spécification du logiciel Nauteff-Vision.
 	\hline 
 	Date & Évolutions & Version \\ 
 	\hline
-	27 août 2022 & Création du document  &  \\ 
-	\hline 
+	27 août 2022 & Création du document  &  brouilon\\ 
+    \hline 
+    25 Juillet 2024 &    Reprise de la rédaction &brouillon\\
+	\hline
 \end{tabular} 
 \tableofcontents
 %\printglossary
+\listoftables
 
 \chapter{Buts du document}
 \section{Buts}
@@ -53,19 +58,18 @@ les exigences techniques et opérationnelles et la description
 des fonctions du logiciel Nauteff-Vision.
 
 Il est destiné aux acteurs participant
-à la définition du système,à sa réalisation,
+à la définition du système, à sa réalisation,
 à sa mise au point et à ses essais.
 
-Il peut aussi compléter ou apporter des précisions
-au manuel d'utilisation.
+Il complète le manuel d'utilisation en lui apportant des précisions.
 
 \section{Guide de lecture}
 
 
-Le chapitre \ref{presentation}, page\ \pageref{presentation} fournit une description générale du logiciel
-dans son environnement.
+Le chapitre \ref{presentation}, page\ \pageref{presentation}
+fournit une description générale du logiciel dans son environnement.
 
-Les annexes contiennent la description des données et des protocoles 
+Les annexes contiennent la description des données et des protocoles.
 Bien que décrivant le système il n'est pas un manuel d'utilisation.
 La rédaction du manuel d'utilisation n'est à ce jour pas encore commencée.
 Le détail des fonctions de calculs et algorithmes est contenu
@@ -90,12 +94,17 @@ Ce document contient une description du protocole NMEA~0183.
 
 \chapter{Présentation du logiciel}
 \label{presentation}
+Le graphique suivant présente l'environnement matériel et humain
+de Nauteff-Vision à bord d'un navire ou au bureau.
+
+% \section{graphique}
+\includegraphics[width=10cm]{figures/Nauteff-Vision-envt.eps}
+
+
 \section{Objectifs du logiciel}
 
 Nauteff-Vision a été initialement destiné aux développeurs de Nauteff-AP,
-et ensuite aussi aux navigateurs.
-
-Nauteff-Vision est destiné à 
+et ensuite aussi aux navigateurs; ainsi ses objectifs sont :
 \begin{itemize}
 	\item Accéder au cœur de Nauteff-AP pour son développement et sa mise au point;
 	\item Être une interface pour l'utilisateur du Nauteff-AP ;
@@ -108,9 +117,8 @@ Nauteff-Vision est destiné à
 
 \section{Environnement du logiciel}
 
-Nauteff-Vision est destiné au développement du Nauteff-AP
-et à l'aide à la navigation. Il est, ainsi, destiné à être utilisé
-soit à bord d'un navire soit dans un bureau.
+Étant destiné au développement du Nauteff-AP et à l'aide à la navigation,
+il est destiné à être utilisé dans un bureau ou à bord d'un navire.
 
 
 Nauteff-Vision reçoit des données d'instruments de navigation et en transmet à ces instruments, en particulier au pilote automatique, il interagit avec un utilisateur et
@@ -123,7 +131,7 @@ Nauteff-Vision fonctionne sur les matériels suivants:
 \begin{itemize}
 	\item Nano-ordinateurs avec Linux ou Android;
     \item PC portables avec Linux ou Windows ;
-    \item PC de bureau avec Linux ou Windows ;
+    \item PC de bureau avec Linux ou Windows.
 \end{itemize}
 
 \subsection{Interfaces}
@@ -131,7 +139,7 @@ Nauteff-Vision fonctionne sur les matériels suivants:
 Les interfaces de Nauteff-Vision sont les suivantes:
 \begin{itemize}
 	\item Un clavier ou un écran tactile;
-	\item Des fichiers (au sens Unix) ou tubes nommés permettant de communiquer avec les instruments du navire et le Nauteff-AP ;
+	\item Des périphériques et des tubes nommés permettant de communiquer avec les instruments du navire et le Nauteff-AP ;
 	\item un écran;
 	\item une sortie son (alarmes,\dots)  ;
 	\item des fichiers sur disque pour stockage de paramètres et configuration, enregistrement de données et relecture.
@@ -156,17 +164,18 @@ visible de jour et de nuit,
 avec un clavier tactile,
 un écran de taille réduite.
 Il est relié aux instruments de navigation.
-Pour le développement l'unité est plus puissante et comporte
-les outils de développement. 
+L'unité peut aussi comporter des outils de développement.
+
 
 \subsection{Environnement au bureau}
 
 Au bureau Nauteff-Vision est destiné à faire du dépouillement de donnée,
-du développement, des essais de calculs et d'affichage et de l'expérimentation;
+du développement, des essais de calculs et d'affichage et de l'expérimentation.
 Il est alors installé préférentiellement sur un PC fixe,
 au sec, avec un clavier étendu, un grand écran et
 une puissance de calcul importante.
-Il n'est pas nécessairement relié aux instruments.
+Il n'est pas nécessairement relié aux instruments et
+utilise alors les enregistrements qui ont été faits à bord d'un navire.
 
 \chapter{Spécification générales}
 \section{Description des services attendus}
@@ -174,21 +183,15 @@ Il n'est pas nécessairement relié aux instruments.
 Nauteff-Vision a pour objectifs:
 \begin{itemize}
 	\item Aider à la mise au point du pilote automatique;
-	\item Être une aide à l'enseignement de la navigation;
-	\item Assister le navigateur en lui présentant les informations
-	sur une écran.
-	
+	\item Assister le navigateur;
+ 	\item Être une aide à l'enseignement de la navigation et à l'entraînement;
 \end{itemize}
 
 
 \section{Description générale des fonctions}
 
-\includegraphics[width=10cm]{figures/Nauteff-Vision-envt.eps}
-
 \subsection{Réception et émission de données}
-
-
-
+TODO
 \subsection{Décodage, codage et conversion de données}
 
 Nauteff-Vision décode les trames reçues des appareils,
@@ -208,15 +211,21 @@ et en produisant d'autres.
 
 \subsection{Gestion du tableau de bord : affichage et saisie}
 
-Nauteff-Vision affiche les données reçues, converties ou issues de calculs sur l'écran
-en reproduisant l'aspect des instruments de navigation habituels.
+Nauteff-Vision affiche les données reçues,
+converties ou issues de calculs sur l'écran.
 Il saisit des commandes et des information de l'utilisateur
 pour les instruments du tableau de bord ou pour des appareils externes.
+\newline
+L'affichage des données prend en général l'aspect habituel
+des instruments à bord des navires
 
 \subsection{Enregistrement et relecture}
 
 Nauteff-Vision peut enregistrer tout ou partie des données
 dans un ou plusieurs fichiers et les relire ultérieurement.
+Lors de la relecture il permet de rejouer les données à vitesse réelle
+ou pas à pas de sélectionner une période, \ldots à la manière d'un lecteur
+audio ou video.
 
 \section{Exigences opérationnelles}
 \subsection{Contraintes d'exploitation}
@@ -269,11 +278,10 @@ La taille d'un historique dépend des capacités du matériel et de son espace d
 
 \subsection{Paramétrage}
 
-Nauteff-Vision utilise un fichier de configuration et,
-optionnellement,des options sur la ligne de commande.
-Par défaut le fichier de configuration est nomé "nauteff.cfg". 
-la section \ref{configfile}\ page\ \pageref{configfile} contient la description détaillée
-du fichier de configuration.
+Nauteff-Vision utilise un fichier de configuration au format JSON et,
+si besoin, des options sur la ligne de commande.
+Par défaut le fichier de configuration est nomé "NauteffVision.json". 
+
 Les paramètres du fichier de configuration permettent de préciser:
 \begin{itemize}
     \item La description des entrées et sorties;
@@ -284,30 +292,37 @@ Les paramètres du fichier de configuration permettent de préciser:
     \item Les option d'enregistrement et de relecture;
     \item \dots
 \end{itemize}
+la section \ref{configfile}\ page\ \pageref{configfile} contient la description détaillée
+du fichier de configuration.
 Les options de la ligne de commande sont décrites à la section \myref{optionslignecommande}
 les suivantes:
 \begin{itemize}
-  \item[] -config
-  \item[] -replay
-  \item[] -log
+  \item[] \texttt{-config} : Nom du fichier de configuration;
+  \item[] \texttt{-replay} : Mode relecture
+  \item[] \texttt{-log} : 
 \end{itemize}
-
+TODO: préciser
 \subsection{Contraintes entre le matériel et le logiciel}
+TODO
 \subsection{Sûreté de fonctionnement}
 \textit{Intégrité, Confidentialité, Disponibilité, robustesse/innocuité, maintenabilité}
-\\
+\paragraph{}
 Le logiciel ne comporte pas de protection contre des intrusions extérieures.
 Le logiciel comporte des protections contre
 les valeurs hors limites ou aberrantes,
 la perte de données ou de défaut d'entrée/sortie.
 Il comporte de plus un affichage clair d'alarmes et une émission d'alarmes sonores.
 Le logiciel distingue les alarmes de défaut de données et de valeurs d'alarmes.
+Gestion des alarmes, de perte de données.
+\paragraph{}
+TODO : détailler, préciser
 
 \subsection{Exigences de développement, de maintenance et d'expérimentation}
 
 L'architecture de Nauteff-Vision permet d'ajouter et modifier très facilement
 les modules de calculs et les instruments.
-Le développement et la mise au point des modules de calculs est accessible aux programmeurs peu expérimentés.
+Il permet simplicité d'ajout de nouveaux instruments et de nouveaux calculs.
+Le développement et la mise au point des modules de calculs sont accessible aux programmeurs peu expérimentés.
 Les instruments dérivent d'une classe Instrument,
 les modules de calculs d'une classe Calcul.
 les types de données d'une classe Data.
@@ -316,29 +331,43 @@ pour la création de nouveaux afficheurs, calculs et types de données.
 Les documents de conception et les commentaires du code
 contiennent aussi les indication pour ces évolutions.
 Les sources et leurs commentaires sont en langue anglaise.
-La conception modulaire et objet, le codage riche en commentaires
-grande simplicité d'ajout de nouveaux instruments et de nouveaux calculs.
+La conception est modulaire et objet, le codage riche en commentaires.
+TODO : améliorer la rédaction
 
 \subsection{Exigence organisationnelles}
-Néant
+Sans objet.
 
 \section{Exigences techniques}
 \subsection{Architecture matérielle imposée}
-\subsection{Logiciels et librairies imposés}
-\subsection{Langage et chaîne de compilation et de débogage}
-Développement en python \\
-Développement en C++ \\
-python3\\
-GNUC, Eclipse.\\
+\subsection{Langage, interpréteur et librairies imposés}
+Nauteff-Vision est développé en python 3.
+Le 23 septembre la version de python 3.11.
+Il devra pouvoir être interprété
+avec une version ultérieure de python. 
+Nauteff-Vision utilise les logiciels suivants:
+\paragraph{}
 
-%\section{Interface homme machine}
+\begin{tabular}{l|l|c}
+        Logiciel & rôle & Verion mini (1)\\
+        \hline
+        python & Interpréteur & 3.11 \\
+        QT GUI & Interface graphique & QT6\\
+        Numpy & Trigonométrie, \ldots   & \\
+    %\caption{Version des logiciels et librairies}
+    %\label{tab:vrs_log_lib}
+\end{tabular}
+%\captionof{table}{Logiciels imposés}
+%\label{tableau_vrs}
+\paragraph{}
+
+(1) Les version sont celles de la date du document
 
 \chapter{Spécifications détaillées}
 
 \section{Canaux de données}
 
 Les entrées et sorties sont des fichiers au sens Unix, ces fichiers
-sont sur disque ou sont des périphériques ou des tubes només (\frquote{pipe}).
+sont sur disque ou sont des périphériques ou des tubes només (\frquote{named pipe}).
 L'heure vient du système d'exploitation.
 
 
@@ -363,8 +392,6 @@ Les tops horaires ne sont pas enregistrés.
 Nauteff-Vision enregistre chaque marquage d'événement avec son horodatage et un identifiant.
 Un fichier auxiliaire contient les identifiants des événement
 marqués et leurs libellés.
-
-
 Le fichier est un fichier texte, chaque donnée est enregistrée sur une ligne,
 les champs sont séparés par des tabulations,
 la marque de fin de ligne est celle du système d'exploitation.
@@ -401,7 +428,7 @@ les horodate, les convertit, les distribue aux instruments ou aux modules de cal
 \subsection{Décodage des trames NMEA0183}
 Le codage des trames NMEA0183 est décrit dans le document de NMEA Revealed de Eric S. Raymond.
 Les trames suivantes sont décodées :
-
+\paragraph{}
 \begin{tabular}{|l|l|c|}
 	\hline 
 	type & Description &  \\ 
@@ -410,17 +437,7 @@ Les trames suivantes sont décodées :
 	\hline 
 	DPT & Depth of Water &  \\ 
 	\hline 
-	TTKD & Inconnu : Vendor spécific &  \\ 
-	\hline 
-	TTKV & Inconnu : Vendor spécific  &  \\ 
-	\hline 
-	TTKW & Inconnu : Vendor spécific  &  \\ 
-	\hline 
-	VLW & Distance Traveled through Water &  \\ 
-	\hline 
-	MTW & Mean Temperature of Water &  \\
-	\hline 
-	VHW & Water speed and heading &  \\
+	GGA& Global Positioning System Fix Data &  \\
 	\hline 
 	GLL& Geographic Position - Latitude/Longitude &  \\
 	\hline 
@@ -428,23 +445,30 @@ Les trames suivantes sont décodées :
 	\hline 
 	RMC& Recommended Minimum Navigation Information C &  \\
 	\hline 
-	GGA& Global Positioning System Fix Data &  \\
+	MWV& Wind Speed and Angle &  \\
+	\hline 
+	VHW & Water speed and heading &  \\
+	\hline 
+	VLW & Distance Traveled through Water &  \\ 
 	\hline 
 	VPW& Speed - Measured Parallel to Wind &  \\
 	\hline 
-	MWV& Wind Speed and Angle &  \\
-	\hline 
 \end{tabular}
+
+\subsubsection{Décodage des trames}
+
 
 \subsubsection{DBT - Depth below transducer}
 \texttt{\${-}{-}DBT,<h1>,f,<h2>,M,<h3>,F*hh<CR><LF>}
+\paragraph{}
 h1, h2 et h3 sont les hauteurs d'eau sous le capteur en pieds, mètres et brasses.
 certaines valeurs ne sont pas toujours présentes.
-H1, h2 h3 sont des nombres décimaux positifs
+h1, h2 h3 sont des nombres décimaux positifs
 Nauteff utilise par ordre de préférence h2 ou h1 ou h3
 pour convertir la hauteur en m, en ft et brasses.
-Nauteff vérifie que la hauteur est comprise entre 0 et 1~000m
+Nauteff vérifie que la hauteur est comprise entre 0 et 1~000m.
 
+\paragraph{Données converties: } Hauteur sous le capteur (m/s)
 
 \subsubsection{DPT - Depth of Water}
 \texttt{\${-}{-}DPT,<H>,<O>,<M>*hh<CR><LF>}
@@ -513,8 +537,9 @@ Les trames suivantes sont reconnues:
 <w>, <x>, <y>, <z> sont des nombres entiers ou à virgule flottante
 et correspondent aux coordonnées des vecteurs ou du quaternion.
 <msg> désigne un message.
-
-
+Le format des données du pilote automatique et leurs unités
+ne sont pas définitivement définis et 
+sont susceptibles de changer; ils sont indicatifs.
 
 \section{traitements et calculs}
 \subsection{description générale des calculs}
@@ -543,32 +568,36 @@ du pilote automatique après mise au point.
 \subsection{Calcul de gain au vent (VMG)}
 \subsection{Calcul d'heure estimée d'arrivée (ETA)}
 
-\section{Tableau de bord et ses instruments graphiques}
+\section{Tableau de bord et ses instruments}
 
-\subsection{Description générale du tableau de bord et des instruments}
+\subsection{Description générale du tableau de bord}
 Les instrument ont pour principale vocation l'affichage de données,
 ils permettent aussi la saisie de donnée et l'envoi de commandes.
 Les instruments sont placés au démarrage de Nauteff-Vision
 sur le tableau de bord selon la description du fichier de configuration
-(nauteff.cfg par défaut). La liste des instruments et leur disposition
+(NauteffVision.json par défaut).
+Les instruments sont disposés sur une grille dont
+les colonnes ont la même largeur et les lignes la même hauteur.
+chaque instrument occupe une ou plusieurs cellules.
+Les instruments occupent la plus grande partie de la fenêtre.
+La partie basse de l'écran contient les commandes,
+cette partie a la taille minimale imposée par les widgets.
+La liste des instruments et leur disposition
 n'est pas modifiable après le démarrage de Nauteff-Vision et 
 ils laissent peu de choix de changement d'option d'affichage
 après le démarrage de Nauteff-Vision.
 Sans indication de taille et de position
 le tableau de bord occupe tout l'écran.
-\newline
-
+\paragraph{}
 %\input{dashboard.latex}
 \input{dashboard.tex}
-\\
 
-%\newline
- 
+\paragraph{}
 La position des instruments sur le tableau de bord est contrôlée par une grille.
 Les positions et tailles des instruments sur cette grille sont définies
 pour chaque instrument dans le fichier de configuration.
-Les colonnes ont la même largeur et les lignes la même hauteur.
-\newline
+
+\paragraph{}
 
 Le bas du tableau de bord comporte un bandeau qui contient
 les commandes et informations synthétiques suivantes:
@@ -600,15 +629,26 @@ Les boutons \frquote{Précédant} et \frquote{ Suivant} déplacent le curseur
 vers l'événement suivant ou précédant utilisé par un instrument du
 tableau de bord, les événements non utilisés par les instruments sont ignorés.
 
+\subsection{Afficheur attitude, horizon artificiel}
+Cet afficheur affiche la gîte et le tangage du navire sur un cadran
+comme l'horizon artificiel d'un avion.
+\paragraph{}
+
+\input{instr_attitude.tex}
+
+
 \subsection{Afficheur Horloge}
-\input{instr_clock.tex}
-\\
 Cet afficheur affiche l'heure sur un cadran comme une horloge classique
 et en texte.
+\paragraph{}
+
+\input{instr_clock.tex}
+
 \subsubsection{Données affichées:}
 \begin{itemize}
-	\item Heure locale ou UTC sur un cadran avec les trois aiguilles ;
-	\item Heure locale ou UTC sous le cadran au format HH:MM:SS et la mention du fuseau horaire.
+	\item Heure sur un cadran avec les trois aiguilles ;
+	\item Heure  sous le cadran au format HH:MM:SS et fuseau horaire.
+    et le fuseau horaire.
 \end{itemize}
 
 \subsubsection{Commandes:}
@@ -623,7 +663,8 @@ et en texte.
 
 \subsubsection{Paramètres:}
 \begin{itemize}
-	\item choix heure locale ou UTC : locale;
+	\item choix du fuseau horaire,
+      heure locale du système d'exploitation par défaut;
 \end{itemize}
 
 \subsubsection{Entrée:}
@@ -641,20 +682,27 @@ et en texte.
 
 
 \subsection{Afficheur sondeur simple et graphique}
+
+Les navires sont souvent équipés d'un sondeur pour mesurer la hauteur d'eau.
+Le sondeur utilise un capteur qui est très souvent placé
+entre la quille et la surface de l'eau.
+Il fournit la hauteur d'eau. Cette hauteur d'eau peut être
+celle sous le capteur ou, s'il est étalonné,
+la hauteur sous la quille ou sous la surface.
+En option l'afficheur émet une alarme lorsque la hauteur d'eau
+est inférieure à un seuil prédéfini,
+ce seuil est appelé le "pied de pilote".
+
+\paragraph{}
+TODO  : Dessiner le sondeur avec courbe et boutons.
+\paragraph{}
 \input{instr_depthsounder.tex}
-\\
-Les navires peuvent être équipés d'un sondeur pour mesurer la hauteur d'eau.
-Le capteur est très souvent placé entre la quille et la surface de
-l'eau. L'électronique du capteur peut alors calculer la hauteur sous la quille
-ou sous la surface.
-L'afficheur affiche une de ces hauteurs et, optionnellement, un graphique historique.
-Il prévient le navigateur par une alarme lorsque la hauteur d'eau est inférieure
-à un seuil prédéfini.
+
 
 \subsubsection{Données affichées:}
 \begin{itemize}
-	\item Hauteur d'eau en pieds, mètres ou brasses; 
-	\item graphique historique de la hauteur d'eau ;
+	\item Hauteur d'eau en pieds, mètres ou brasses avec l'unité; 
+	\item graphique de la hauteur d'eau ;
 	\item voyant alarme;
 \end{itemize}
 L'ordonnée est la hauteur d'eau, l'abscisse est soit le temps, soit la distance sur l'eau
@@ -663,15 +711,9 @@ la partie en dessous est de couleur marron.
 
 \subsubsection{Commandes}
 \begin{itemize}
-	\item Boutons "Temps", "fond", "surface";
-	\item Bouton "acquittement".
-\end{itemize}
-
-\subsubsection{Alarmes}
-\begin{itemize}
-	\item Hauteur d'eau inférieure à la limite;
-	\item Absence de données nécessaire à l'affichage
-	au delà du délai de garde.
+	\item Bouton "Temps",
+    \item boutons "Fond", "Surface", "Capteur";
+	\item Bouton "Acquittement".
 \end{itemize}
 
 \subsubsection{ Paramètres :}
@@ -705,46 +747,71 @@ la partie en dessous est de couleur marron.
 	\item Néant.
 \end{itemize}
 
+\subsubsection{Alarmes}
+\begin{itemize}
+	\item Hauteur d'eau inférieure à la limite;
+	\item Absence de données nécessaire à l'affichage
+	au delà du délai de garde.
+\end{itemize}
+
 \subsection{Vitesse du navire}
 
 Cet afficheur affiche sur un cadran et en numérique la vitesse du navire.
 Cette vitesse peut être la celle sur la surface ou celle sur le fond.
-La vitesse surface est fournie par un appareil appelé couramment "speedo",
-La vitesse fond est fournie par GPS.
+La vitesse "surface" est fournie par un appareil couramment appelé "speedo",
+La vitesse "fond" est fournie par GPS.
+La vitesse est en nœuds ($kts$) ou en $m/s$.
+Elle est par défaut en nœuds.
+Le bouton "origine" optionnel permet à l'utilisateur de choisir
+la vitesse "fond" ou la vitesse "surface"
+\paragraph{}
+TODO : Compléter : bouton origine.
+\paragraph{}
 \input{instr_cadran.tex}
 
-\subsubsection{Données affichées}
+\subsubsection{Données affichées:}
 \begin{itemize}
 	\item Vitesse sur le cadran avec l'aiguille;
-	\item Vitesse en nombre au format \%.1f avec l'unité.
+	\item Vitesse en nombre au format \%.1f avec l'unité;
+    \item l'indication "fond ou "surface" indiquant le type de vitesse;
+    \item Voyant de perte de donnée.
 \end{itemize}
+Si la vitesse est supérieure à la vitesse de pleine échelle
+l'afficheur n'affiche pas l'aiguille; il n'émet pas d'alarme.
 
-\subsubsection{Commandes}
+\subsubsection{Commandes:}
 \begin{itemize}
 	\item Boutons "kts", "m/s";
+    \item Bouton "origine", en option.
 \end{itemize}
-
-\subsubsection{Alarmes}
-\begin{itemize}
-	\item Perte de donnée;
-\end{itemize}
+Le bouton origine est présent s'il y a plusieurs origines de vitesse.
 
 \subsubsection{ Paramètres :}
 \begin{itemize}
-	\item Id. du capteur de vitesse sur l'eau;
-	\item Id. du GPS;
+	\item Donnée ou liste de données de vitesse;
 	\item Le choix de l'unité au démarrage : kts ou m/s, kts par défaut;
-	\item délai de garde entre deux valeurs d'entrée.
-    \item La vitesse maximale (échelle) requis;
+	\item Délai de garde entre deux valeurs d'entrée (défaut $3s$).
+    \item Vitesse maximale (échelle) requis;
 \end{itemize}
+\paragraph{}
+Une seule origine de la vitesse est requise (GPS ou speedo).
+La vitesse maximale est par défaut en nœuds, elle peut être exprimée en $m/s$.
 
-\subsubsection{Données en entrée}
+\subsubsection{Données en entrée:}
 \begin{itemize}
-	\item Vitesse surface ;
-	\item Vitesse fond ;
+	\item Vitesse(s) correspondant à celle(s) du paramètrage.
 \end{itemize}
+Seule la vitesse à afficher est requise.
 
-\subsubsection{Données en sortie}
+\subsubsection{Alarmes:}
+\begin{itemize}
+	\item Perte de donnée valide (défaut 3s);
+\end{itemize}
+\paragraph{}
+L'alarme de perte de donnée n'est émise que
+si la vitesse à afficher est absente.
+
+\subsubsection{Données en sortie:}
 \begin{itemize}
 	\item Néant.
 \end{itemize}
@@ -753,28 +820,23 @@ La vitesse fond est fournie par GPS.
 L'afficheur de vent affiche la direction et la vitesse du vent.
 Le vent est soit le vent apparent perçu à bord navire,
 soit le vent réel c'est à dire perçu à la surface de l'eau.
-La loupe de près affiche l'angle du vent avec une échelle agrandie
-et donc limitée pour
-donner une indication plus fine de la direction du vent,
+La loupe de près affiche l'angle du vent avec une échelle dilatée
+et donc limitée pour donner une indication plus fine de la direction du vent,
 elle sert principalement au près.
-
+\paragraph{}
 \input{instr_loupedepres.tex}
 
 \subsubsection{données affichées:}
 \begin{itemize}
-	\item Direction du vent
-	\item vitesse du vent avec l'unité, 
+	\item Direction du vent ;
+	\item Vitesse du vent avec l'unité ;
+    \item Vitesse sur l'eau.
 \end{itemize}
 
 \subsubsection{commandes:}
 \begin{itemize}
 	\item Choix de l'unité (kts, km/h ou m/s) : 3 boutons;
 	\item Boutons vent apparent et vent réel;
-\end{itemize}
-
-\subsubsection{Alarmes:}
-\begin{itemize}
-	\item Perte de donnée;
 \end{itemize}
 
 \subsubsection{paramètres:}
@@ -787,7 +849,7 @@ elle sert principalement au près.
 \subsubsection{Entrées:}
 \begin{itemize}
 	\item Direction et vitesse du vent (requis);
-	\item Vitesse sur l'eau (requis);
+	\item Vitesse sur l'eau;
 \end{itemize}
 
 \subsubsection{Sorties:}
@@ -795,7 +857,14 @@ elle sert principalement au près.
 	\item Néant
 \end{itemize}
 
+\subsubsection{Alarmes:}
+\begin{itemize}
+	\item Perte de donnée valide (délai 3s);
+\end{itemize}
+
 \subsection{Afficheur Accéléromètre 3D}
+TODO: Àdéfinir
+\paragraph{}
 \gls{embardee}
 \gls{cavalement}
 \gls{pilonnement}
@@ -803,6 +872,8 @@ elle sert principalement au près.
 \gls{roulis}
 
 \subsection{Afficheur Magnétomètre 3D}
+TODO: Àdéfinir
+\paragraph{}
 
 \subsection{Commande Pilote automatique}
 Cet instrument est l'interface avec le pilote automatique, il communique avec celui-ci,
@@ -869,11 +940,6 @@ au dessus des roches ou de connaître l'heure de passage.
     \item tirant d'eau et pied de pilote;
 \end{itemize}
 
-\subsubsection{Alarmes}
-\begin{itemize}
-	\item Néant
-\end{itemize}
-
 \subsubsection{Paramètres}
 \begin{itemize}
 	\item Néant
@@ -889,12 +955,11 @@ au dessus des roches ou de connaître l'heure de passage.
 	\item Néant
 \end{itemize}
 
-\subsection{Données affichées}
-\subsection{Commandes}
-\subsection{Alarmes}
-\subsection{Paramètres}
-\subsection{Entrées}
-\subsection{Sorties}
+\subsubsection{Alarmes}
+\begin{itemize}
+	\item Néant
+\end{itemize}
+
 
 \section{Autres instruments}
 Nauteff prévoit pour une version future les instruments suivant :
@@ -923,7 +988,7 @@ utilisées par les marins ou des unités du système métrique.
 \gls{cavalement}
 
 \section{Codage des données}\label{datacoding}
-\subsection{Hauteur d'eau}\label{datacoding}
+\subsection{Hauteur d'eau}\label{waterheight}
 Trame NMEA0183 DPT
 
 Hauteur d'eau :
@@ -936,7 +1001,7 @@ Hauteur d'eau :
 	\item trame d'origine.
 \end{itemize}
 
-\subsection{Vent apparent}\label{datacoding}
+\subsection{Vent apparent}\label{ventapparent}
 Type WindApp
 Trame NMEA0183 MWV
 
@@ -993,5 +1058,6 @@ Le fichier de configuration est au format JSON.
 
 
 \section{Options de la ligne de commande}\label{optionslignecommande}
+
 
 \end{document}

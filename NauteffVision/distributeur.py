@@ -31,6 +31,10 @@ class Distributeur:
     DataInterface. Ces entités sont des fichiers au sens unix
     (sur disque, tubes, ...), des modules de calcul, et l'interface graphique
     de type DashBoard.
+    Lors de sa création, il crée les gestionnaires de fichiers, la tocante
+    et l'interface graphique, puis il lance leurs exécutions.
+    Il utilise les infos du dictionnaire de configuration et communique hs
+    ces informations aux objets créés.
     Le distributeur ne réalise pas de traitement.
     """
 
