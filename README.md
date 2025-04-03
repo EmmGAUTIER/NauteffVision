@@ -22,6 +22,7 @@ La commande est la suivante :
 ```
 git clone git@github.com:EmmGautier/NauteffVision.git
 ```
+
 Cette commande crée un répertoire NauteffVision, taper alors:
 ```
 cd NauteffVision
