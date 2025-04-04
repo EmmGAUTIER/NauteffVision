@@ -32,16 +32,22 @@ if __name__ == '__main__':
     Elle analyse les options de la ligne de commande,
     lit le fichier de configuration et lance le distributeur.
     """
-    parser = argparse.ArgumentParser(description='NauteffVision : Navigation data visualisation.')
-    parser.add_argument('--config', default='NauteffVision.json', help="préciser le fichier de configuration")
-    # parser.add_argument('--demo', action='store_true', help="Activer le mode démo")
-    args = vars(parser.parse_args())
-    cfgfilename = args["config"]
 
     print("Nauteff Vision Let's go!")
-    file = open(cfgfilename, "r")
-    NVConfig = json.load(file)
-    file.close()
+
+    parser = argparse.ArgumentParser(description='NauteffVision : Navigation data visualisation.')
+    parser.add_argument('--config', default='NauteffVision.json', help="préciser le fichier de configuration")
+    parser.add_argument('--demo', action='store_true', help="Activer le mode démo")
+    args = vars(parser.parse_args())
+
+    if args.get("demo"):
+        print("Mode Démo")
+        NVConfig =None
+    else:
+        cfgfilename = args["config"]
+        file = open(cfgfilename, "r")
+        NVConfig = json.load(file)
+        file.close()
 
     distributeur = distributeur.Distributeur(NVConfig)
     distributeur.loop()
