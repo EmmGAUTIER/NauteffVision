@@ -24,7 +24,7 @@ Il reste encore à développer.
 le téléchargement est fait par git, git doit préalablement être installé.
 La commande est la suivante :
 ```
-git clone git@github.com:EmmGautier/NauteffVision.git
+git clone https://github.com/EmmGautier/NauteffVision
 ```
 
 Cette commande crée un répertoire NauteffVision, taper alors:
