@@ -5,7 +5,6 @@ nohup.out
 NauteffVision/__pycache__
 test/__pycache__
 tmp
-build
 docs
 bin
 lib
