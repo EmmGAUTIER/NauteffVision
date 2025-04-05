@@ -24,6 +24,7 @@ import json
 import sys
 import argparse
 import distributeur
+import datasimulator
 
 if __name__ == '__main__':
     """
@@ -42,7 +43,7 @@ if __name__ == '__main__':
 
     if args.get("demo"):
         print("Mode Démo")
-        NVConfig =None
+        NVConfig = datasimulator.NVConfigDemo
     else:
         cfgfilename = args["config"]
         file = open(cfgfilename, "r")

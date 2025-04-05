@@ -5,7 +5,11 @@ Ce logiciel est en l'état actuel une maquette d'afficheur de données de naviga
 ## Objectifs du projet
 Ce projet a pour objectif d'afficher des 
   - Aider à la mise au point du pilote automatique ;
-  - Fournir au navigateur une vue des données de son navire
+  - Fournir au navigateur une visualisation des données de son navire
+
+<a href="doc/img/Ecran_2024-10-09.png" target="_blank">
+  <img src="doc/img/Ecran_2024-10-09.png" alt="Tableau de bord" width="300">
+</a>
 
 ## Avancement
 
@@ -14,9 +18,9 @@ pour le développement du pilote automatique .
 Sa spécification en encore en cours de rédaction.
 Il reste encore à développer.
 
-## Installation et utilisation (linux)
+## Installation et utilisation (linux)
 
-### Téléchargement
+### Téléchargement
 le téléchargement est fait par git, git doit préalablement être installé.
 La commande est la suivante :
 ```

@@ -18,10 +18,10 @@
 # along with this library.  If not, see <http://www.gnu.org/licenses/>.
 #
 ###############################################################################
+import math
 """
 Quelques fonctions auxiliaires de calcul.
 """
-import math
 
 def deg2rad(angle):
     """

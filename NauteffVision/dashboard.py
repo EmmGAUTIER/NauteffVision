@@ -42,10 +42,14 @@ import math
 def gen_ticks(min_val, max_val):
     """
     genticks(min_val, max_val)
+    min_val : valeur de début
+    return : liste des graduations
+
     Cette fonction retourne une liste de graduations entre 0 et max_val.
     min_val n'est pas encore pris en compte.
     La liste comporte des tuples à deux éléments. Le premier élément contient
     la valeur, le deuxième élément contient une chaîne avec la valeur à afficher.
+    Nouvelle ligne de doc.
     """
 
     diff = max_val - min_val

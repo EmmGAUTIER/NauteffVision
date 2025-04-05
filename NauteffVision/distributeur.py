@@ -23,6 +23,7 @@ import queue
 import datafile
 import dashboard
 import tocante
+import datasimulator
 
 
 class Distributeur:
@@ -53,10 +54,16 @@ class Distributeur:
         # tocante
         self.data_interfaces.append(tocante.Tocante(None, self.main_queue))
 
-        # Fichiers
-        for file_id, file_cfg in config.get("ios").items():
-            print(f"Ouverture du fichier {file_id:12s} : {file_cfg.get('filename')}")
-            self.data_interfaces.append(datafile.DataFile(file_cfg, self.main_queue))
+        if config.get ("demo"):
+            # self.data_interfaces.append(datafileDemo)
+            pass
+        else:
+            # Fichiers
+            for file_id, file_cfg in config.get("ios").items():
+                print(f"Ouverture du fichier {file_id:12s} : {file_cfg.get('filename')}")
+                self.data_interfaces.append(datafile.DataFile(file_cfg, self.main_queue))
+
+        # Simulateurs
 
         self.data_interfaces.append(dashboard.Dashboard(config.get("dashboard"), self.main_queue))
 

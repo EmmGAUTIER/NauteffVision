@@ -29,6 +29,98 @@ import argparse
 # import data
 # import math
 
+NVConfigDemo = {
+    "title": "Nauteff Vision / Let's start ",
+
+    "demo": "",
+
+    "computations": {
+        "att": {
+            "type": "attitude",
+            "id": "att",
+            "source": "E1",
+            "destination": "S3"
+        }
+    },
+    "dashboard" : {
+        "title" : "Nauteff Vision for Kreiz Avel",
+        "instruments": {
+            "COMPASS_1":{
+                "type": "compass",
+                "cell_origx": 1,
+                "cell_origy": 0,
+                "cell_width": 2,
+                "cell_height": 2,
+                "origin": "AP1"
+            },
+            "WND_1":{
+                "type": "wind",
+                "cell_origx": 3,
+                "cell_origy": 0,
+                "cell_width": 2,
+                "cell_height": 2
+            },
+            "SPEED":{
+                "type": "speed",
+                "cell_origx": 5,
+                "cell_origy": 0,
+                "cell_width": 2,
+                "cell_height": 2,
+                "unit" : "kts",
+                "min_val" : 0,
+                "max_val" : 16
+            },
+
+            "ATT_1" :
+                {
+                    "type": "attitude",
+                    "cell_origx": 1,
+                    "cell_origy": 2,
+                    "cell_width": 3,
+                    "cell_height": 2,
+                    "title": "Assiette",
+                    "origin": "AP1"
+                },
+            "CLOCK_LOCAL" : {
+                "type":       "clock",
+                "cell_origx": 6,
+                "cell_origy": 2,
+                "cell_width": 1,
+                "cell_height": 1,
+                "title" :     "Brest",
+                "time_zone" : "Europe/Paris"
+            },
+
+            "CLOCK_RUN" : {
+                "type":       "clock",
+                "cell_origx": 5,
+                "cell_origy": 2,
+                "cell_width": 1,
+                "cell_height": 1,
+                "title" :     "Saint Denis de la Réunion",
+                "time_zone" : "Indian/Reunion"
+            },
+            "AP_MOT":
+                {
+                    "type": "APmotor",
+                    "cell_origx": 4,
+                    "cell_origy": 2,
+                    "cell_width": 1,
+                    "cell_height": 1
+                }, "AP_CTL" :
+                {
+                    "type": "APcontrol",
+                    "cell_origx": 4,
+                    "cell_origy": 3,
+                    "cell_width": 3,
+                    "cell_height": 1
+                }
+        }
+    }
+
+}
+
+
 sw = [
     "$GPGLL,4835.1174,N,00350.1614,W,073214,A*36\r\n",
     "$GPRMB,A,3.21,L,,,4851.5887,N,00320.9741,W,25.34,49.3,0.0,A*0D\r\n",
