@@ -143,6 +143,13 @@
 <dt class="sig sig-object py" id="dashboard.CommandBoard">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">CommandBoard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.CommandBoard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Box</span></code></p>
+<p>A command board  for the dashboard.
+It contains 2 buttons and a editable text zone.
+The button “mark” store a timestamp when pressed.
+The button record send a log messsage whith the text in text zone and a time stamp.
+it resets the timestamp.
+if a timestamp is stored the record contains this timestamp otherwise it is
+the timstamp of the recod press.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.CommandBoard.on_marque">
 <span class="sig-name descname"><span class="pre">on_marque</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.CommandBoard.on_marque" title="Permalink to this definition">¶</a></dt>
@@ -193,16 +200,21 @@ from the args and kwargs arguments, respectively.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dashboard.Instrument">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">Instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.Instrument" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">Instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dashboard</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.Instrument" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Layout</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.Instrument.create_instrument">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.Instrument.create_instrument" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_instrument</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.Instrument.create_instrument" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.Instrument.on_draw">
 <span class="sig-name descname"><span class="pre">on_draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cr</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dashboard.Instrument.on_draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dashboard.Instrument.send_data">
+<span class="sig-name descname"><span class="pre">send_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.Instrument.send_data" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -214,7 +226,7 @@ from the args and kwargs arguments, respectively.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dashboard.InstrumentAttitude">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentAttitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentAttitude" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentAttitude</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentAttitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dashboard.Instrument" title="dashboard.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.InstrumentAttitude.on_draw">
@@ -229,9 +241,37 @@ from the args and kwargs arguments, respectively.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="dashboard.InstrumentClock">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentClock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentClock" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="dashboard.InstrumentAutoPilot">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentAutoPilot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentAutoPilot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dashboard.Instrument" title="dashboard.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></p>
+<p>Interface for autopilot.
+It sends commands to autopilot :
+- Auto : mode heading ;
+- Idle : mode idle
+- -1 : turn port 1
+- +1 : turn starboard 1
+- -10 : turn port 10
+- +10 : turn starboard 10</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dashboard.InstrumentAutoPilot.on_clic">
+<span class="sig-name descname"><span class="pre">on_clic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">txtcmd</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentAutoPilot.on_clic" title="Permalink to this definition">¶</a></dt>
+<dd><p>on_clic is called when en button is pressed.
+It makes a dataAPCommand  with the text in textcmd
+and sends it to the main queue.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dashboard.InstrumentAutoPilot.on_draw">
+<span class="sig-name descname"><span class="pre">on_draw</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentAutoPilot.on_draw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dashboard.InstrumentClock">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentClock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentClock" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#dashboard.Instrument" title="dashboard.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></p>
+<p>Horloge à afficher sur le tableau de bord.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.InstrumentClock.draw_clock_face">
 <span class="sig-name descname"><span class="pre">draw_clock_face</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentClock.draw_clock_face" title="Permalink to this definition">¶</a></dt>
@@ -266,7 +306,7 @@ from the args and kwargs arguments, respectively.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dashboard.InstrumentCompteur">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentCompteur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentCompteur" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentCompteur</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentCompteur" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dashboard.Instrument" title="dashboard.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.InstrumentCompteur.on_draw">
@@ -282,7 +322,7 @@ from the args and kwargs arguments, respectively.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dashboard.InstrumentHeading">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentHeading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentHeading" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentHeading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentHeading" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dashboard.Instrument" title="dashboard.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.InstrumentHeading.on_draw">
@@ -298,7 +338,7 @@ from the args and kwargs arguments, respectively.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="dashboard.InstrumentWind">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentWind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentWind" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dashboard.</span></span><span class="sig-name descname"><span class="pre">InstrumentWind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queue_out</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentWind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#dashboard.Instrument" title="dashboard.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">Instrument</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.InstrumentWind.mode_toggle">
@@ -313,7 +353,11 @@ from the args and kwargs arguments, respectively.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="dashboard.InstrumentWind.set_values">
 <span class="sig-name descname"><span class="pre">set_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dashboard.InstrumentWind.set_values" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Affichage de données de vent.
+:param values: Vent à afficher force et direction
+:type a: data.DataWind
+:returns: Nothing</p>
+</dd></dl>
 
 </dd></dl>
 

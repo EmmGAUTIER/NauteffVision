@@ -1,22 +1,27 @@
 # NauteffVision
 ## Présentation
-Ce logiciel est en l'état actuel une maquette d'afficheur de données de navigation
-
-## Objectifs du projet
-Ce projet a pour objectif d'afficher des 
-  - Aider à la mise au point du pilote automatique ;
-  - Fournir au navigateur une visualisation des données de son navire
+Ce logiciel est destiné à l'affichage de données de navigation et à la communication avec le pilote automatique.
 
 <a href="doc/img/Ecran_2024-10-09.png" target="_blank">
   <img src="doc/img/Ecran_2024-10-09.png" alt="Tableau de bord" width="300">
 </a>
 
+## Objectifs du projet
+Ce projet a pour objectif d'afficher des 
+  - Aider à la mise au point du pilote automatique ;
+  - Fournir au navigateur une visualisation des données de son navire.
+
 ## Avancement
 
-NauteffVision, en l'état actuel, affiche déjà quelques données
-pour le développement du pilote automatique .
-Sa spécification en encore en cours de rédaction.
-Il reste encore à développer.
+Le développement est en cours.
+Sa spécification est en partie formalisée.
+NauteffVision, en l'état actuel, réalise :
+  - l'affichage les données du capteur d'orientation (IMU) ;
+  - l'enregistrement des données avec horodatage ;
+  - l'envoi des commandes au pilote automatique.
+
+## Documentation
+Le répertoire doc contient une spécification et de la documentation extraite des sources.
 
 ## Installation et utilisation (linux)
 

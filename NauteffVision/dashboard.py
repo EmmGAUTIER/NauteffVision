@@ -38,7 +38,6 @@ import data
 import calculs
 import math
 
-
 def gen_ticks(min_val, max_val):
     """
     genticks(min_val, max_val)
@@ -387,8 +386,9 @@ class Cadran:
 
 
 class Instrument(Gtk.Layout):
-    def __init__(self, dashboard, config):
+    def __init__(self, dashboard, config, queue_out):
         super().__init__()
+        self.queue_out = queue_out
         self.middle_y = None
         self.middle_x = None
         self.dashboard = dashboard
@@ -448,21 +448,27 @@ class Instrument(Gtk.Layout):
     def set_values(self, values):
         return
 
+    def send_data(self, data):
+
+        return
+
     @staticmethod
-    def create_instrument(parent, config):
+    def create_instrument(parent, config, queue_out):
         instrument = None
         if config["type"] == "compass":
-            instrument = InstrumentHeading(parent, config)
+            instrument = InstrumentHeading(parent, config, queue_out)
         elif config["type"] == "clock":
-            instrument = InstrumentClock(parent, config)
+            instrument = InstrumentClock(parent, config, queue_out)
         elif config["type"] == "attitude":
-            instrument = InstrumentAttitude(parent, config)
+            instrument = InstrumentAttitude(parent, config, queue_out)
         elif config["type"] == "wind":
-            instrument = InstrumentWind(parent, config)
+            instrument = InstrumentWind(parent, config, queue_out)
         elif config["type"] == "speed":
-            instrument = InstrumentCompteur(parent, config)
+            instrument = InstrumentCompteur(parent, config, queue_out)
+        elif config["type"] == "autopilot":
+            instrument = InstrumentAutoPilot(parent, config, queue_out)
         else:
-            instrument = Instrument(parent, config)
+            instrument = Instrument(parent, config, queue_out)
 
         """
         elif config["type"] == "wind":
@@ -479,8 +485,8 @@ class Instrument(Gtk.Layout):
 
 
 class InstrumentHeading(Instrument):
-    def __init__(self, parent, config):
-        super().__init__(parent, config)
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
         self.values = None
         self.r1, self.r2 = None, None
         self.needle = Aiguille("HDG")
@@ -584,8 +590,8 @@ class InstrumentHeading(Instrument):
 
 
 class InstrumentAttitude(Instrument):
-    def __init__(self, parent, config):
-        super().__init__(parent, config)
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
         self.values = None
         self.roll = None
         self.pitch = None
@@ -749,8 +755,11 @@ class InstrumentAttitude(Instrument):
 
 
 class InstrumentClock(Instrument):
-    def __init__(self, parent, config):
-        super().__init__(parent, config)
+    """
+    Horloge à afficher sur le tableau de bord.
+    """
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
         self.time = None
         self.title = config.get("title")
         self.time_zone = config.get("time_zone")
@@ -859,8 +868,8 @@ class InstrumentClock(Instrument):
 
 
 class InstrumentWind(Instrument):
-    def __init__(self, parent, config):
-        super().__init__(parent, config)
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
         # print(f"InstrumentWind.__init__()")
         self.value = None
 
@@ -938,6 +947,12 @@ class InstrumentWind(Instrument):
             self.cadran_circle.draw(cr, middle_x, middle_y, radius, self.fore_color)
 
     def set_values(self, values):
+        """
+        Affichage de données de vent.
+        :param values: Vent à afficher force et direction
+        :type a: data.DataWind
+        :returns: Nothing
+        """
         # print(f"Vent : réception de valeur {type(values)}")
         if type(values) == data.DataWind:
             # print(f"Vent : réception de  {str(values)}")
@@ -948,10 +963,79 @@ class InstrumentWind(Instrument):
             self.queue_draw()
         pass
 
+class InstrumentAutoPilot(Instrument):
+   """
+   Interface for autopilot.
+   It sends commands to autopilot :
+   - Auto : mode heading ;
+   - Idle : mode idle
+   - -1 : turn port 1
+   - +1 : turn starboard 1
+   - -10 : turn port 10
+   - +10 : turn starboard 10
+   """
+
+   def __init__(self, parent, config, queue_out):
+       super().__init__(parent, config, queue_out)
+       self.heading = None
+
+       self.layout = Gtk.Fixed()
+       self.add (self.layout)
+       print (f"Taille {self.width} x {self.height} ")
+
+
+       # création de la zone de texte
+       self.info_text = Gtk.TextView()
+       self.info_text.set_editable(False)
+       self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
+       self.buffer_text = self.info_text.get_buffer()
+       self.buffer_text.set_text("Nauteff !")
+
+       btnscmd = ["mode heading", "mode idle", "turn port 1",
+                  "turn starboard 1", "turn port 10", "turn starboard 10"]
+       # Création des boutons
+       self.btnAuto     = Gtk.Button(label="Auto")
+       self.btnIdle     = Gtk.Button(label="Idle")
+       self.btnMinusOne = Gtk.Button(label="- 1")
+       self.btnPlusOne  = Gtk.Button(label="+ 1")
+       self.btnMinusTen = Gtk.Button(label="- 10")
+       self.btnPlusTen  = Gtk.Button(label="+ 10")
+       self.buttons = [self.btnAuto, self.btnIdle, self.btnMinusOne, self.btnPlusOne, self.btnMinusTen, self.btnPlusTen]
+       idx = 0
+       for btn in self.buttons:
+           self.layout.put(btn, 0, 0)
+           btn.connect("clicked", self.on_clic, btnscmd[idx])
+           idx += 1
+
+
+   def on_clic (self, button, txtcmd):
+       """
+       on_clic is called when en button is pressed.
+       It makes a dataAPCommand  with the text in textcmd
+       and sends it to the main queue.
+       """
+       print ("Commande : ", button.get_label(), txtcmd)
+       self.buffer_text.set_text(txtcmd)
+       cmd = data.dataAPCommand (time.time(), txtcmd, "Dashboard")
+       self.queue_out.put(cmd)
+
+   def on_draw(self, widget, cr):
+       super().on_draw(widget, cr)
+
+       buttonWidth = int(self.width * 0.25)
+       buttonHeight = int(self.height * 0.10)
+       i = 0
+       for btn in self.buttons :
+           x, y = int(self.width * (0.1 + (i%2) * 0.6)), int(self.middle_y + self.height *  (i//2) * 0.15)
+           btn.set_size_request (self.width * 0.25, self.height * 0.1)
+           self.layout.move(btn, x, y)
+           #btn.modify_font(self.)
+           i += 1
+
 class InstrumentCompteur(Instrument):
-    def __init__(self, parent, config):
+    def __init__(self, parent, config, queue_out):
         # print(f"--> Compteur : {config}")
-        super().__init__(parent, config)
+        super().__init__(parent, config, queue_out)
         self.cadran = Cadran()
         self.compteur = 0
         self.start_angle = calculs.deg2rad(-180. + 45.)
@@ -996,6 +1080,15 @@ class InstrumentCompteur(Instrument):
 
 
 class CommandBoard(Gtk.Box):
+    """
+    A command board  for the dashboard.
+    It contains 2 buttons and a editable text zone.
+    The button "mark" store a timestamp when pressed.
+    The button record send a log messsage whith the text in text zone and a time stamp.
+    it resets the timestamp.
+    if a timestamp is stored the record contains this timestamp otherwise it is
+    the timstamp of the recod press.
+    """
     def __init__(self, dashboard, config=None):
         super().__init__()
 
@@ -1004,7 +1097,7 @@ class CommandBoard(Gtk.Box):
         self.mark_time = None  # the time the "mark" button is pressed
 
         # Button "Marque" creation, first left
-        self.btn_marque = Gtk.Button(label='Marque')
+        self.btn_marque = Gtk.Button(label='Mark')
         self.pack_start(self.btn_marque, False, True, 0)
         self.btn_marque.connect("clicked", self.on_marque)
 
@@ -1012,7 +1105,7 @@ class CommandBoard(Gtk.Box):
         self.entry_message = Gtk.Entry()
         self.pack_start(self.entry_message, True, True, 0)
 
-        self.btn_enregistre = Gtk.Button(label='Enregistre')
+        self.btn_enregistre = Gtk.Button(label='Record')
         self.pack_start(self.btn_enregistre, False, False, 0)
         self.btn_enregistre.connect("clicked", self.on_marque)
 
@@ -1053,7 +1146,7 @@ class Dashboard(data.DataInterface, ABC):
 
         for id_instr, desc_instr in config.get("instruments").items():
             # print(f"Ajout : {id_instr:12s} {desc_instr.get('type')}")
-            instrument = Instrument.create_instrument(self, desc_instr)
+            instrument = Instrument.create_instrument(self, desc_instr, self.queue_out)
             self.instr_grid.attach(instrument,
                                    desc_instr.get("cell_origx"),
                                    desc_instr.get("cell_origy"),

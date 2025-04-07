@@ -58,11 +58,14 @@ class DataInterface(threading.Thread):
 
 
 class Data:
+    """
+    Data used by NauteffVision are stored in classes that inherit from this Data.
+    It is meant to store a raw frame, its origin, its type, a timestamp and cooked data.
+    """
     def __init__(self, dtype="?", timestamp=None, initialFrame=None,
                  origin=None, values=None):
         """
-        Data encapsulate data. It contains the type, raw data,
-        cooked data, origin and time stamp.
+        Creates a new data with raw data, converts them and adds data management
         """
         self.type = dtype  # str : Data type
         self.valid = None  # bool : Validité
@@ -75,6 +78,11 @@ class Data:
         return self.timestamp
 
     def head4log(self, sep=' ') -> str:
+        """
+        Returns a string representation of a data with timestamp, type and raw data
+        The string doesn't contain cooked data.
+        The main purpose of the string is to prefix cooked data.
+        """
         dt = datetime.fromtimestamp(self.timestamp)
         # time_struct = time.localtime(self.timestamp)
         time_str = dt.strftime("%Y-%m-%d %H:%M:%S,%f")[:-3]
@@ -82,11 +90,24 @@ class Data:
         return s
 
     def str4log(self, sep=' ') -> str:
+        """
+        Simple and naive representation of a data.
+        This function should be overloaded byb inherited classes.
+        """
         s = self.head4log(sep) + sep + str(self.values)
         return s
 
     def __str__(self):
+        """
+        Another string conversion
+        """
         return str(self.timestamp) + '\t' + self.origin + '\t' + self.initialFrame
+
+    def get_initialFrame(self):
+        """"
+        returns the original data
+        """
+        return self.initialFrame
 
 
 class dataNMEA0183(Data):

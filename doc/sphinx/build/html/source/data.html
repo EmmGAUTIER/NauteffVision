@@ -53,6 +53,15 @@ along with this library.  If not, see &lt;<a class="reference external" href="ht
 <dt class="sig sig-object py" id="data.Data">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">data.</span></span><span class="sig-name descname"><span class="pre">Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'?'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialFrame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data used by NauteffVision are stored in classes that inherit from this Data.
+It is meant to store a raw frame, its origin, its type, a timestamp and cooked data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="data.Data.get_initialFrame">
+<span class="sig-name descname"><span class="pre">get_initialFrame</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_initialFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>”
+returns the original data</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="data.Data.get_timestamp">
 <span class="sig-name descname"><span class="pre">get_timestamp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#data.Data.get_timestamp" title="Permalink to this definition">¶</a></dt>
@@ -61,12 +70,17 @@ along with this library.  If not, see &lt;<a class="reference external" href="ht
 <dl class="py method">
 <dt class="sig sig-object py" id="data.Data.head4log">
 <span class="sig-name descname"><span class="pre">head4log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#data.Data.head4log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns a string representation of a data with timestamp, type and raw data
+The string doesn’t contain cooked data.
+The main purpose of the string is to prefix cooked data.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="data.Data.str4log">
 <span class="sig-name descname"><span class="pre">str4log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#data.Data.str4log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Simple and naive representation of a data.
+This function should be overloaded byb inherited classes.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -93,7 +107,9 @@ along with this library.  If not, see &lt;<a class="reference external" href="ht
 <dl class="py method">
 <dt class="sig sig-object py" id="data.DataAttitude.str4log">
 <span class="sig-name descname"><span class="pre">str4log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#data.DataAttitude.str4log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Simple and naive representation of a data.
+This function should be overloaded byb inherited classes.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -162,7 +178,9 @@ from the args and kwargs arguments, respectively.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data.DataWind.str4log">
 <span class="sig-name descname"><span class="pre">str4log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#data.DataWind.str4log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Simple and naive representation of a data.
+This function should be overloaded byb inherited classes.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -187,7 +205,9 @@ from the args and kwargs arguments, respectively.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data.dataAPCommand.str4log">
 <span class="sig-name descname"><span class="pre">str4log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#data.dataAPCommand.str4log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Simple and naive representation of a data.
+This function should be overloaded byb inherited classes.</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -220,7 +240,9 @@ from the args and kwargs arguments, respectively.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="data.dataLog.str4log">
 <span class="sig-name descname"><span class="pre">str4log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#data.dataLog.str4log" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Simple and naive representation of a data.
+This function should be overloaded byb inherited classes.</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="data.dataLog.user_text">

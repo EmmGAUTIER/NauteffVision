@@ -9,12 +9,20 @@
   "dtypes": "all",
   "format": "log"
 },
-"AP1" : {
-"filename": "data/tubeNV",
+"AP_IN" : {
+"filename": "data/tubeNV1",
 "label": "Nauteff AP",
 "id": "AP1",
 "direction": "in"
-}
+},
+    "AP_OUT" : {
+      "filename": "data/tubeNV2",
+      "label": "Nauteff Commands",
+      "id": "AP1",
+      "dtypes": "APCMD",
+      "direction": "out",
+      "raw" : 1
+    }
 },
 
   "computations": {
@@ -66,7 +74,7 @@
 },
   "CLOCK_LOCAL" : {
     "type":       "clock",
-    "cell_origx": 6,
+    "cell_origx": 4,
     "cell_origy": 2,
     "cell_width": 1,
     "cell_height": 1,
@@ -76,30 +84,23 @@
 
   "CLOCK_RUN" : {
     "type":       "clock",
-    "cell_origx": 5,
-    "cell_origy": 2,
+    "cell_origx": 4,
+    "cell_origy": 3,
     "cell_width": 1,
     "cell_height": 1,
     "title" :     "Saint Denis de la Réunion",
     "time_zone" : "Indian/Reunion"
 },
-    "AP_MOT":
+
+"AP_CTL" :
 {
-"type": "APmotor",
-"cell_origx": 4,
+"type": "autopilot",
+"cell_origx": 5,
 "cell_origy": 2,
-"cell_width": 1,
-"cell_height": 1
-}, "AP_CTL" :
-{
-"type": "APcontrol",
-"cell_origx": 4,
-"cell_origy": 3,
-"cell_width": 3,
-"cell_height": 1
+"cell_width": 2,
+"cell_height": 2
 }
 }
   }
 
 }
-

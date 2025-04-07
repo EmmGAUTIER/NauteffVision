@@ -29,13 +29,18 @@ import data
 
 class DataFile(data.DataInterface):
 
-    def __init__(self, config, queue_out):
+    def __init__(self, config, queue_out, ):
         super().__init__(config, queue_out)
 
         self.filename = config.get("filename")
         self.dtypes = config.get("dtypes")
         self.id = config.get("id")
         self.direction = config.get("direction")
+        if config.get("raw") == 1: # may be None no [] but .get() instead
+            self.rawmode = True
+        else:
+            self.rawmode = False
+
         #self.queue_file = queue.Queue()  # queue.Queue(maxsize=100)
 
         # selector is used to wait for incoming data and message data
@@ -66,8 +71,11 @@ class DataFile(data.DataInterface):
     def put_data(self, data):
         res = 0
         if self.ready:
-            if self.direction == "out":
-                res = self.file_out.write(data.str4log() + '\n')
+            if (self.direction == "out") and (self.dtypes == "all" or data.type ==  self.dtypes):
+                if self.rawmode is True:
+                    res = self.file_out.write(data.get_initialFrame() + '\n')
+                else:
+                    res = self.file_out.write(data.str4log() + '\n')
                 self.file_out.flush()
         return res
 
