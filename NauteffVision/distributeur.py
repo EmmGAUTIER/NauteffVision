@@ -36,13 +36,16 @@ class Distributeur:
     et l'interface graphique, puis il lance leurs exécutions.
     Il utilise les infos du dictionnaire de configuration et communique hs
     ces informations aux objets créés.
+    Il communique en utilisant une queue pour lire les données et en appelant
+    la fonction membre put_data() des objets qui dérivent de DataInterface.
     Le distributeur ne réalise pas de traitement.
     """
 
     def __init__(self, config):
         """
-        Initialisation selon indications contenues dans config. config est
-        un dictionnaire décrivant les fichiers, les calculs et le tableau de bord.
+        Initialisation selon indications contenues dans config.
+        config est un dictionnaire décrivant les fichiers,
+        les calculs et le tableau de bord.
         """
         self.config = config
         # Création des objets
@@ -51,7 +54,7 @@ class Distributeur:
 
         # DataInterfaces creation
 
-        # tocante
+        # tocante la tocante envoie l'heure dans la queue toutes les secondes.
         self.data_interfaces.append(tocante.Tocante(None, self.main_queue))
 
         if config.get ("demo"):

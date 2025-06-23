@@ -12,3 +12,5 @@ lib64
 .idea
 data/data.log
 data/tube*
+*.bak
+run2.sh

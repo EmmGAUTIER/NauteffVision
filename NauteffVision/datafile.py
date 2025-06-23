@@ -20,14 +20,74 @@
 ###############################################################################
 
 import os
-import queue
+#import queue
 import selectors
 import threading
 import time
 import data
 
-
 class DataFile(data.DataInterface):
+    def __init__(self, config, queue_out):
+        super().__init__(config, queue_out)
+
+        self.filename = config.get("filename")
+        self.dtypes = config.get("dtypes")
+        self.id = config.get("id")
+        self.direction = config.get("direction")
+        self.rawmode = True if config.get("raw") else False
+        self.ready = False
+
+        mode = "rt" if (self.direction == "in") else "wt"
+        print (f"Ouverture de : {self.filename}")
+        self.file = open(self.filename,  mode)
+        print (f"Résultat     : {self.file.fileno()} ")
+
+        return
+
+    def get_data_list_in(self) -> list:
+        # do not listen
+        return []
+
+    def get_data_list_out(self) -> list:
+        return "all"
+
+    def run(self) -> None:
+        end_loop = False
+        self.ready = True
+        if self.direction == "in":
+            try :
+                while True:
+                    line = self.file.readline()
+                    # print(f"Ligne : {line}")
+                    ts = time.time()
+                    d = data.dataDecode(ts, self.id, line)
+                    self.queue_out.put(d)
+            except ValueError:
+                print (f"Erreur IO {self.filename}")
+            finally:
+                self.file.close()
+
+    def put_data(self, data):
+        res = -1
+        if self.ready:
+            if (self.direction == "out") and (self.dtypes == "all" or data.type ==  self.dtypes):
+                if self.rawmode is True:
+                    res = self.file.write(data.get_initialFrame() + '\n')
+                else:
+                    res = self.file.write(data.str4log() + '\n')
+                self.file.flush()
+        return res
+
+    def terminate(self) -> None:
+        self.ready = False
+        self.file.close()
+        return
+
+
+
+
+
+class DataFile_bis(data.DataInterface):
 
     def __init__(self, config, queue_out, ):
         super().__init__(config, queue_out)
@@ -55,12 +115,15 @@ class DataFile(data.DataInterface):
         # for writing the builtin open block, so we have to open for reading
         # and writing and with O_NDELAY with os.open and the use builtin open
         # twice, for reading and for writing.
-        self.file_bis = os.open(self.filename, os.O_RDWR | os.O_NDELAY | os.O_CREAT)
-        self.file_in = open(self.file_bis, "rt")
-        self.file_out = open(self.file_bis, "at")
-
         if self.direction == "in":
+            self.file_bis = os.open(self.filename, os.O_RDONLY | os.O_NDELAY )
+            self.file_in = open(self.file_bis, "rt")
             self.selector.register(self.file_in, selectors.EVENT_READ)
+            self.file_out = None
+        else:
+            self.file_bis = os.open(self.filename, os.O_WRONLY | os.O_NDELAY | os.O_CREAT)
+            self.file_out = open(self.file_bis, "at")
+            self.file_in = None
 
         # Création du tube de comm avec pipe et ajout à selector
         self.msg_pipe = os.pipe()  # tuple : (reading file , writing file)
@@ -96,7 +159,7 @@ class DataFile(data.DataInterface):
                 # print(f"Événement  : fichier = {file} / {file.fd}, event = {mask}")
                 if file.fd == self.msg_pipe[0]:
                     line = os.read(self.msg_pipe[0], 1000)
-                    # print(f"------> InputFile : message reçu {line} ")
+                    print(f"------> InputFile : message reçu {line} ")
                     if line == b"Terminate\n":
                         # TODO : Fermeture des fichiers
                         # self.file_in.close()

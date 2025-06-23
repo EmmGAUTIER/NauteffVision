@@ -10,15 +10,15 @@
   "format": "log"
 },
 "AP_IN" : {
-"filename": "data/tubeNV1",
+"filename": "data/tube_in",
 "label": "Nauteff AP",
-"id": "AP1",
+"id": "AP_in",
 "direction": "in"
 },
     "AP_OUT" : {
-      "filename": "data/tubeNV2",
+      "filename": "data/tube_out",
       "label": "Nauteff Commands",
-      "id": "AP1",
+      "id": "AP_out",
       "dtypes": "APCMD",
       "direction": "out",
       "raw" : 1
@@ -46,8 +46,8 @@
 },
 "WND_1":{
 "type": "wind",
-"cell_origx": 3,
-"cell_origy": 0,
+"cell_origx": 5,
+"cell_origy": 2,
 "cell_width": 2,
 "cell_height": 2
 },
@@ -95,8 +95,8 @@
 "AP_CTL" :
 {
 "type": "autopilot",
-"cell_origx": 5,
-"cell_origy": 2,
+"cell_origx": 3,
+"cell_origy": 0,
 "cell_width": 2,
 "cell_height": 2
 }

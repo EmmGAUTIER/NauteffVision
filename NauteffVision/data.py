@@ -148,10 +148,10 @@ class dataAPCommand(Data):
     def __init__(self, timeStamp, provenance, originalFrame):
         super().__init__("APCMD", timeStamp, provenance, originalFrame)
         self.command = originalFrame
-        print("--> (1) :", self)
+        # print("--> (1) :", self)
 
     def str4log(self, sep=' ') -> str:
-        print("--> (2) :", self)
+        # print("--> (2) :", self)
         s = super().head4log(sep)  # + sep + self.command
         return s
 
@@ -245,8 +245,9 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
     # print(f"Trame : {int(timeStamp)} origine \"{orig}\" \"{frame}\"")
     # ts = time.time()
 
-    d = dataDecodeNMEA0183(timeStamp, orig, frame)
-    if d is not None: return d
+    #d = dataDecodeNMEA0183(timeStamp, orig, frame)
+    #if d is not None:
+    #    return d
 
     s = frame.split()
     if len(s) > 1:
@@ -259,6 +260,7 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
             return dataH
 
         if s[0] == "ATTITUDE":
+            print ("--> ATTITUDE ")
             return DataAttitude(timeStamp, orig, frame, s)
 
         if s[0] == "WIND":
@@ -310,7 +312,7 @@ def dataDecodeNMEA0183(timeStamp, orig, frame):
 
         # Checksum
         checksum = frame[l - 2: l]
-        print("checksum : ", checksum)
+        # print("checksum : ", checksum)
 
         csum = 0
         for c in payload:
@@ -322,7 +324,7 @@ def dataDecodeNMEA0183(timeStamp, orig, frame):
 
 
     except NotNMEA0183:
-        print (f"N'est pas une trame NMEA bien formée")
+        # print (f"N'est pas une trame NMEA bien formée")
         pass
 
     except Exception: # System mustn't crash if an unexpected exception is thrown
