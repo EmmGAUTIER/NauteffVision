@@ -20,11 +20,12 @@
 ###############################################################################
 
 import os
-#import queue
+# import queue
 import selectors
 import threading
 import time
 import data
+
 
 class DataFile(data.DataInterface):
     def __init__(self, config, queue_out):
@@ -38,9 +39,9 @@ class DataFile(data.DataInterface):
         self.ready = False
 
         mode = "rt" if (self.direction == "in") else "wt"
-        print (f"Ouverture de : {self.filename}")
-        self.file = open(self.filename,  mode)
-        print (f"Résultat     : {self.file.fileno()} ")
+        print(f"Ouverture de : {self.filename}")
+        self.file = open(self.filename, mode)
+        print(f"Résultat     : {self.file.fileno()} ")
 
         return
 
@@ -55,22 +56,25 @@ class DataFile(data.DataInterface):
         end_loop = False
         self.ready = True
         if self.direction == "in":
-            try :
-                while True:
+            while  not self.file.closed:
+                try:
                     line = self.file.readline()
                     # print(f"Ligne : {line}")
                     ts = time.time()
                     d = data.dataDecode(ts, self.id, line)
+                    # print (f"Type de donnée : {d.type}")
                     self.queue_out.put(d)
-            except ValueError:
-                print (f"Erreur IO {self.filename}")
-            finally:
-                self.file.close()
+                except ValueError:
+                    print(f"Erreur IO {self.filename}")
+                finally:
+                    # self.file.close()
+                    pass
+
 
     def put_data(self, data):
         res = -1
         if self.ready:
-            if (self.direction == "out") and (self.dtypes == "all" or data.type ==  self.dtypes):
+            if (self.direction == "out") and (self.dtypes == "all" or data.type == self.dtypes):
                 if self.rawmode is True:
                     res = self.file.write(data.get_initialFrame() + '\n')
                 else:
@@ -81,10 +85,8 @@ class DataFile(data.DataInterface):
     def terminate(self) -> None:
         self.ready = False
         self.file.close()
+        print ("DataFile.terminate() : ", self.filename)
         return
-
-
-
 
 
 class DataFile_bis(data.DataInterface):
@@ -96,12 +98,12 @@ class DataFile_bis(data.DataInterface):
         self.dtypes = config.get("dtypes")
         self.id = config.get("id")
         self.direction = config.get("direction")
-        if config.get("raw") == 1: # may be None no [] but .get() instead
+        if config.get("raw") == 1:  # may be None no [] but .get() instead
             self.rawmode = True
         else:
             self.rawmode = False
 
-        #self.queue_file = queue.Queue()  # queue.Queue(maxsize=100)
+        # self.queue_file = queue.Queue()  # queue.Queue(maxsize=100)
 
         # selector is used to wait for incoming data and message data
         # message data are used to control FileInput
@@ -116,7 +118,7 @@ class DataFile_bis(data.DataInterface):
         # and writing and with O_NDELAY with os.open and the use builtin open
         # twice, for reading and for writing.
         if self.direction == "in":
-            self.file_bis = os.open(self.filename, os.O_RDONLY | os.O_NDELAY )
+            self.file_bis = os.open(self.filename, os.O_RDONLY | os.O_NDELAY)
             self.file_in = open(self.file_bis, "rt")
             self.selector.register(self.file_in, selectors.EVENT_READ)
             self.file_out = None
@@ -134,7 +136,7 @@ class DataFile_bis(data.DataInterface):
     def put_data(self, data):
         res = 0
         if self.ready:
-            if (self.direction == "out") and (self.dtypes == "all" or data.type ==  self.dtypes):
+            if (self.direction == "out") and (self.dtypes == "all" or data.type == self.dtypes):
                 if self.rawmode is True:
                     res = self.file_out.write(data.get_initialFrame() + '\n')
                 else:
@@ -209,12 +211,12 @@ class InputFiles_old(threading.Thread):
         for id, io in pConfig.items():
             try:
                 fileName = io["file"]
-                #print ("Fichier : ", fileName)
+                # print ("Fichier : ", fileName)
                 fileDirection = io["direction"]
                 fileDTypes = io.get("dtypes")
                 fileFormat = io.get("format")
                 fileLabel = io.get("label")
-                #fileId = io.get("id")
+                # fileId = io.get("id")
                 fileID = id
                 # L'ouverture d'un tube nommé bloque sans l'option os.O_NONBLOCK
                 # File has to be first opened with os.open and this flag,
@@ -269,6 +271,6 @@ class InputFiles_old(threading.Thread):
         pass
 
     def terminate(self):
-        #self.pipe.write("Terminate\n")
+        # self.pipe.write("Terminate\n")
         self.closeFiles()
         pass

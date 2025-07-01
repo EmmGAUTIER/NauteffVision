@@ -62,6 +62,7 @@ class Data:
     Data used by NauteffVision are stored in classes that inherit from this Data.
     It is meant to store a raw frame, its origin, its type, a timestamp and cooked data.
     """
+
     def __init__(self, dtype="?", timestamp=None, initialFrame=None,
                  origin=None, values=None):
         """
@@ -86,15 +87,18 @@ class Data:
         dt = datetime.fromtimestamp(self.timestamp)
         # time_struct = time.localtime(self.timestamp)
         time_str = dt.strftime("%Y-%m-%d %H:%M:%S,%f")[:-3]
-        s = time_str + sep + self.type + sep + self.origin
+        s = time_str + sep + self.origin + sep + self.type
         return s
 
     def str4log(self, sep=' ') -> str:
         """
         Simple and naive representation of a data.
-        This function should be overloaded byb inherited classes.
+        This function should be overloaded by inherited classes.
         """
-        s = self.head4log(sep) + sep + str(self.values)
+        if self.values is None:
+            s = self.head4log(sep) + sep + str(self.initialFrame)
+        else:
+            s = self.head4log(sep) + sep + str(self.values)
         return s
 
     def __str__(self):
@@ -142,6 +146,12 @@ class dataHeading(Data):
         originalFrame.split()
 
         self.heading = int(originalFrame)
+
+
+class dataAPInfo(Data):
+    def __init__(self, timeStamp, origin, initialFrame, splittedFrame):
+        super().__init__("APINFO", timeStamp, initialFrame, origin)
+        # self.initialFrame =originalFrame
 
 
 class dataAPCommand(Data):
@@ -214,8 +224,8 @@ class DataAttitude(Data):
         super().__init__("ATTITUDE", timestamp, initialFrame, origin)
         try:
             self.heading = float(splittedFrame[1])
-            self.pitch = float(splittedFrame[2])
-            self.roll = float(splittedFrame[3])
+            self.roll = float(splittedFrame[2])
+            self.pitch = float(splittedFrame[3])
             self.valid = True
             pass
         except:
@@ -245,8 +255,8 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
     # print(f"Trame : {int(timeStamp)} origine \"{orig}\" \"{frame}\"")
     # ts = time.time()
 
-    #d = dataDecodeNMEA0183(timeStamp, orig, frame)
-    #if d is not None:
+    # d = dataDecodeNMEA0183(timeStamp, orig, frame)
+    # if d is not None:
     #    return d
 
     s = frame.split()
@@ -259,8 +269,12 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
                          {"Heading/Mag": val})
             return dataH
 
+        if s[0] in ["AP", "MOTOR"]:
+            # print ("--> AP info")
+            return dataAPInfo(timeStamp, orig, frame, s)
+
         if s[0] == "ATTITUDE":
-            print ("--> ATTITUDE ")
+            # print ("--> ATTITUDE ")
             return DataAttitude(timeStamp, orig, frame, s)
 
         if s[0] == "WIND":
@@ -274,22 +288,24 @@ def dataDecode(timeStamp, orig, frame: str) -> Data:
     d.values = None
     return d
 
+
 class NotNMEA0183(Exception):
     """
     Frame format is not NMEA0183
     """
 
+
 class NMEA0183ChecksumError(Exception):
     """
     NMEA0183 frame with checksum error
     """
-def dataDecodeNMEA0183(timeStamp, orig, frame):
 
+
+def dataDecodeNMEA0183(timeStamp, orig, frame):
     d = None
     l = len(frame)
 
-
-    try :
+    try:
         # check : length
         if l < 10 or l > 82:
             raise NotNMEA0183
@@ -305,10 +321,10 @@ def dataDecodeNMEA0183(timeStamp, orig, frame):
         # Some NMEA0183 start with a !
         if frame[0] != "$":
             raise NotNMEA0183("Does not start with $")
-        if frame[l-3] != '*':
+        if frame[l - 3] != '*':
             raise NotNMEA0183("Does not have a * before checksum")
 
-        payload = frame[1: l-3]
+        payload = frame[1: l - 3]
 
         # Checksum
         checksum = frame[l - 2: l]
@@ -319,7 +335,7 @@ def dataDecodeNMEA0183(timeStamp, orig, frame):
             csum ^= ord(c)
         # print (f"<{payload}>")
         # print (f"  {csum:02X} {checksum}")
-        if  f"{csum:02X}" != checksum:
+        if f"{csum:02X}" != checksum:
             raise NMEA0183ChecksumError
 
 
@@ -327,9 +343,8 @@ def dataDecodeNMEA0183(timeStamp, orig, frame):
         # print (f"N'est pas une trame NMEA bien formée")
         pass
 
-    except Exception: # System mustn't crash if an unexpected exception is thrown
+    except Exception:  # System mustn't crash if an unexpected exception is thrown
         pass
-
 
     checksum = frame[l - 3: l]
     print("checksum : ", checksum)
@@ -346,7 +361,7 @@ def dataDecodeNMEA0183(timeStamp, orig, frame):
     elif ftype == "DBT":  # Depth below Transducer, obsolete
         pass
     elif ftype == "DPT":  # Depth of water
-        #d.type = "DPT"
+        # d.type = "DPT"
         d = dataDPT(timeStamp, orig, frame)
         d.depth = float(ellist[1])
         d.offset = float(ellist[2])

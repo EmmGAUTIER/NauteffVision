@@ -10,7 +10,8 @@ bin
 lib
 lib64
 .idea
-data/data.log
+data/data*.log
 data/tube*
+datalink.sh
 *.bak
 run2.sh

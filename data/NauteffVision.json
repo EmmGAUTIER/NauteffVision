@@ -51,16 +51,13 @@
 "cell_width": 2,
 "cell_height": 2
 },
-"SPEED":{
-"type": "speed",
+"APDEV":{
+"type": "autopilotdev",
 "cell_origx": 5,
 "cell_origy": 0,
 "cell_width": 2,
-"cell_height": 2,
-"unit" : "kts",
-"min_val" : 0,
-"max_val" : 16
-}, 
+"cell_height": 2
+},
 
 "ATT_1" :
 {

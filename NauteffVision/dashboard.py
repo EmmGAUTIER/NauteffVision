@@ -38,6 +38,7 @@ import data
 import calculs
 import math
 
+
 def gen_ticks(min_val, max_val):
     """
     genticks(min_val, max_val)
@@ -70,6 +71,7 @@ def gen_ticks(min_val, max_val):
         tick_list.append((0 + ival * tick, f"{ival * tick:.0f}"))
 
     return tick_list
+
 
 class ColoredArc:
     def __init__(self, start_angle, end_angle, color):
@@ -231,7 +233,7 @@ class ArcGradue:
         # if self.type == CIRCLE
 
     def draw_zone(self, cr, center_x, center_y, radius, zone):
-        #print(f" --> draw_zone :   {center_x}, {center_y}  radius = {radius} ")
+        # print(f" --> draw_zone :   {center_x}, {center_y}  radius = {radius} ")
 
         start_value, end_value, color = zone
 
@@ -344,10 +346,10 @@ class Cadran:
     def set_label_2(self, label):
         self.label_2 = label
 
-    #def add_graduation(self, grad):
+    # def add_graduation(self, grad):
     #    self.graduations.append(grad)
 
-    #def add_needle(self):
+    # def add_needle(self):
     #    self.needles.append()
     #    pass
 
@@ -375,7 +377,7 @@ class Cadran:
         for ndl in self.needles:
             # print(f"  -- --> {self.values}")
             if self.values is not None:
-                #angle = calculs.deg2rad(self.values)
+                # angle = calculs.deg2rad(self.values)
                 for grad in self.graduations:
                     angle = grad.get_angle(self.values)
                     if angle is not None:
@@ -467,6 +469,8 @@ class Instrument(Gtk.Layout):
             instrument = InstrumentCompteur(parent, config, queue_out)
         elif config["type"] == "autopilot":
             instrument = InstrumentAutoPilot(parent, config, queue_out)
+        elif config["type"] == "autopilotdev":
+            instrument = InstrumentAutoPilotDev(parent, config, queue_out)
         else:
             instrument = Instrument(parent, config, queue_out)
 
@@ -580,7 +584,7 @@ class InstrumentHeading(Instrument):
             cr.show_text(label)
             cr.restore()
 
-        #self.draw_values(widget, cr)
+        # self.draw_values(widget, cr)
         self.needle.set_angle(self.values)
         self.needle.draw(cr, self.center_x, self.center_y, self.r_grad, self.fore_color)
 
@@ -617,7 +621,7 @@ class InstrumentAttitude(Instrument):
         # cr.arc(self.center_x, self.center_y, self.radius * 0.9, 0, math.pi * 2.)
 
         # Dessin des graduations de roulis
-        #cr.set_line_width(self.radius * 0.02)
+        # cr.set_line_width(self.radius * 0.02)
         for i in range(13):
             angle = - ((i + 3) * math.pi / 18)
             cr.set_line_width(self.radius * 0.03 if i % 3 == 0 else self.radius * 0.01)
@@ -627,9 +631,9 @@ class InstrumentAttitude(Instrument):
                        self.center_y + self.radius * math.sin(angle))
             cr.stroke()
 
-        #self.draw_values(widget, cr)
+        # self.draw_values(widget, cr)
 
-        #def draw_values(self, widget, cr):
+        # def draw_values(self, widget, cr):
         if self.roll is not None and self.pitch is not None:
             angle_diag = 42. * math.pi / 180.
             cos_a = math.sin(angle_diag + self.roll)
@@ -724,7 +728,7 @@ class InstrumentAttitude(Instrument):
         cr.stroke()
 
         # Affichage d'un drapeau de données indisponibles le cas échéant
-        #print(f"Disponibilité {self.values_available}")
+        # print(f"Disponibilité {self.values_available}")
         if self.values_available == False:
             cr.set_source_rgb(0.9, 0.1, 0.2)
             cr.move_to(self.width * 0.05, self.height * 0.05)
@@ -758,6 +762,7 @@ class InstrumentClock(Instrument):
     """
     Horloge à afficher sur le tableau de bord.
     """
+
     def __init__(self, parent, config, queue_out):
         super().__init__(parent, config, queue_out)
         self.time = None
@@ -963,74 +968,243 @@ class InstrumentWind(Instrument):
             self.queue_draw()
         pass
 
+
+class InstrumentAutoPilotDev(Instrument):
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
+        self.last_values_time = None
+        self.layout = Gtk.Fixed()
+        self.add(self.layout)
+
+        self.info_text = Gtk.TextView()
+        self.layout.put(self.info_text, 1, 1)
+        self.info_text.set_editable(False)
+        self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
+        # self.buffer_text = self.info_text.get_buffer()
+        # self.buffer_text.set_text("Nauteff !")
+        self.infoap = {"Current gap": "?", "Integrated gap": "?", "Command" : "?"}
+
+        self.param_text = Gtk.TextView()
+        self.layout.put(self.param_text, 1, 1)
+        self.param_text.set_editable(True)
+        self.param_text.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.paramap = "coefficient proportional 1\ncoefficient integral 2\ncoefficient derivative 3"
+        self.param_buffer_text = self.param_text.get_buffer()
+        self.param_buffer_text.set_text(self.paramap)
+        self.btn_apply = Gtk.Button(label="Apply")
+        self.layout.put(self.btn_apply, 0, 0)
+        self.btn_apply.connect("clicked", self.on_clic, "apply")
+
+    def on_draw(self, widget, cr) -> None:
+        super().on_draw(widget, cr)
+
+        self.info_text.set_size_request(self.width * 0.8, self.height * 0.3)
+        self.layout.move(self.info_text, self.width * 0.1, self.height * 0.10)
+
+        self.param_text.set_size_request(self.width * 0.8, self.height * 0.3)
+        self.layout.move(self.param_text, self.width * 0.1, self.height * 0.50)
+
+        self.btn_apply.set_size_request(self.width * 0.2, self.height * 0.1)
+        self.layout.move(self.btn_apply, self.width * 0.7, self.height * 0.8)
+
+    def set_values(self, values):
+
+        if values.type == "APINFO":
+            self.last_values_time = values.timestamp
+            try:
+                s = values.initialFrame.upper().split()
+                if (s[0] == "AP"):
+                    if s[1] == "GAP":
+                        if s[2] is not None:
+                            self.infoap["Current gap"] = s[2]
+                            if s[3] is not None:
+                                self.infoap["Integrated gap"] = s[3]
+                                if s[3] is not None:
+                                    self.infoap["Command"] = s[4]
+            except:
+                pass
+
+        textinfo = ""
+
+        for key, val in self.infoap.items():
+            textinfo += f"{key:16s} : {val}\n"
+        # textinfo = textinfo[:-1]
+
+        buffer = self.info_text.get_buffer()
+        buffer.set_text(textinfo)
+
+        self.queue_draw()
+
+        return
+
+    def on_clic(self, button, textcmd):
+
+        buffer = self.param_text.get_buffer()
+
+        start_iter = buffer.get_start_iter()
+        end_iter = buffer.get_end_iter()
+        text = buffer.get_text(start_iter, end_iter, False)
+
+        for prm in text.splitlines():
+            print("Application de paramètres", prm)
+            cmd = data.dataAPCommand(time.time(), prm, "Dashboard")
+            self.queue_out.put(cmd)
+
+        return
+
+
 class InstrumentAutoPilot(Instrument):
-   """
-   Interface for autopilot.
-   It sends commands to autopilot :
-   - Auto : mode heading ;
-   - Idle : mode idle
-   - -1 : turn port 1
-   - +1 : turn starboard 1
-   - -10 : turn port 10
-   - +10 : turn starboard 10
-   """
+    """
+    Interface for autopilot.
+    It sends commands to autopilot :
+    - Auto : mode heading ;
+    - Idle : mode idle
+    - -1 : turn port 1
+    - +1 : turn starboard 1
+    - -10 : turn port 10
+    - +10 : turn starboard 10
+    """
 
-   def __init__(self, parent, config, queue_out):
-       super().__init__(parent, config, queue_out)
-       self.heading = None
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
+        self.motor = None
+        self.last_values_time = None
+        self.heading = None
 
-       self.layout = Gtk.Fixed()
-       self.add (self.layout)
-       print (f"Taille {self.width} x {self.height} ")
+        self.layout = Gtk.Fixed()
+        self.add(self.layout)
+        print(f"Taille {self.width} x {self.height} ")
 
+        # création de la zone de texte
+        self.info_text = Gtk.TextView()
+        self.info_text.set_editable(False)
+        self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.buffer_text = self.info_text.get_buffer()
+        self.buffer_text.set_text("Nauteff !")
 
-       # création de la zone de texte
-       self.info_text = Gtk.TextView()
-       self.info_text.set_editable(False)
-       self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
-       self.buffer_text = self.info_text.get_buffer()
-       self.buffer_text.set_text("Nauteff !")
+        btnscmd = ["mode heading", "mode idle", "turn port 1",
+                   "turn starboard 1", "turn port 10", "turn starboard 10"]
+        # Création des boutons
+        self.btnAuto = Gtk.Button(label="Auto")
+        self.btnIdle = Gtk.Button(label="Idle")
+        self.btnMinusOne = Gtk.Button(label="- 1")
+        self.btnPlusOne = Gtk.Button(label="+ 1")
+        self.btnMinusTen = Gtk.Button(label="- 10")
+        self.btnPlusTen = Gtk.Button(label="+ 10")
+        self.buttons = [self.btnAuto, self.btnIdle, self.btnMinusOne, self.btnPlusOne, self.btnMinusTen,
+                        self.btnPlusTen]
+        self.textinfo = Gtk.TextView()
+        self.textinfo.set_editable(False)
+        self.infoap = {"Mode": "?", "Steer": "None", "AHRS": "?", "Heading": "?", "Roll": "?", "Pitch": "?"}
 
-       btnscmd = ["mode heading", "mode idle", "turn port 1",
-                  "turn starboard 1", "turn port 10", "turn starboard 10"]
-       # Création des boutons
-       self.btnAuto     = Gtk.Button(label="Auto")
-       self.btnIdle     = Gtk.Button(label="Idle")
-       self.btnMinusOne = Gtk.Button(label="- 1")
-       self.btnPlusOne  = Gtk.Button(label="+ 1")
-       self.btnMinusTen = Gtk.Button(label="- 10")
-       self.btnPlusTen  = Gtk.Button(label="+ 10")
-       self.buttons = [self.btnAuto, self.btnIdle, self.btnMinusOne, self.btnPlusOne, self.btnMinusTen, self.btnPlusTen]
-       idx = 0
-       for btn in self.buttons:
-           self.layout.put(btn, 0, 0)
-           btn.connect("clicked", self.on_clic, btnscmd[idx])
-           idx += 1
+        idx = 0
+        for btn in self.buttons:
+            self.layout.put(btn, 0, 0)
+            btn.connect("clicked", self.on_clic, btnscmd[idx])
+            idx += 1
+        self.layout.put(self.textinfo, 5, 5)
 
+    def set_values(self, values):
 
-   def on_clic (self, button, txtcmd):
-       """
-       on_clic is called when en button is pressed.
-       It makes a dataAPCommand  with the text in textcmd
-       and sends it to the main queue.
-       """
-       print ("Commande : ", button.get_label(), txtcmd)
-       self.buffer_text.set_text(txtcmd)
-       cmd = data.dataAPCommand (time.time(), txtcmd, "Dashboard")
-       self.queue_out.put(cmd)
+        if values.type in ["APINFO", "ATTITUDE"]:
+            # print(f"Instrument AP | MOTOR : {values.initialFrame}")
+            self.last_values_time = values.timestamp
+            try:
+                s = values.initialFrame.upper().split()
 
-   def on_draw(self, widget, cr):
-       super().on_draw(widget, cr)
+                if (s[1] == "HEADING") and (s[2] == "GAP"):
+                    print(f" --> Heading gap {s[3]}")
 
-       buttonWidth = int(self.width * 0.25)
-       buttonHeight = int(self.height * 0.10)
-       i = 0
-       for btn in self.buttons :
-           x, y = int(self.width * (0.1 + (i%2) * 0.6)), int(self.middle_y + self.height *  (i//2) * 0.15)
-           btn.set_size_request (self.width * 0.25, self.height * 0.1)
-           self.layout.move(btn, x, y)
-           #btn.modify_font(self.)
-           i += 1
+                if s[0] == "ATTITUDE":
+                    try:
+                        hdg = float(s[1])
+                        roll = float(s[2])
+                        pitch = float(s[3])
+                        self.infoap["Heading"] = hdg
+                        self.infoap["Roll"] = roll
+                        self.infoap["Pitch"] = pitch
+                    except:
+                        self.infoap["Heading"] = "?"
+                        self.infoap["Roll"] = "?"
+                        self.infoap["Pitch"] = "?"
+
+                if s[0] == "MOTOR":
+                    if s[1] == "TURN":
+                        if s[2] in ["PORT", "STARBOARD"]:
+                            self.motor = s[2]
+                        else:
+                            self.motor = "?"
+                    elif s[1] == "STOPPED":
+                        self.motor = s[1]
+
+                if s[0] == "AP":
+                    if s[1] == "MODE":
+                        if s[2] == "IDLE":
+                            self.infoap["Mode"] = "Idle"
+                        elif s[2] == "HEADING":
+                            self.infoap["Mode"] = "Heading"
+                        else:
+                            self.infoap["Mode"] = "?"
+
+                    if s[1] == "AHRS":
+                        self.infoap["AHRS"] = s[2]
+            except:
+                pass
+
+            textinfo = ""
+            for key, val in self.infoap.items():
+                textinfo += f"{key:10s} : {val}\n"
+            if textinfo[-1] == "\n":
+                textinfo = textinfo[:-1]
+
+            buffer = self.textinfo.get_buffer()
+            buffer.set_text(textinfo)
+
+    def on_clic(self, button, txtcmd):
+        """
+        on_clic is called when en button is pressed.
+        It makes a dataAPCommand  with the text in textcmd
+        and sends it to the main queue.
+        """
+        print("Commande : ", button.get_label(), txtcmd)
+        self.buffer_text.set_text(txtcmd)
+        cmd = data.dataAPCommand(time.time(), txtcmd, "Dashboard")
+        self.queue_out.put(cmd)
+
+    def on_draw(self, widget, cr):
+        super().on_draw(widget, cr)
+
+        # buttonWidth = int(self.width * 0.25)
+        # buttonHeight = int(self.height * 0.10)
+        i = 0
+        for btn in self.buttons:
+            x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.middle_y + self.height * (i // 2) * 0.15)
+            btn.set_size_request(self.width * 0.25, self.height * 0.1)
+            self.layout.move(btn, x, y)
+            # btn.modify_font(self.)
+            i += 1
+
+            # x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.middle_y + self.height * (i // 2) * 0.15)
+            # btn.set_size_request(self.width * 0.25, self.height * 0.1)
+            # self.layout.move(btn, x, y)
+        self.textinfo.set_size_request(self.width * 0.8, self.height * 0.3)
+        self.layout.move(self.textinfo, self.width * 0.1, self.height * 0.15)
+
+        if self.motor == "STOPPED":
+            cr.set_source_rgb(0.1, 0.1, 0.1)
+        elif self.motor == "STARBOARD":
+            cr.set_source_rgb(0.0, 0.9, 0.0)
+        elif self.motor == "PORT":
+            cr.set_source_rgb(0.9, 0.1, 0.0)
+        else:
+            cr.set_source_rgb(0.3, 0.3, 0.3)
+        cr.move_to(self.width * 0.80, self.height * 0.05)
+        cr.line_to(self.width * 0.95, self.height * 0.05)
+        cr.line_to(self.width * 0.95, self.height * 0.20)
+        cr.line_to(self.width * 0.80, self.height * 0.20)
+        cr.close_path()
+        cr.fill()
+
 
 class InstrumentCompteur(Instrument):
     def __init__(self, parent, config, queue_out):
@@ -1061,9 +1235,9 @@ class InstrumentCompteur(Instrument):
         radius = 0.45 * min(width, height)
 
         # Dessin du fond en couleur d'arrière-plan
-        #cr.set_source_rgb(*self.back_color)
-        #cr.paint()
-        #cr.fill()
+        # cr.set_source_rgb(*self.back_color)
+        # cr.paint()
+        # cr.fill()
 
         # dessin du cadran
         self.compteur += 1
@@ -1089,6 +1263,7 @@ class CommandBoard(Gtk.Box):
     if a timestamp is stored the record contains this timestamp otherwise it is
     the timstamp of the recod press.
     """
+
     def __init__(self, dashboard, config=None):
         super().__init__()
 
