@@ -23,6 +23,10 @@ from datetime import datetime
 
 
 class DataInterface(threading.Thread):
+    """
+    An abstract class for files, devices and compute modules
+
+    """
     def __init__(self, config, queue_out) -> None:
         super().__init__()
         self.config = config

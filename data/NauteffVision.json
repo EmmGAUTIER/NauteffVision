@@ -16,7 +16,7 @@
 "direction": "in"
 },
     "AP_OUT" : {
-      "filename": "data/tube_out",
+      "filename": "data/cmds.txt",
       "label": "Nauteff Commands",
       "id": "AP_out",
       "dtypes": "APCMD",

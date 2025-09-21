@@ -23,6 +23,8 @@ import gi
 # import os
 import sys
 
+import numpy
+
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango, GLib
 import cairo
@@ -982,7 +984,7 @@ class InstrumentAutoPilotDev(Instrument):
         self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
         # self.buffer_text = self.info_text.get_buffer()
         # self.buffer_text.set_text("Nauteff !")
-        self.infoap = {"Current gap": "?", "Integrated gap": "?", "Command" : "?"}
+        self.infoap = {"Cur. gap": "?", "Int. gap": "?", "Yaw": "?", "Command": "?"}
 
         self.param_text = Gtk.TextView()
         self.layout.put(self.param_text, 1, 1)
@@ -997,6 +999,16 @@ class InstrumentAutoPilotDev(Instrument):
 
     def on_draw(self, widget, cr) -> None:
         super().on_draw(widget, cr)
+
+        if self.size_changed:
+
+            # Créer un objet Pango.FontDescription
+            font_desc = Pango.FontDescription()
+            font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
+            font_desc.set_size(self.min_dim * 0.05 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
+
+            # Appliquer la police au texte
+            self.info_text.modify_font(font_desc)
 
         self.info_text.set_size_request(self.width * 0.8, self.height * 0.3)
         self.layout.move(self.info_text, self.width * 0.1, self.height * 0.10)
@@ -1016,11 +1028,13 @@ class InstrumentAutoPilotDev(Instrument):
                 if (s[0] == "AP"):
                     if s[1] == "GAP":
                         if s[2] is not None:
-                            self.infoap["Current gap"] = s[2]
+                            self.infoap["Cur. gap"] = f"{(float(s[2]) * -180./math.pi):8.2f}"
                             if s[3] is not None:
-                                self.infoap["Integrated gap"] = s[3]
-                                if s[3] is not None:
-                                    self.infoap["Command"] = s[4]
+                                self.infoap["Int. gap"] = f"{(float(s[3]) * -180./math.pi):8.2f}"
+                                if s[4] is not None:
+                                    self.infoap["Yaw"] = f"{(float(s[4]) * -180./math.pi):8.2f}"
+                                    if s[5] is not None:
+                                        self.infoap["Command"] = s[5]
             except:
                 pass
 
@@ -1093,16 +1107,33 @@ class InstrumentAutoPilot(Instrument):
         self.btnPlusTen = Gtk.Button(label="+ 10")
         self.buttons = [self.btnAuto, self.btnIdle, self.btnMinusOne, self.btnPlusOne, self.btnMinusTen,
                         self.btnPlusTen]
-        self.textinfo = Gtk.TextView()
-        self.textinfo.set_editable(False)
-        self.infoap = {"Mode": "?", "Steer": "None", "AHRS": "?", "Heading": "?", "Roll": "?", "Pitch": "?"}
-
         idx = 0
         for btn in self.buttons:
             self.layout.put(btn, 0, 0)
             btn.connect("clicked", self.on_clic, btnscmd[idx])
             idx += 1
+        # Création du texte
+        self.textinfo = Gtk.TextView()
+        self.textinfo.set_editable(False)
+        self.infoap = {"Mode": "?",
+                       "Heading": "?",
+                       "Roll": "?",
+                       "Pitch": "?"}
         self.layout.put(self.textinfo, 5, 5)
+
+        # Création du cadran
+        #self.start_angle = calculs.deg2rad(-180. + 45.)
+        #self.end_angle = calculs.deg2rad(180. - 45.)
+        #self.cadran = ArcGradue(ArcGradue.ARC, self.start_angle, self.end_angle, 0, 10)
+        #self.arc_stbd = ArcGradue(ArcGradue.ARC, calculs.deg2rad(0), calculs.deg2rad(30), 0,   1)
+        #self.arc_port = ArcGradue(ArcGradue.ARC, calculs.deg2rad(-150), calculs.deg2rad(-20), -60, -30)
+        #self.arc_stbd.set_ticks([(30, "30"), (20, "20"), (10, "10"), (0, "0")])
+        #self.arc_port.set_ticks([(-30, "30"), (-40, "40"), (-50, "50"), (-60, "60")])
+        #self.arc_stbd.add_zone(0, 30, (0, 0.8, 0))
+        #self.arc_port.add_zone(-30, 0, (1, 0, 0))
+        #self.cadran.add(self.arc_stbd)
+        #self.cadran_closed_haul.add(self.arc_port)
+        #self.cadran.add(Aiguille("THIN"))
 
     def set_values(self, values):
 
@@ -1114,7 +1145,7 @@ class InstrumentAutoPilot(Instrument):
 
                 if (s[1] == "HEADING") and (s[2] == "GAP"):
                     print(f" --> Heading gap {s[3]}")
-
+                """
                 if s[0] == "ATTITUDE":
                     try:
                         hdg = float(s[1])
@@ -1127,6 +1158,7 @@ class InstrumentAutoPilot(Instrument):
                         self.infoap["Heading"] = "?"
                         self.infoap["Roll"] = "?"
                         self.infoap["Pitch"] = "?"
+                """
 
                 if s[0] == "MOTOR":
                     if s[1] == "TURN":
@@ -1142,7 +1174,10 @@ class InstrumentAutoPilot(Instrument):
                         if s[2] == "IDLE":
                             self.infoap["Mode"] = "Idle"
                         elif s[2] == "HEADING":
-                            self.infoap["Mode"] = "Heading"
+                            try:
+                                self.infoap["Mode"] = f"Heading : {calculs.rad2deg(float(s[3])):5.1f}"
+                            except ValueError:
+                                self.infoap["Mode"] = "Heading"
                         else:
                             self.infoap["Mode"] = "?"
 
@@ -1151,11 +1186,15 @@ class InstrumentAutoPilot(Instrument):
             except:
                 pass
 
+            """
             textinfo = ""
             for key, val in self.infoap.items():
                 textinfo += f"{key:10s} : {val}\n"
             if textinfo[-1] == "\n":
                 textinfo = textinfo[:-1]
+            """
+
+            textinfo = self.infoap["Mode"]
 
             buffer = self.textinfo.get_buffer()
             buffer.set_text(textinfo)
@@ -1166,7 +1205,7 @@ class InstrumentAutoPilot(Instrument):
         It makes a dataAPCommand  with the text in textcmd
         and sends it to the main queue.
         """
-        print("Commande : ", button.get_label(), txtcmd)
+        #print("Commande : ", button.get_label(), txtcmd)
         self.buffer_text.set_text(txtcmd)
         cmd = data.dataAPCommand(time.time(), txtcmd, "Dashboard")
         self.queue_out.put(cmd)
@@ -1174,21 +1213,28 @@ class InstrumentAutoPilot(Instrument):
     def on_draw(self, widget, cr):
         super().on_draw(widget, cr)
 
+        if self.size_changed:
+
+            # Créer un objet Pango.FontDescription
+            font_desc = Pango.FontDescription()
+            font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
+            font_desc.set_size(self.min_dim * 0.05 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
+
+            # Appliquer la police au texte
+            self.textinfo.modify_font(font_desc)
+
         # buttonWidth = int(self.width * 0.25)
         # buttonHeight = int(self.height * 0.10)
         i = 0
         for btn in self.buttons:
-            x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.middle_y + self.height * (i // 2) * 0.15)
+            x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.height*0.6 + self.height * (i // 2) * 0.12)
             btn.set_size_request(self.width * 0.25, self.height * 0.1)
             self.layout.move(btn, x, y)
             # btn.modify_font(self.)
             i += 1
 
-            # x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.middle_y + self.height * (i // 2) * 0.15)
-            # btn.set_size_request(self.width * 0.25, self.height * 0.1)
-            # self.layout.move(btn, x, y)
-        self.textinfo.set_size_request(self.width * 0.8, self.height * 0.3)
-        self.layout.move(self.textinfo, self.width * 0.1, self.height * 0.15)
+        self.textinfo.set_size_request(self.width * 0.5, self.height * 0.1)
+        self.layout.move(self.textinfo, self.width * 0.25, self.height * 0.05)
 
         if self.motor == "STOPPED":
             cr.set_source_rgb(0.1, 0.1, 0.1)
@@ -1204,6 +1250,8 @@ class InstrumentAutoPilot(Instrument):
         cr.line_to(self.width * 0.80, self.height * 0.20)
         cr.close_path()
         cr.fill()
+
+        #self.cadran.draw(cr, self.middle_x, self.height*0.8, self.height/4, self.fore_color)
 
 
 class InstrumentCompteur(Instrument):

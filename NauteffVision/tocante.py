@@ -26,10 +26,17 @@ import time
 import data
 
 
+
 class Tocante(data.DataInterface):
-    """ A clock that sends time tics every second to a queue """
+    """
+    A clock that sends time tics every second to the main queue.
+    It is used by clocks and some devices that need time.
+    """
 
     def __init__(self, config, queue_out):
+        """
+
+        """
         super().__init__(config, queue_out)
         self._stop_event = threading.Event()
         return
@@ -52,27 +59,8 @@ class Tocante(data.DataInterface):
             t = math.floor(10 * t)
             t = t / 10
 
-            """
-
-            # dt = time.gmtime(t)
-            dt = time.localtime()
-
-            toc = data.DataSysTime("SysTime", t, str(t), "SYS",
-                            {"Time": t,
-                             "Year": dt.tm_year,
-                             "Month": dt.tm_mon,
-                             "Day": dt.tm_mday,
-                             "Hour": dt.tm_hour,
-                             "Minute": dt.tm_min,
-                             "Second": dt.tm_sec,
-                             "WeekDay": dt.tm_wday})
-            self.queue_out.put(toc)
-            
-            """
             ts = data.DataSysTime(t, origin = "Tocante")
             self.queue_out.put(ts)
-
-            # print(f"----> Tocante : tic {ts}") # used for debugging only
 
             next_tic = t + 1.0
             self._stop_event.wait(next_tic - time.time())
