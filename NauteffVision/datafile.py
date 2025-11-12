@@ -38,10 +38,12 @@ class DataFile(data.DataInterface):
         self.rawmode = True if config.get("raw") else False
         self.ready = False
 
-        mode = "rt" if (self.direction == "in") else "wt"
+        mode = "rt" if (self.direction == "in") else "at"
         print(f"Ouverture de : {self.filename}")
         self.file = open(self.filename, mode)
         print(f"Résultat     : {self.file.fileno()} ")
+        if mode == "at" :
+            self.file.write("*****  NauteffVision Start  *****\n")
 
         return
 

@@ -990,7 +990,17 @@ class InstrumentAutoPilotDev(Instrument):
         self.layout.put(self.param_text, 1, 1)
         self.param_text.set_editable(True)
         self.param_text.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.paramap = "coefficient proportional 1\ncoefficient integral 2\ncoefficient derivative 3"
+        #self.paramap = "coefficient proportional 1\ncoefficient integral 2\ncoefficient derivative 3"
+        self.paramap =""" 
+        coefficient proportional 1
+        coefficient integral 0
+        coefficient derivative 0
+        coefficient motor_angletime 2
+        coefficient mag_vs_gyr 0.5
+        coefficient motor_threshold 1
+        """
+
+
         self.param_buffer_text = self.param_text.get_buffer()
         self.param_buffer_text.set_text(self.paramap)
         self.btn_apply = Gtk.Button(label="Apply")

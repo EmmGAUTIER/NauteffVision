@@ -1,0 +1,132 @@
+\babel@toc {french}{}\relax 
+\contentsline {chapter}{\numberline {1}Buts du document}{4}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Buts}{4}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Guide de lecture}{4}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Conventions typographiques}{4}{section.1.3}%
+\contentsline {chapter}{\numberline {2}Documents applicables et de référence}{5}{chapter.2}%
+\contentsline {chapter}{\numberline {3}Présentation du logiciel}{6}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Objectifs du logiciel}{6}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Environnement du logiciel}{7}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Matériel}{7}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Interfaces}{7}{subsection.3.2.2}%
+\contentsline {subsection}{\numberline {3.2.3}Utilisateurs}{7}{subsection.3.2.3}%
+\contentsline {subsection}{\numberline {3.2.4}Environnement à bord d'un navire}{7}{subsection.3.2.4}%
+\contentsline {subsection}{\numberline {3.2.5}Environnement au bureau}{8}{subsection.3.2.5}%
+\contentsline {chapter}{\numberline {4}Spécification générales}{9}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Description des services attendus}{9}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Description générale des fonctions}{9}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1}Réception et émission de données}{9}{subsection.4.2.1}%
+\contentsline {subsection}{\numberline {4.2.2}Décodage, codage et conversion de données}{9}{subsection.4.2.2}%
+\contentsline {subsection}{\numberline {4.2.3}traitements et calculs}{9}{subsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.2.4}Gestion du tableau de bord : affichage et saisie}{9}{subsection.4.2.4}%
+\contentsline {subsection}{\numberline {4.2.5}Enregistrement et relecture}{10}{subsection.4.2.5}%
+\contentsline {section}{\numberline {4.3}Exigences opérationnelles}{10}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}Contraintes d'exploitation}{10}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Modes de fonctionnement}{10}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Exigences de l'environnement}{10}{subsection.4.3.3}%
+\contentsline {subsection}{\numberline {4.3.4}Capacité}{10}{subsection.4.3.4}%
+\contentsline {subsection}{\numberline {4.3.5}Performances}{10}{subsection.4.3.5}%
+\contentsline {subsection}{\numberline {4.3.6}Paramétrage}{10}{subsection.4.3.6}%
+\contentsline {subsection}{\numberline {4.3.7}Contraintes entre le matériel et le logiciel}{11}{subsection.4.3.7}%
+\contentsline {subsection}{\numberline {4.3.8}Sûreté de fonctionnement}{11}{subsection.4.3.8}%
+\contentsline {paragraph}{}{11}{section*.4}%
+\contentsline {paragraph}{}{11}{section*.5}%
+\contentsline {subsection}{\numberline {4.3.9}Exigences de développement, de maintenance et d'expérimentation}{11}{subsection.4.3.9}%
+\contentsline {subsection}{\numberline {4.3.10}Exigence organisationnelles}{12}{subsection.4.3.10}%
+\contentsline {section}{\numberline {4.4}Exigences techniques}{12}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Architecture matérielle imposée}{12}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Langage, interpréteur et librairies imposés}{12}{subsection.4.4.2}%
+\contentsline {paragraph}{}{12}{section*.6}%
+\contentsline {paragraph}{}{12}{section*.7}%
+\contentsline {chapter}{\numberline {5}Spécifications détaillées}{13}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Canaux de données}{13}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Réception et lecture de données}{13}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Export et enregistrement de données}{13}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Décodage, codage et conversion de données}{14}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Décodage des trames NMEA0183}{14}{subsection.5.4.1}%
+\contentsline {paragraph}{}{14}{section*.8}%
+\contentsline {subsubsection}{Décodage des trames}{14}{section*.9}%
+\contentsline {subsubsection}{DBT - Depth below transducer}{14}{section*.10}%
+\contentsline {paragraph}{}{14}{section*.11}%
+\contentsline {paragraph}{Données converties: }{15}{section*.12}%
+\contentsline {subsubsection}{DPT - Depth of Water}{15}{section*.13}%
+\contentsline {subsubsection}{VPW - Speed, measured Parallel to Wind}{15}{section*.14}%
+\contentsline {subsubsection}{MWV - Wind speed and angle}{15}{section*.15}%
+\contentsline {subsection}{\numberline {5.4.2}Décodage des trames de Nauteff-AP}{15}{subsection.5.4.2}%
+\contentsline {section}{\numberline {5.5}traitements et calculs}{16}{section.5.5}%
+\contentsline {subsection}{\numberline {5.5.1}description générale des calculs}{16}{subsection.5.5.1}%
+\contentsline {subsection}{\numberline {5.5.2}calculs d'orientation : Orientation}{16}{subsection.5.5.2}%
+\contentsline {subsection}{\numberline {5.5.3}Calcul d'orientation, de variations et de tendance}{16}{subsection.5.5.3}%
+\contentsline {subsection}{\numberline {5.5.4}Calcul de gain au vent (VMG)}{16}{subsection.5.5.4}%
+\contentsline {subsection}{\numberline {5.5.5}Calcul d'heure estimée d'arrivée (ETA)}{16}{subsection.5.5.5}%
+\contentsline {section}{\numberline {5.6}Tableau de bord et ses instruments}{16}{section.5.6}%
+\contentsline {subsection}{\numberline {5.6.1}Description générale du tableau de bord}{16}{subsection.5.6.1}%
+\contentsline {paragraph}{}{17}{section*.16}%
+\contentsline {paragraph}{}{17}{section*.17}%
+\contentsline {paragraph}{}{17}{section*.18}%
+\contentsline {subsection}{\numberline {5.6.2}Afficheur attitude, horizon artificiel}{18}{subsection.5.6.2}%
+\contentsline {paragraph}{}{18}{section*.19}%
+\contentsline {subsection}{\numberline {5.6.3}Afficheur Horloge}{18}{subsection.5.6.3}%
+\contentsline {paragraph}{}{18}{section*.20}%
+\contentsline {subsubsection}{Données affichées:}{18}{section*.21}%
+\contentsline {subsubsection}{Commandes:}{19}{section*.22}%
+\contentsline {subsubsection}{Alarme:}{19}{section*.23}%
+\contentsline {subsubsection}{Paramètres:}{19}{section*.24}%
+\contentsline {subsubsection}{Entrée:}{19}{section*.25}%
+\contentsline {subsubsection}{Sortie:}{19}{section*.26}%
+\contentsline {subsection}{\numberline {5.6.4}Afficheur de cap}{19}{subsection.5.6.4}%
+\contentsline {subsection}{\numberline {5.6.5}Afficheur sondeur simple et graphique}{19}{subsection.5.6.5}%
+\contentsline {paragraph}{}{19}{section*.27}%
+\contentsline {paragraph}{}{19}{section*.28}%
+\contentsline {subsubsection}{Données affichées:}{20}{section*.29}%
+\contentsline {subsubsection}{Commandes}{20}{section*.30}%
+\contentsline {subsubsection}{ Paramètres :}{20}{section*.31}%
+\contentsline {subsubsection}{Données en entrée}{20}{section*.32}%
+\contentsline {subsubsection}{Données en sortie}{20}{section*.33}%
+\contentsline {subsubsection}{Alarmes}{21}{section*.34}%
+\contentsline {subsection}{\numberline {5.6.6}Vitesse du navire}{21}{subsection.5.6.6}%
+\contentsline {paragraph}{}{21}{section*.35}%
+\contentsline {paragraph}{}{21}{section*.36}%
+\contentsline {subsubsection}{Données affichées:}{21}{section*.37}%
+\contentsline {subsubsection}{Commandes:}{21}{section*.38}%
+\contentsline {subsubsection}{ Paramètres :}{22}{section*.39}%
+\contentsline {paragraph}{}{22}{section*.40}%
+\contentsline {subsubsection}{Données en entrée:}{22}{section*.41}%
+\contentsline {subsubsection}{Alarmes:}{22}{section*.42}%
+\contentsline {paragraph}{}{22}{section*.43}%
+\contentsline {subsubsection}{Données en sortie:}{22}{section*.44}%
+\contentsline {subsection}{\numberline {5.6.7}Afficheur vent et loupe de près}{22}{subsection.5.6.7}%
+\contentsline {paragraph}{}{22}{section*.45}%
+\contentsline {subsubsection}{données affichées:}{23}{section*.46}%
+\contentsline {subsubsection}{commandes:}{23}{section*.47}%
+\contentsline {subsubsection}{paramètres:}{23}{section*.48}%
+\contentsline {subsubsection}{Entrées:}{23}{section*.49}%
+\contentsline {subsubsection}{Sorties:}{23}{section*.50}%
+\contentsline {subsubsection}{Alarmes:}{23}{section*.51}%
+\contentsline {subsection}{\numberline {5.6.8}Afficheur Accéléromètre 3D}{23}{subsection.5.6.8}%
+\contentsline {paragraph}{}{23}{section*.52}%
+\contentsline {subsection}{\numberline {5.6.9}Afficheur Gyromètre 3D}{23}{subsection.5.6.9}%
+\contentsline {subsection}{\numberline {5.6.10}Afficheur Magnétomètre 3D}{23}{subsection.5.6.10}%
+\contentsline {paragraph}{}{23}{section*.53}%
+\contentsline {subsection}{\numberline {5.6.11}Commande Pilote automatique}{24}{subsection.5.6.11}%
+\contentsline {subsection}{\numberline {5.6.12}Données affichées}{24}{subsection.5.6.12}%
+\contentsline {subsection}{\numberline {5.6.13}Commandes}{24}{subsection.5.6.13}%
+\contentsline {subsection}{\numberline {5.6.14}Alarmes}{24}{subsection.5.6.14}%
+\contentsline {subsection}{\numberline {5.6.15}Paramètres}{24}{subsection.5.6.15}%
+\contentsline {subsection}{\numberline {5.6.16}Entrées}{24}{subsection.5.6.16}%
+\contentsline {subsection}{\numberline {5.6.17}Sorties}{24}{subsection.5.6.17}%
+\contentsline {subsection}{\numberline {5.6.18}Marée}{24}{subsection.5.6.18}%
+\contentsline {subsubsection}{Données affichées}{25}{section*.54}%
+\contentsline {subsubsection}{Commandes et valeurs saisies}{25}{section*.55}%
+\contentsline {subsubsection}{Paramètres}{25}{section*.56}%
+\contentsline {subsubsection}{Entrée}{25}{section*.57}%
+\contentsline {subsubsection}{Sortie}{25}{section*.58}%
+\contentsline {subsubsection}{Alarmes}{25}{section*.59}%
+\contentsline {section}{\numberline {5.7}Autres instruments}{26}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Enregistrement et relecture}{26}{section.5.8}%
+\contentsline {chapter}{\numberline {6}Description des informations}{27}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Codage des données}{27}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Hauteur d'eau}{27}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Vent apparent}{27}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2}Fichier de configuration}{27}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Options de la ligne de commande}{28}{section.6.3}%
