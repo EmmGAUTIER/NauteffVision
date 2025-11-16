@@ -13,7 +13,20 @@ then
     cd $NAUTEFFVISION_PATH/doc
 fi
 
-cd latex/src
+set -x
+cd latex/graph
+for fic in *.dia
+do
+
+    base="${fic%.dia}"
+    echo "Conversion de $fic vers $base.svg et $base.pdf ..."
+    dia --nosplash --export="$base.svg" --filter=svg "$fic"
+    dia --nosplash --export="$base.pdf" --filter=pdf "$fic"
+done
+
+exit
+
+cd ../src
 
 for fic in $Fichiers
 do
@@ -24,11 +37,8 @@ do
     echo #
     echo ##############################################################################
     echo
-    echo "Fichier : " $fic
-    pwd
-    read rep
 
     pdflatex  -halt-on-error  -output-directory=../build  ${fic}.tex
-    cp ../build/${fic}.pdf ../pdf
+    cp ../build/${fic}.pdf ../../pdf
 done
 

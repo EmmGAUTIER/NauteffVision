@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2025.10.22)  12 NOV 2025 16:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2025.10.22)  12 NOV 2025 21:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -989,27 +989,27 @@ been already used, duplicate ignored
 l.49 \tableofcontents
                       [1
 
-] (../build/Nauteff-Vision-Spec.toc)
+] (../build/Nauteff-Vision-Spec.toc [2
+
+] [3])
 \tf@toc=\write7
 \openout7 = `Nauteff-Vision-Spec.toc'.
 
- [2
-
-]
+ [4]
 (../build/Nauteff-Vision-Spec.lot)
 \tf@lot=\write8
 \openout8 = `Nauteff-Vision-Spec.lot'.
 
- [3
+ [5
 
 ]
 Chapitre 1.
-[4
+[6
 
 ]
 Chapitre 2.
 No file Nauteff-Vision-Spec.gls.
-[5
+[7
 
 ]
 Chapitre 3.
@@ -1024,18 +1024,18 @@ to.pdf>
 t-eps-converted-to.pdf figures/Nauteff-Vision-envt.eps>
 (epstopdf)             \includegraphics on input line 101.
 Package epstopdf Info: Output file is already uptodate.
-<figures/Nauteff-Vision-envt-eps-converted-to.pdf, id=247, 548.0475pt x 325.215
+<figures/Nauteff-Vision-envt-eps-converted-to.pdf, id=432, 548.0475pt x 325.215
 pt>
 File: figures/Nauteff-Vision-envt-eps-converted-to.pdf Graphic file (type pdf)
 <use figures/Nauteff-Vision-envt-eps-converted-to.pdf>
 Package pdftex.def Info: figures/Nauteff-Vision-envt-eps-converted-to.pdf  used
  on input line 101.
 (pdftex.def)             Requested size: 284.52756pt x 168.8448pt.
-[6
+[8
 
- <./figures/Nauteff-Vision-envt-eps-converted-to.pdf>] [7] [8]
+ <./figures/Nauteff-Vision-envt-eps-converted-to.pdf>] [9] [10]
 Chapitre 4.
-[9
+[11
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 241--259
@@ -1047,55 +1047,41 @@ Overfull \hbox (28.60571pt too wide) in paragraph at lines 265--278
 [][] 
  []
 
-[10]
-
-LaTeX Warning: Reference `configfile' on page 11 undefined on input line 295.
-
-
-LaTeX Warning: Reference `configfile' on page 11 undefined on input line 295.
-
-
-LaTeX Warning: Reference `optionslignecommande' on page 11 undefined on input l
-ine 297.
-
-
-LaTeX Warning: Reference `optionslignecommande' on page 11 undefined on input l
-ine 297.
-
+[12]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 3
 00.
-(/usr/share/texmf/tex/latex/lm/t1lmtt.fd
+ (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [11] [12]
+) [13] [14]
 Chapitre 5.
-[13
+[15
 
-] [14]
+] [16]
 Overfull \hbox (6.55598pt too wide) in paragraph at lines 513--518
 []\T1/lmr/m/n/10.95 Ces Trames sont des lignes de texte ter-mi-nées par <LF>. E
 lles contiennent
  []
 
-[15]
+[17]
 Underfull \hbox (badness 10000) in paragraph at lines 547--567
 
  []
 
-[16] (./instr_dashboard.tex
+[18] (./instr_dashboard.tex
 
 LaTeX Warning: \oval, \circle, or \line size unavailable on input line 11.
 
-) [17] (./instr_clock.tex (./instr_preambule.tex
+) [19] (./instr_clock.tex (./instr_preambule.tex
 Missing character: There is no ; in font nullfont!
-) (./instr_prologue.tex)) [18] (./instr_depthsounder.tex (./instr_preambule.tex
+) (./instr_prologue.tex)) [20] (./instr_depthsounder.tex (./instr_preambule.tex
 Missing character: There is no ; in font nullfont!
 )
 LaTeX Font Info:    Trying to load font information for T1+lmss on input line 7
 .
  (/usr/share/texmf/tex/latex/lm/t1lmss.fd
 File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) (./instr_prologue.tex)) [19]
-[20] (./instr_cadran.tex
+) (./instr_prologue.tex)) [21]
+[22] (./instr_cadran.tex
 Missing character: There is no ; in font nullfont!
 Missing character: There is no e in font nullfont!
 Missing character: There is no c in font nullfont!
@@ -1107,45 +1093,36 @@ Missing character: There is no 0 in font nullfont!
 Missing character: There is no . in font nullfont!
 Missing character: There is no 5 in font nullfont!
 Missing character: There is no ; in font nullfont!
-) [21] (./instr_loupedepres.tex
+) [23] (./instr_loupedepres.tex
 Missing character: There is no ; in font nullfont!
-) [22] (./instr_AutoPilotPanel.tex (./instr_preambule.tex
+) [24] (./instr_AutoPilotPanel.tex (./instr_preambule.tex
 Missing character: There is no ; in font nullfont!
-) (./instr_prologue.tex)) [23] (./instr_tide.tex [24] (./instr_preambule.tex
+) (./instr_prologue.tex)) [25] (./instr_tide.tex [26] (./instr_preambule.tex
 Missing character: There is no ; in font nullfont!
-) (./instr_prologue.tex)) [25] [26]
+) (./instr_prologue.tex)) [27] [28]
 Chapitre 6.
 
 Underfull \hbox (badness 10000) in paragraph at lines 1021--1023
 
  []
 
-[27
+[29
 
-] [28] (../build/Nauteff-Vision-Spec.aux)
-
-LaTeX Warning: There were undefined references.
-
+] [30] (../build/Nauteff-Vision-Spec.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-
-Package rerunfilecheck Warning: File `Nauteff-Vision-Spec.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Nauteff-Vision-Spec.out':
-(rerunfilecheck)             Before: 89DDC395351B47F6348F71071B814BE1;10375
-(rerunfilecheck)             After:  AB1AC1D85A0F8BFE5226F010B1FD5273;14496.
+Package rerunfilecheck Info: File `Nauteff-Vision-Spec.out' has not changed.
+(rerunfilecheck)             Checksum: AB1AC1D85A0F8BFE5226F010B1FD5273;14496.
  ) 
 Here is how much of TeX's memory you used:
- 31095 strings out of 477861
- 586099 string characters out of 5834888
+ 31122 strings out of 477861
+ 586540 string characters out of 5834888
  1881330 words of memory out of 5000000
- 50528 multiletter control sequences out of 15000+600000
+ 50553 multiletter control sequences out of 15000+600000
  583023 words of font info for 67 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 94i,8n,90p,2269b,639s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 94i,8n,90p,2269b,706s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{glo:roulis} has been referenced but does not exist,
  replaced by a fixed one
@@ -1187,10 +1164,10 @@ re/texmf/fonts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmss10.pfb></usr/share/texmf/fonts/type1/public/lm/lmss12.pfb></usr/share/te
 xmf/fonts/type1/public/lm/lmss17.pfb></usr/share/texmf/fonts/type1/public/lm/lm
 tt10.pfb>
-Output written on ../build/Nauteff-Vision-Spec.pdf (30 pages, 374765 bytes).
+Output written on ../build/Nauteff-Vision-Spec.pdf (32 pages, 383624 bytes).
 PDF statistics:
- 563 PDF objects out of 1000 (max. 8388607)
- 495 compressed objects within 5 object streams
- 174 named destinations out of 1000 (max. 500000)
- 418 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 730 PDF objects out of 1000 (max. 8388607)
+ 658 compressed objects within 7 object streams
+ 176 named destinations out of 1000 (max. 500000)
+ 618 words of extra memory for PDF output out of 10000 (max. 10000000)
 

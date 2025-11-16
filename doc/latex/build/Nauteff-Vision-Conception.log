@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2025.10.22)  12 NOV 2025 16:59
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022/Debian) (preloaded format=pdflatex 2025.10.22)  12 NOV 2025 21:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -962,13 +962,13 @@ been already used, duplicate ignored
 l.46 \tableofcontents
                       [1
 
-] (../build/Nauteff-Vision-Conception.toc)
+] (../build/Nauteff-Vision-Conception.toc [2
+
+])
 \tf@toc=\write7
 \openout7 = `Nauteff-Vision-Conception.toc'.
 
- [2
-
-]
+ [3]
 Chapitre 1.
 
 Overfull \hbox (1.1641pt too wide) in paragraph at lines 52--55
@@ -977,25 +977,25 @@ on du lo-gi-ciel Nauteff-
  []
 
 
-LaTeX Warning: Reference `presentation' on page 3 undefined on input line 66.
+LaTeX Warning: Reference `presentation' on page 4 undefined on input line 66.
 
 
-LaTeX Warning: Reference `presentation' on page 3 undefined on input line 66.
+LaTeX Warning: Reference `presentation' on page 4 undefined on input line 66.
 
-[3
+[4
 
 ]
 Chapitre 2.
 No file Nauteff-Vision-Conception.gls.
-[4
+[5
 
 ]
 Chapitre 3.
-[5
+[6
 
-] [6]
+] [7]
 Chapitre 4.
-[7
+[8
 
 ]
 Package epstopdf Info: Source file: <Conception-classes-1.eps>
@@ -1003,57 +1003,47 @@ Package epstopdf Info: Source file: <Conception-classes-1.eps>
 (epstopdf)                    size: 18950 bytes
 (epstopdf)             Output file: <Conception-classes-1-eps-converted-to.pdf>
 
+(epstopdf)                    date: 2025-11-12 16:59:23
+(epstopdf)                    size: 9266 bytes
 (epstopdf)             Command: <repstopdf --outfile=Conception-classes-1-eps-c
 onverted-to.pdf Conception-classes-1.eps>
 (epstopdf)             \includegraphics on input line 213.
-runsystem(repstopdf --outfile=Conception-classes-1-eps-converted-to.pdf Concept
-ion-classes-1.eps)...executed safely (allowed).
-
-Package epstopdf Info: Result file: <Conception-classes-1-eps-converted-to.pdf>
-
-(epstopdf)                    date: 2025-11-12 16:59:23
-(epstopdf)                    size: 9266 bytes.
-<Conception-classes-1-eps-converted-to.pdf, id=157, 472.76625pt x 258.9675pt>
+Package epstopdf Info: Output file is already uptodate.
+<Conception-classes-1-eps-converted-to.pdf, id=257, 472.76625pt x 258.9675pt>
 File: Conception-classes-1-eps-converted-to.pdf Graphic file (type pdf)
 <use Conception-classes-1-eps-converted-to.pdf>
 Package pdftex.def Info: Conception-classes-1-eps-converted-to.pdf  used on inp
 ut line 213.
 (pdftex.def)             Requested size: 284.52756pt x 155.85982pt.
- [8 <./Conception-classes-1-eps-converted-to.pdf>]
+ [9 <./Conception-classes-1-eps-converted-to.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 226--233
 
  []
 
-[9]
+[10]
 Chapitre 5.
-[10
+[11
 
 ]
 Chapitre 6.
-[11
+[12
 
 ] (../build/Nauteff-Vision-Conception.aux)
 
 LaTeX Warning: There were undefined references.
 
-
-Package rerunfilecheck Warning: File `Nauteff-Vision-Conception.out' has change
-d.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Nauteff-Vision-Conception.out':
-(rerunfilecheck)             Before: 75678639856F61CC8144D94757519CBA;5100
-(rerunfilecheck)             After:  9B412AF14F43097B32B6D5A4E9DB3754;7392.
+Package rerunfilecheck Info: File `Nauteff-Vision-Conception.out' has not chang
+ed.
+(rerunfilecheck)             Checksum: 9B412AF14F43097B32B6D5A4E9DB3754;7392.
  ) 
 Here is how much of TeX's memory you used:
- 29009 strings out of 477861
- 546018 string characters out of 5834888
- 1857330 words of memory out of 5000000
- 48626 multiletter control sequences out of 15000+600000
+ 29024 strings out of 477861
+ 546243 string characters out of 5834888
+ 1862330 words of memory out of 5000000
+ 48640 multiletter control sequences out of 15000+600000
  561006 words of font info for 58 fonts, out of 8000000 for 9000
  81 hyphenation exceptions out of 8191
- 94i,6n,90p,2275b,495s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 94i,6n,90p,2275b,706s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 pdfTeX warning (dest): name{glo:quaternion} has been referenced but does not ex
 ist, replaced by a fixed one
@@ -1062,11 +1052,11 @@ ist, replaced by a fixed one
 blic/lm/lmbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/sha
 re/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/l
 m/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb>
-Output written on ../build/Nauteff-Vision-Conception.pdf (13 pages, 158016 byte
+Output written on ../build/Nauteff-Vision-Conception.pdf (14 pages, 168220 byte
 s).
 PDF statistics:
- 234 PDF objects out of 1000 (max. 8388607)
- 203 compressed objects within 3 object streams
- 55 named destinations out of 1000 (max. 500000)
- 226 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 320 PDF objects out of 1000 (max. 8388607)
+ 288 compressed objects within 3 object streams
+ 56 named destinations out of 1000 (max. 500000)
+ 338 words of extra memory for PDF output out of 10000 (max. 10000000)
 
