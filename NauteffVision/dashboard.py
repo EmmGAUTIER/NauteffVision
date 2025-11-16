@@ -1015,17 +1015,17 @@ class InstrumentAutoPilotDev(Instrument):
             # Créer un objet Pango.FontDescription
             font_desc = Pango.FontDescription()
             font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
-            font_desc.set_size(self.min_dim * 0.05 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
+            font_desc.set_size(self.min_dim * 0.035 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
 
             # Appliquer la police au texte
             self.info_text.modify_font(font_desc)
             self.param_text.modify_font(font_desc)
 
-        self.info_text.set_size_request(self.width * 0.8, self.height * 0.3)
+        self.info_text.set_size_request(self.width * 0.8, self.height * 0.25)
         self.layout.move(self.info_text, self.width * 0.1, self.height * 0.10)
 
-        self.param_text.set_size_request(self.width * 0.8, self.height * 0.3)
-        self.layout.move(self.param_text, self.width * 0.1, self.height * 0.50)
+        self.param_text.set_size_request(self.width * 0.8, self.height * 0.33)
+        self.layout.move(self.param_text, self.width * 0.1, self.height * 0.40)
 
         self.btn_apply.set_size_request(self.width * 0.2, self.height * 0.1)
         self.layout.move(self.btn_apply, self.width * 0.7, self.height * 0.8)
