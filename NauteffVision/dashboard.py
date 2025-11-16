@@ -1019,6 +1019,7 @@ class InstrumentAutoPilotDev(Instrument):
 
             # Appliquer la police au texte
             self.info_text.modify_font(font_desc)
+            self.param_text.modify_font(font_desc)
 
         self.info_text.set_size_request(self.width * 0.8, self.height * 0.3)
         self.layout.move(self.info_text, self.width * 0.1, self.height * 0.10)
