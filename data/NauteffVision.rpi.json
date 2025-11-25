@@ -1,0 +1,103 @@
+{
+  "title": "Nauteff Vision / Let's start ",
+  "ios": {
+  "LOG" :
+{
+  "filename": "data/data.log",
+  "label": "Log file",
+  "direction": "out",
+  "dtypes": "all",
+  "format": "log"
+},
+"AP_IN" : {
+"filename": "/dev/ttyACM0",
+"label": "Nauteff AP",
+"id": "AP_in",
+"direction": "in"
+},
+    "AP_OUT" : {
+      "filename": "/dev/ttyACM0",
+      "label": "Nauteff Commands",
+      "id": "AP_out",
+      "dtypes": "APCMD",
+      "direction": "out",
+      "raw" : 1
+    }
+},
+
+  "computations": {
+    "att": {
+      "type": "attitude",
+      "id": "att",
+      "source": "E1",
+      "destination": "S3"
+    }
+  },
+  "dashboard" : {
+  "title" : "Nauteff Vision for Kreiz Avel",
+  "instruments": {
+"COMPASS_1":{
+  "type": "compass",
+  "cell_origx": 1,
+  "cell_origy": 0,
+  "cell_width": 2,
+  "cell_height": 2,
+  "origin": "AP1"
+},
+"WND_1":{
+"type": "wind",
+"cell_origx": 5,
+"cell_origy": 2,
+"cell_width": 2,
+"cell_height": 2
+},
+"APDEV":{
+"type": "autopilotdev",
+"cell_origx": 5,
+"cell_origy": 0,
+"cell_width": 2,
+"cell_height": 2
+},
+
+"ATT_1" :
+{
+"type": "attitude",
+"cell_origx": 1,
+"cell_origy": 2,
+"cell_width": 3,
+"cell_height": 2,
+"title": "Assiette",
+"origin": "AP1"
+},
+  "CLOCK_LOCAL" : {
+    "type":       "clock",
+    "cell_origx": 4,
+    "cell_origy": 2,
+    "cell_width": 1,
+    "cell_height": 1,
+    "title" :     "Brest",
+    "time_zone" : "Europe/Paris"
+},
+
+  "CLOCK_RUN" : {
+    "type":       "clock",
+    "cell_origx": 4,
+    "cell_origy": 3,
+    "cell_width": 1,
+    "cell_height": 1,
+    "title" :     "Londres",
+    "time_zone" : "Europe/London"
+},
+
+"AP_CTL" :
+{
+"type": "autopilot",
+"cell_origx": 3,
+"cell_origy": 0,
+"cell_width": 2,
+"cell_height": 2
+}
+}
+  }
+
+}
