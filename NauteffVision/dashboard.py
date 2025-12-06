@@ -992,14 +992,14 @@ class InstrumentAutoPilotDev(Instrument):
         self.param_text.set_wrap_mode(Gtk.WrapMode.WORD)
         #self.paramap = "coefficient proportional 1\ncoefficient integral 2\ncoefficient derivative 3"
         self.paramap =""" 
-        coefficient proportional 1
+        coefficient proportional 3
         coefficient integral 0
         coefficient derivative 0
         coefficient motor_angletime 2
-        coefficient mag_vs_gyr 0.5
+        coefficient mag_vs_gyr 0.1
         coefficient motor_threshold 1
+        coefficient motor_hpf_coeff 0
         """
-
 
         self.param_buffer_text = self.param_text.get_buffer()
         self.param_buffer_text.set_text(self.paramap)
