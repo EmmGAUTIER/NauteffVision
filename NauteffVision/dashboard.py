@@ -1093,6 +1093,7 @@ class InstrumentAutoPilot(Instrument):
     def __init__(self, parent, config, queue_out):
         super().__init__(parent, config, queue_out)
         self.motor = None
+        self.estimatedAngle = 0.
         self.last_values_time = None
         self.heading = None
 
@@ -1148,7 +1149,7 @@ class InstrumentAutoPilot(Instrument):
 
     def set_values(self, values):
 
-        if values.type in ["APINFO", "ATTITUDE"]:
+        if values.type in ["APINFO", "ATTITUDE", "MOTOR"]:
             # print(f"Instrument AP | MOTOR : {values.initialFrame}")
             self.last_values_time = values.timestamp
             try:
@@ -1156,29 +1157,16 @@ class InstrumentAutoPilot(Instrument):
 
                 if (s[1] == "HEADING") and (s[2] == "GAP"):
                     print(f" --> Heading gap {s[3]}")
-                """
-                if s[0] == "ATTITUDE":
-                    try:
-                        hdg = float(s[1])
-                        roll = float(s[2])
-                        pitch = float(s[3])
-                        self.infoap["Heading"] = hdg
-                        self.infoap["Roll"] = roll
-                        self.infoap["Pitch"] = pitch
-                    except:
-                        self.infoap["Heading"] = "?"
-                        self.infoap["Roll"] = "?"
-                        self.infoap["Pitch"] = "?"
-                """
 
                 if s[0] == "MOTOR":
-                    if s[1] == "TURN":
-                        if s[2] in ["PORT", "STARBOARD"]:
-                            self.motor = s[2]
-                        else:
-                            self.motor = "?"
-                    elif s[1] == "STOPPED":
-                        self.motor = s[1]
+                    if s[1] == "turn" and s[2] == "port" :
+                        self.motor = "PORT"
+                    if s[1] == "turn" and s[2] == "starboard" :
+                        self.motor = "STARBOARD"
+                    if s[1] == "stop" :
+                        self.motor = "STOP"
+                    if s[1] == "estimated" and s[2] == "angle" :
+                        self.estimatedAngle = float(s[3])
 
                 if s[0] == "AP":
                     if s[1] == "MODE":
