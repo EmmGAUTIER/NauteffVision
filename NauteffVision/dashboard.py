@@ -1099,7 +1099,7 @@ class InstrumentAutoPilot(Instrument):
 
         self.layout = Gtk.Fixed()
         self.add(self.layout)
-        print(f"Taille {self.width} x {self.height} ")
+        #print(f"Taille {self.width} x {self.height} ")
 
         # création de la zone de texte
         self.info_text = Gtk.TextView()
@@ -1107,6 +1107,14 @@ class InstrumentAutoPilot(Instrument):
         self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
         self.buffer_text = self.info_text.get_buffer()
         self.buffer_text.set_text("Nauteff !")
+        
+        #Création de la zone de texte de position de barre
+        self.texte_info_barre = Gtk.TextView()
+        self.texte_info_barre.set_editable(False)
+        self.texte_info_barre.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.buffer_info_barre = self.info_text.get_buffer()
+        self.buffer_info_barre.set_text("Nauteff !")
+        self.layout.put(self.texte_info_barre, 2, 2)
 
         btnscmd = ["mode heading", "mode idle", "turn port 1",
                    "turn starboard 1", "turn port 10", "turn starboard 10"]
@@ -1150,23 +1158,28 @@ class InstrumentAutoPilot(Instrument):
     def set_values(self, values):
 
         if values.type in ["APINFO", "ATTITUDE", "MOTOR"]:
-            # print(f"Instrument AP | MOTOR : {values.initialFrame}")
             self.last_values_time = values.timestamp
             try:
                 s = values.initialFrame.upper().split()
 
                 if (s[1] == "HEADING") and (s[2] == "GAP"):
-                    print(f" --> Heading gap {s[3]}")
+                    #print(f" --> Heading gap {s[3]}")
+                    #buffer = self.texte_info_barre.get_buffer()
+                    #buffer.set_text(f"Ecart {self.estimatedAngle}")
+                    pass
 
                 if s[0] == "MOTOR":
-                    if s[1] == "turn" and s[2] == "port" :
+                    #print (f"------>-> Trame {s}\n")
+                    if s[1] == "RUN" and s[3] == "PORT" :
                         self.motor = "PORT"
-                    if s[1] == "turn" and s[2] == "starboard" :
+                    if s[1] == "RUN" and s[3] == "STARBOARD" :
                         self.motor = "STARBOARD"
-                    if s[1] == "stop" :
+                    if s[1] == "STOP" :
                         self.motor = "STOP"
-                    if s[1] == "estimated" and s[2] == "angle" :
+                    if s[1] == "ESTIMATED" and s[2] == "ANGLE" :
                         self.estimatedAngle = float(s[3])
+                        buffer = self.texte_info_barre.get_buffer()
+                        buffer.set_text(f"Angle {self.estimatedAngle}")
 
                 if s[0] == "AP":
                     if s[1] == "MODE":
@@ -1183,15 +1196,8 @@ class InstrumentAutoPilot(Instrument):
                     if s[1] == "AHRS":
                         self.infoap["AHRS"] = s[2]
             except:
+                print ("Erreur interprétation de trame : {values.initialFrame}\n")
                 pass
-
-            """
-            textinfo = ""
-            for key, val in self.infoap.items():
-                textinfo += f"{key:10s} : {val}\n"
-            if textinfo[-1] == "\n":
-                textinfo = textinfo[:-1]
-            """
 
             textinfo = self.infoap["Mode"]
 
@@ -1219,8 +1225,9 @@ class InstrumentAutoPilot(Instrument):
             font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
             font_desc.set_size(self.min_dim * 0.05 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
 
-            # Appliquer la police au texte
+            # Appliquer la police au textes
             self.textinfo.modify_font(font_desc)
+            self.texte_info_barre.modify_font(font_desc)
 
         # buttonWidth = int(self.width * 0.25)
         # buttonHeight = int(self.height * 0.10)
@@ -1233,9 +1240,15 @@ class InstrumentAutoPilot(Instrument):
             i += 1
 
         self.textinfo.set_size_request(self.width * 0.5, self.height * 0.1)
-        self.layout.move(self.textinfo, self.width * 0.25, self.height * 0.05)
+        self.layout.move(self.textinfo, self.width * 0.25, self.height * 0.10)
+        
+        self.texte_info_barre.set_size_request(self.width * 0.5, self.height * 0.2)
+        self.layout.move(self.texte_info_barre, self.width * 0.25, self.height * 0.25)
+        buffer = self.texte_info_barre.get_buffer()
+        buffer.set_text(f"Angle estimé : {self.estimatedAngle}")
 
-        if self.motor == "STOPPED":
+
+        if self.motor == "STOP":
             cr.set_source_rgb(0.1, 0.1, 0.1)
         elif self.motor == "STARBOARD":
             cr.set_source_rgb(0.0, 0.9, 0.0)
@@ -1251,7 +1264,6 @@ class InstrumentAutoPilot(Instrument):
         cr.fill()
 
         #self.cadran.draw(cr, self.middle_x, self.height*0.8, self.height/4, self.fore_color)
-
 
 class InstrumentCompteur(Instrument):
     def __init__(self, parent, config, queue_out):
