@@ -1,9 +1,9 @@
 
-# Dcumentation
+# Documentation
 
 Ce répertoire contient les documentations de NauteffVision.
 
-La documentation comprend plusieurs documents  produits avec latex
+La documentation comprend plusieurs documents produits avec latex
 et une documentation extraite des sources avec sphinx.
 
 La génération des documents est réalisée par les commandes
@@ -12,9 +12,9 @@ Ces commandes sont exécutées depuis le répertoire courant ou depuis
 un autre répertoire en mettant dans la variable NAUTEFFVISON_PATH
 le chemin de ce répertoire.
 
-## Documentation avec latexyy
+## Documentation avec latex
 
-Cette documentation contient un spécification et un document
+Cette documentation contient une spécification et un document
 d'architecture.
 Les fichiers au format pdf sont dans le répertoire pdf.
 
@@ -22,8 +22,8 @@ Les fichiers au format pdf sont dans le répertoire pdf.
 ## Documentation extraite des sources
 
 Cette documentation est constituée de fichiers au format HTML
-et sont point d'entrée est le dans fichier build/html/index.html.
+et son point d'entrée est dans le fichier build/html/index.html.
 
 ## Copie d'écran 
-Une copie d'écran dans le répertoire img
+Une copie d'écran dans le répertoire img.
 
