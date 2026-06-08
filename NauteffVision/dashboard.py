@@ -19,14 +19,21 @@
 #
 ###############################################################################
 
+
+from abc import ABC, abstractmethod
 import gi
 # import os
 import sys
 
 import numpy
 
+from data import DataMotor
+# from NauteffVision.data import DataMotor
+# from NauteffVision.calculs import deg2rad
+from calculs import deg2rad
+
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Pango, GLib
+from gi.repository import Gtk, Pango, GLib, Gdk
 import cairo
 
 import time
@@ -69,7 +76,8 @@ def gen_ticks(min_val, max_val):
     tick = math.pow(10., rnd - 1) * tick * 2
 
     tick_list = []
-    for ival in range(0, (math.trunc(max_val / tick)) + 1):
+    for ival in range((math.trunc(min_val / tick)), (math.trunc(max_val / tick)) + 1):
+        # print (f">>===>>  {ival}  {ival*tick}")
         tick_list.append((0 + ival * tick, f"{ival * tick:.0f}"))
 
     return tick_list
@@ -92,7 +100,10 @@ class ArcGradue:
 
     # def __init__(self, start_angle, end_angle, min_value, max_value):
     def __init__(self, grad_type=ARC, start_angle=None, end_angle=None, min_value=None, max_value=None):
-        self.grad_type = type
+        """
+        Arc or circle with graduation creation
+        """
+        self.grad_type = grad_type
         # Min and max displayed values, They may be outside the circle
         self.min_disp_value = min_value
         self.max_disp_value = max_value
@@ -150,6 +161,7 @@ class ArcGradue:
         # cr.select_font_face("Sans", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
         cr.set_font_size(radius * 0.15)
         cr.set_source_rgb(*fore_color)
+        cr.set_source_rgb(*fore_color)
 
         if self.grad_type == ArcGradue.ARC:
             # Dessin des graduations principales
@@ -164,11 +176,11 @@ class ArcGradue:
 
         # Draw zones
         for zone in self.zones:
-            # print(f"----> zone     {zone}")
-            # print(f"----> zone[0]  {zone[0]}")
+            print(f"----> zone     {zone}")
+            print(f"----> zone[0]  {zone[0]}")
             a1 = -1.0 * self.get_angle(zone[0])
             a2 = -1.0 * self.get_angle(zone[1])
-            # print(f" === ({a1},{a2})")
+            print(f" === ({a1},{a2})")
             cr.set_source_rgb(*zone[2])
             cr.set_line_width(radius * 0.1)
             cr.move_to(center_x + math.cos(a1) * radius * 0.95,
@@ -181,22 +193,22 @@ class ArcGradue:
             # Dessin de l'arc de cercle
             # Rappel : les coordonnées y sont croissantes vers le bas
             cr.set_source_rgb(*fore_color)
-            cr.set_line_width(radius * 0.02)
+            cr.set_line_width(radius * 0.04)
             cr.set_line_cap(cairo.LINE_CAP_ROUND)
-            sa, ea = - self.start_angle, - self.end_angle
-            cr.move_to(center_x + math.cos(sa) * radius,
-                       center_y + math.sin(sa) * radius)
+            sa, ea = self.start_angle, self.end_angle
+            # print (f" ooo  {sa * (180./math.pi):6.1f} {ea * (180./math.pi):6.1f}")
+            cr.move_to(center_x + math.cos(sa) * radius, center_y + math.sin(sa) * radius)
             cr.arc(center_x, center_y, radius, sa, ea)
             cr.stroke()
 
             for tick in self.ticks:
-                angle = sag + (eag - sag) * (tick[0] - self.min_value) / (self.max_value - self.min_value)
-                # print (f"==> {180. * angle /math.pi}")
+                angle = sa + (ea - sa) * (tick[0] - self.min_value) / (self.max_value - self.min_value)
+                # print (f"==> {180. * angle /math.pi}  {tick[1]}")
 
                 inner_x = center_x + (radius * 0.8) * math.cos(angle)
-                inner_y = center_y - (radius * 0.8) * math.sin(angle)
+                inner_y = (center_y + (radius * 0.8) * math.sin(angle))
                 outer_x = center_x + radius * math.cos(angle)
-                outer_y = center_y - radius * math.sin(angle)
+                outer_y = (center_y + radius * math.sin(angle))
 
                 cr.move_to(inner_x, inner_y)
                 cr.line_to(outer_x, outer_y)
@@ -204,14 +216,16 @@ class ArcGradue:
 
                 # Écriture de la valeur
                 text = tick[1]
-                extents = cr.text_extents(text)
-                diagonale = math.sqrt(extents.width * extents.width + extents.height * extents.height)
-                cr.move_to(center_x + (radius * 0.8 - diagonale * 0.6) * math.cos(angle) - extents.width / 2,
-                           center_y - (radius * 0.8 - diagonale * 0.6) * math.sin(angle) + extents.height / 2.)
-                cr.show_text(text)
+                if text is not None:
+                    extents = cr.text_extents(text)
+                    diagonale = math.sqrt(extents.width * extents.width + extents.height * extents.height)
+                    cr.move_to(center_x + (radius * 0.8 - diagonale * 0.6) * math.cos(angle) - extents.width / 2,
+                               center_y + (radius * 0.8 - diagonale * 0.6) * math.sin(angle) + extents.height / 2.)
+                    cr.show_text(text)
 
         else:
             # Dessin du cercle extérieur
+            print("aaa   cercle")
             cr.set_source_rgb(*fore_color)
             cr.set_line_width(radius * 0.02)
             cr.move_to(center_x + radius, center_y)
@@ -361,7 +375,7 @@ class Cadran:
         elif type(item) in [ArcGradue]:
             self.graduations.append(item)
         else:
-            print(f"Cadran.add(item) {type(item)} not in Aiguille, CercleGradue, ArcGradue", file=sys.stderr)
+            print(f"Cadran.add(item) {type(item)} not in Aiguille, CercleGradue, ArcGradue")
             pass
         return
 
@@ -390,8 +404,13 @@ class Cadran:
 
 
 class Instrument(Gtk.Layout):
+    propEcart = 0.02 # ratio between angle and size of window
+    propSmallFont = 0.05
+    propNormalFont = 0.10
     def __init__(self, dashboard, config, queue_out):
         super().__init__()
+        self.data_types_in = []
+        self.data_types_out = []
         self.queue_out = queue_out
         self.middle_y = None
         self.middle_x = None
@@ -400,14 +419,17 @@ class Instrument(Gtk.Layout):
         self.back_color = dashboard.colors.get("back")
         # self.title = title
         self.connect("draw", self.on_draw)
-        self.width = None
-        self.height = None
+        self.width = None     # window width
+        self.height = None    #Window height
         self.center_x = None
         self.center_y = None
         self.min_dim = None
         self.max_dim = None
         self.radius = None
-        self.size_changed = False
+        self.size_changed = False # TODO search use and remove if unused
+        self.fontSmall = None
+        self.fontNormal = None
+        self.fontLarge = None
 
     def on_draw(self, widget, cr) -> None:
         # print("--> Instrument::on_draw()")
@@ -416,17 +438,27 @@ class Instrument(Gtk.Layout):
         prop2 = 0.05  # Taille des chanfreins aux angles du rectangle, 0 à 0.5
         if self.width != self.get_allocated_width() and self.height != self.get_allocated_height():
             self.size_changed = True
+
+            self.width = self.get_allocated_width()
+            self.height = self.get_allocated_height()
+            self.center_x = self.width / 2
+            self.center_y = self.height / 2
+            self.min_dim = min(self.width, self.height)
+            self.max_dim = max(self.width, self.height)
+            self.radius = self.min_dim * 0.35
+            ecart = self.min_dim * prop2
+            self.middle_x, self.middle_y = self.width / 2, self.height / 2
+
+            font_size = int(self.min_dim * 0.05)
+            #print (f"Taille police : {font_size}")
+            self.fontSmall =  Pango.FontDescription(f"DejaVu Sans {font_size}")
+            font_size = int(self.min_dim * 0.10)
+            self.fontNormal = Pango.FontDescription(f"DejaVu Sans {font_size}")
+            font_size = int(self.min_dim * 0.20)
+            self.fontLarge = Pango.FontDescription(f"DejaVu Sans {font_size}")
+
         else:
             self.size_changed = False
-        self.width = self.get_allocated_width()
-        self.height = self.get_allocated_height()
-        self.center_x = self.width / 2
-        self.center_y = self.height / 2
-        self.min_dim = min(self.width, self.height)
-        self.max_dim = max(self.width, self.height)
-        self.radius = self.min_dim * 0.35
-        ecart = self.min_dim * prop2
-        self.middle_x, self.middle_y = self.width / 2, self.height / 2
 
         # Clear drawing area, fill with foreground color
         cr.set_source_rgb(*self.back_color)
@@ -434,6 +466,7 @@ class Instrument(Gtk.Layout):
         cr.fill()
 
         # Draw a border
+        ecart = self.min_dim * Instrument.propEcart
         cr.move_to(ecart, 2)
         cr.line_to(self.width - ecart, 1)
         cr.line_to(self.width - 2, ecart)
@@ -449,9 +482,11 @@ class Instrument(Gtk.Layout):
 
         return
 
+    @abstractmethod
     def set_values(self, values):
         return
 
+    @abstractmethod
     def send_data(self, data):
 
         return
@@ -473,6 +508,10 @@ class Instrument(Gtk.Layout):
             instrument = InstrumentAutoPilot(parent, config, queue_out)
         elif config["type"] == "autopilotdev":
             instrument = InstrumentAutoPilotDev(parent, config, queue_out)
+        elif config["type"] == "autopilotAP":
+            instrument = InstrumentAP(parent, config, queue_out)
+        elif config["type"] == "motor":
+            instrument = InstrumentMotor(parent, config, queue_out)
         else:
             instrument = Instrument(parent, config, queue_out)
 
@@ -489,21 +528,453 @@ class Instrument(Gtk.Layout):
 
         return instrument
 
+class InstrumentMotor (Instrument):
+    """
+    Display motor status mainly for debugging autopilot.
+    Data used : SYS clock tics
+                MOTOR motor and clutch status
+                ADC VPower and motor current
+    """
+    def __init__(self, parent, config, queue_out):
+        """
+        @brief Init motor status display
+        @param parent
+        @config config part of configuration file for this display
+        @param queue_out unused queue to output data
+        """
+        super().__init__(parent, config, queue_out)
+        self.layout = Gtk.Fixed()
+        self.add(self.layout)
+        self.values = None
+        self.compteur = 0
+        self.helmAngle = None
+        self.engaged = None
+        self.motor_text = ""
+        self.running_port = False
+        self.running_starboard = False
+        self.data_types_in = ["SYS", "MOTOR", "ADC"]
+        self.data_types_out = []
+
+        # Clutch Status engaged or disengaged
+        self.clutch_status = Gtk.Label(label="")
+        self.clutch_status.override_color(0, Gdk.RGBA(0, 0, 0, 1))  # Texte noir
+        self.clutch_status.override_background_color(0, Gdk.RGBA(1, 1, 1, 1))  # Fond blanc
+        self.layout.add(self.clutch_status)
+
+        # Motor status : idle, running...
+        self.motor_status = Gtk.Label(label="")
+        self.motor_status.override_color(0, Gdk.RGBA(0, 0, 0, 1))  # Texte noir
+        self.motor_status.override_background_color(0, Gdk.RGBA(1, 1, 1, 1))  # Fond blanc
+        self.layout.add(self.motor_status)
+
+        # Cadran initialisation
+        self.cadran = Cadran()
+        self.start_angle = (45.) * (math.pi / 180.)
+        self.end_angle = (45. + 90.) * (math.pi / 180.)
+        self.min_val = -45.
+        self.max_val = +45.
+        self.arc = ArcGradue(ArcGradue.ARC,
+                             self.start_angle, self.end_angle,
+                             self.min_val, self.max_val)
+        ticks = gen_ticks(self.min_val, self.max_val)
+        ticks = [(-40, "40"), (-30, None), (-20, "-20"), (-10, None),
+                 (0, "0"), (10, None), (20, "20"), (30, None), (40, "40")]
+        self.cadran.add(self.arc)
+
+        # Needle
+        self.aiguille = Aiguille("THIN")
+
+        # Clutch
+        pass
+
+    def set_values(self, values):
+        """
+        get new values and displays them
+        @param values : systime, motorData, other types ignored
+        """
+        changed = False
+        self.values = values
+        if values.type == "MOTOR" and values.valid == True:
+            if values.message_type == DataMotor.ESTIMATED_ANGLE:
+                #print(f"mmmmmmmmm      {values.type}    {type(values)} {values}")
+                self.helmAngle = values.helmAngle
+                changed = True
+            elif values.message_type == DataMotor.CLUTCH_ENGAGE:
+                self.engaged = True
+                changed = True
+            elif values.message_type == DataMotor.CLUTCH_DISENGAGE:
+                self.engaged = False
+                changed = True
+            elif values.message_type == DataMotor.RUN_PORT:
+                self.motor_text = "Running port"
+                self.running_starboard = False
+                self.running_port = True
+                changed = True
+            elif values.message_type == DataMotor.RUN_STARBOARD:
+                self.motor_text = "Running starboard"
+                self.running_starboard = True
+                self.running_port = False
+                changed = True
+            elif values.message_type == DataMotor.ADC_VALUES:
+                pass # TODO print voltage and current
+            elif values.message_type == DataMotor.MOVE_REPORT:
+                pass # TODO  print move report
+            elif values.message_type == DataMotor.STALLED:
+                self.motor_text = "Stalled"
+                self.running_starboard = False
+                self.running_port = False
+                changed = True
+            elif values.message_type == DataMotor.STOPPING:
+                self.motor_text = "Stopping"
+                self.running_starboard = False
+                self.running_port = False
+                changed = True
+            elif values.message_type == DataMotor.STOPPED:
+                self.motor_text = "Stopped"
+                self.running_starboard = False
+                self.running_port = False
+                changed = True
+
+        if changed ==True :
+            #print (f"moteur nouvelle valeur")
+            if self.engaged == True:
+               text_clutch =  "Heading"
+            elif self.engaged == False:
+               text_clutch = "Idle"
+            else :
+                text_clutch = " ? ? "
+            #self.clutch_status.set_text(f"{self.helmAngle*(180./math.pi):8.1f}")
+            self.clutch_status.set_text(text_clutch)
+            self.motor_status.set_text(self.motor_text)
+
+            self.queue_draw()
+
+    def on_draw(self, widget, cr) -> None:
+        super().on_draw(widget, cr)
+        #print (f"motor : dessin")
+        if self.size_changed:
+            self.clutch_status.override_font(self.fontSmall)
+            self.clutch_status.set_size_request(self.min_dim*0.4, self.min_dim * 0.1)  # Taille du Label
+            self.layout.move(self.clutch_status, self.width*0.4, self.height*0.1)
+
+            self.motor_status.override_font(self.fontSmall)
+            self.motor_status.set_size_request(self.min_dim*0.4, self.min_dim * 0.1)  # Taille du Label
+            self.layout.move(self.motor_status, self.width*0.4, self.height*0.2)
+
+        radius = self.radius
+        middle_x, middle_y = self.center_x, self.center_y
+        # dessin du cadran
+        self.cadran.draw(cr, middle_x, middle_y, radius, self.fore_color)
+
+        # dessin de l'aiguille de position estimée
+        if self.helmAngle is not None:
+            #print("Dessin de l'aiguille")
+            self.aiguille.set_angle(-math.pi / 2. - self.helmAngle)
+            #self.aiguille.draw(cr, self.center_x, self.center_y, radius, self.fore_color)
+            self.aiguille.draw(cr, middle_x, middle_y, radius, self.fore_color)
+
+        # Red rectangle if motor running to port
+        color = (1., 0.,0.) if self.running_port else  self.back_color
+        cr.set_source_rgb(*color)
+        cr.rectangle(self.width*0.1, self.height*0.5, self.width*0.1, self.height*0.1)
+        cr.fill()
+        # Green rectangle if motor running to port
+        color = (0., 1.,0.) if self.running_starboard else  self.back_color
+        cr.set_source_rgb(*color)
+        cr.rectangle(self.width*0.8, self.height*0.5, self.width*0.1, self.height*0.1)
+        cr.fill()
+
+class InstrumentMotorBack (Instrument):
+    """
+    Auto pilot graphical interface
+    Data types : "AP_IN", "SysTime"
+    Displayed : heading gap -45 +45, heading derived gap, integral gap
+    Commands : Heading, Idle, +1, -1, -10, +10
+    Values : ?
+    """
+    arcgrad: ArcGradue
+
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
+        self.layout = Gtk.Fixed()
+        self.add(self.layout)
+        self.values = None
+        self.r1, self.r2 = None, None
+        self.ji_min_x, self.ji_max_x, self.ji_min_y, self.ji_max_y = None, None, None, None
+        self.max_int_gap = 30. * (math.pi / 180.)
+        self.center_arc_y = None
+        self.amplitudeDegrees = 90.
+        self.amplitude = self.amplitudeDegrees * (math.pi / 180.)
+        self.start_angle = calculs.deg2rad(-180. + 45.)
+        self.end_angle = calculs.deg2rad(180. - 45.)
+        self.ticks = [(angle, f"{angle:2d}") for angle in range(-40, 41, 10)]
+        self.needleGap = Aiguille("HDG")
+        self.needleDerGap = Aiguille("THIN")
+        self.needleDerGap5 = Aiguille("THIN")
+        # création de la zone de texte
+        self.info_text = Gtk.TextView()
+        self.info_text.set_justification(Gtk.Justification.CENTER)
+        self.layout.put(self.info_text, 1, 1)
+        self.info_text.set_editable(False)
+        self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.buffer_text = self.info_text.get_buffer()
+        self.buffer_text.set_text("Nauteff !")
+
+    def set_values(self, values):
+        changed = False
+        self.values = values
+        if values.type == "MOTOR" and values.valid == True:
+            if values.message_type == DataMotor.ESTIMATED_ANGLE:
+                #print(f"mmmmmmmmm      {values.type}    {type(values)} {values}")
+                self.helmAngle = values.helmAngle
+                print (f"iiiiiiii     {self.helmAngle:8.2f}")
+                changed = True
+            elif values.message_type == DataMotor.CLUTCH_ENGAGE:
+                self.engaged = True
+                changed = True
+            elif values.message_type == DataMotor.CLUTCH_DISENGAGE:
+                self.engaged = False
+                changed = True
+
+            if changed:
+                self.queue_draw()
+
+    def on_draw(self, widget, cr) -> None:
+        super().on_draw(widget, cr)
+
+        if self.size_changed:
+            self.r1 = 0.40 * min(self.width, self.height)
+            self.r2 = 0.45 * min(self.width, self.height)
+            self.center_arc_y = 0. + self.height * 0.7
+            self.info_text_width = min(self.width, self.height) * 0.4
+            self.info_text_height = min(self.width, self.height) * 0.2
+
+            # Coordinates of integral gap jauge
+            self.ji_min_x = self.width * .1
+            self.ji_max_x = self.width * .9
+            self.ji_min_y = self.height * 0.1
+            self.ji_max_y = self.height * 0.2
+
+            # Créer un objet Pango.FontDescription
+            font_desc = Pango.FontDescription()
+            font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
+            # font_desc.set_size(self.min_dim * 0.10 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
+            font_desc.set_size(self.info_text_height * Pango.SCALE * .5)  # Définir la taille en points (ici 20 points)
+
+            # Appliquer la police au texte
+            self.info_text.modify_font(font_desc)
+            self.info_text.set_size_request(self.info_text_width, self.info_text_height)
+            #self.layout.move(self.info_text, self.center_x - self.info_text_width * 0.5, self.center_arc_y * .7)
+            self.layout.move(self.info_text,self.center_x - self.info_text_width * 0.5, self.center_arc_y * .7)
+
+        # dessin du cercle intérieur
+        # draw 2 arcs for graduation, center near bottom
+        cr.set_line_width(self.r1 * 0.04)
+        cr.arc(self.center_x, self.center_arc_y,
+               self.r1,
+               -math.pi / 2. - self.amplitude / 2.,
+               -math.pi / 2. + self.amplitude / 2.)
+        cr.stroke()
+        cr.arc(self.center_x, self.center_arc_y,
+               self.r2,
+               -math.pi / 2. - self.amplitude / 2.,
+               -math.pi / 2. + self.amplitude / 2.)
+        cr.stroke()
+
+        # Dessin du cadre gradué de l'affichage de l'intégrale de l'écart
+        # Dessin du cadre
+        cr.move_to(self.ji_min_x, self.ji_min_y)
+        cr.line_to(self.ji_max_x, self.ji_min_y)
+        cr.line_to(self.ji_max_x, self.ji_max_y)
+        cr.line_to(self.ji_min_x, self.ji_max_y)
+        cr.line_to(self.ji_min_x, self.ji_min_y)
+        cr.stroke()
+        # Dessin des graduations
+        for grad in range(-30, 31, 10):
+            anglerad = grad * (math.pi / 180.)
+            grad_x = self.center_x + (anglerad / self.max_int_gap) * (self.ji_max_x - self.ji_min_x) * 0.5
+            cr.move_to(grad_x, self.ji_min_y)
+            cr.line_to(grad_x, self.ji_max_y)
+            cr.stroke()
+
+        # Draw graduations
+        for grad in self.ticks:
+            dirgrad = -math.pi / 2. + grad[0] * (math.pi / 180.)
+            cr.move_to(self.center_x + math.cos(dirgrad) * self.r1, self.center_arc_y + math.sin(dirgrad) * self.r1)
+            cr.line_to(self.center_x + math.cos(dirgrad) * self.r2, self.center_arc_y + math.sin(dirgrad) * self.r2)
+            cr.stroke()
+
+        # Draw needle for gap
+        if self.values is not None:
+            # Main needle, proportional gap
+            self.needleGap.set_angle(math.pi / 2. - self.values.get_hdg_gap())
+            self.needleGap.draw(cr, self.center_x, self.center_arc_y, self.r1, self.fore_color)
+            # second needles, derived gap,  predicted heading after 1s and 5s
+            self.needleDerGap.set_angle(math.pi / 2. - self.values.get_hdg_der_gap())
+            self.needleDerGap.draw(cr, self.center_x, self.center_arc_y, self.r1, (0., 0., 1))
+            self.needleDerGap5.set_angle(math.pi / 2. - 5. * self.values.get_hdg_der_gap())
+            self.needleDerGap5.draw(cr, self.center_x, self.center_arc_y, self.r1, (0., 0., 1))
+            # Affichage de la consigne de cap à barrer
+            self.buffer_text = self.info_text.get_buffer()
+            #self.buffer_text.set_text(f"{(self.values.hdg * (180. / math.pi)):5.1f}")
+            self.buffer_text.set_text("Plouf")
+
+            # Integral gap drawing
+            anglerad = self.values.get_hdg_int_gap()  # * (math.pi/180.)
+            grad_x = self.center_x + (anglerad / self.max_int_gap) * (self.ji_max_x - self.ji_min_x) * 0.5
+            cr.set_line_width(self.width * 0.05)
+            cr.set_source_rgb(0., 0., 1.)
+            cr.move_to(grad_x, self.ji_min_y)
+            cr.line_to(grad_x, self.ji_max_y)
+            cr.stroke()
+
+
+class InstrumentAP(Instrument):
+    """
+    Auto pilot graphical interface
+    Data types : "AP_IN", "SysTime"
+    Displayed : heading gap -45 +45, heading derived gap, integral gap
+    Commands : Heading, Idle, +1, -1, -10, +10
+    Values : ?
+    """
+    arcgrad: ArcGradue
+
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
+        self.layout = Gtk.Fixed()
+        self.add(self.layout)
+        self.values = None
+        self.r1, self.r2 = None, None
+        self.ji_min_x, self.ji_max_x, self.ji_min_y, self.ji_max_y = None, None, None, None
+        self.max_int_gap = 30. * (math.pi / 180.)
+        self.center_arc_y = None
+        self.amplitudeDegrees = 90.
+        self.amplitude = self.amplitudeDegrees * (math.pi / 180.)
+        self.start_angle = calculs.deg2rad(-180. + 45.)
+        self.end_angle = calculs.deg2rad(180. - 45.)
+        self.ticks = [(angle, f"{angle:2d}") for angle in range(-40, 41, 10)]
+        self.needleGap = Aiguille("HDG")
+        self.needleDerGap = Aiguille("THIN")
+        self.needleDerGap5 = Aiguille("THIN")
+        # création de la zone de texte
+        self.info_text = Gtk.TextView()
+        self.info_text.set_justification(Gtk.Justification.CENTER)
+        self.layout.put(self.info_text, 1, 1)
+        self.info_text.set_editable(False)
+        self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.buffer_text = self.info_text.get_buffer()
+        self.buffer_text.set_text("Nauteff !")
+
+    def set_values(self, values):
+        if values.type == "AP_PID" and values.valid == True:
+            self.values = values
+            self.queue_draw()
+
+    def on_draw(self, widget, cr) -> None:
+        super().on_draw(widget, cr)
+
+        if self.size_changed:
+            self.r1 = 0.40 * min(self.width, self.height)
+            self.r2 = 0.45 * min(self.width, self.height)
+            self.center_arc_y = 0. + self.height * 0.7
+            self.info_text_width = min(self.width, self.height) * 0.4
+            self.info_text_height = min(self.width, self.height) * 0.2
+
+            # Coordinates of integral gap jauge
+            self.ji_min_x = self.width * .1
+            self.ji_max_x = self.width * .9
+            self.ji_min_y = self.height * 0.1
+            self.ji_max_y = self.height * 0.2
+
+            # Créer un objet Pango.FontDescription
+            font_desc = Pango.FontDescription()
+            font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
+            # font_desc.set_size(self.min_dim * 0.10 * Pango.SCALE)  # Définir la taille en points (ici 20 points)
+            font_desc.set_size(self.info_text_height * Pango.SCALE * .5)  # Définir la taille en points (ici 20 points)
+
+            # Appliquer la police au texte
+            self.info_text.modify_font(font_desc)
+            self.info_text.set_size_request(self.info_text_width, self.info_text_height)
+            #self.layout.move(self.info_text, self.center_x - self.info_text_width * 0.5, self.center_arc_y * .7)
+            self.layout.move(self.info_text,self.center_x - self.info_text_width * 0.5, self.center_arc_y * .7)
+
+        # dessin du cercle intérieur
+        # draw 2 arcs for graduation, center near bottom
+        cr.set_line_width(self.r1 * 0.04)
+        cr.arc(self.center_x, self.center_arc_y,
+               self.r1,
+               -math.pi / 2. - self.amplitude / 2.,
+               -math.pi / 2. + self.amplitude / 2.)
+        cr.stroke()
+        cr.arc(self.center_x, self.center_arc_y,
+               self.r2,
+               -math.pi / 2. - self.amplitude / 2.,
+               -math.pi / 2. + self.amplitude / 2.)
+        cr.stroke()
+
+        # Dessin du cadre gradué de l'affichage de l'intégrale de l'écart
+        # Dessin du cadre
+        cr.move_to(self.ji_min_x, self.ji_min_y)
+        cr.line_to(self.ji_max_x, self.ji_min_y)
+        cr.line_to(self.ji_max_x, self.ji_max_y)
+        cr.line_to(self.ji_min_x, self.ji_max_y)
+        cr.line_to(self.ji_min_x, self.ji_min_y)
+        cr.stroke()
+        # Dessin des graduations
+        for grad in range(-30, 31, 10):
+            anglerad = grad * (math.pi / 180.)
+            grad_x = self.center_x + (anglerad / self.max_int_gap) * (self.ji_max_x - self.ji_min_x) * 0.5
+            cr.move_to(grad_x, self.ji_min_y)
+            cr.line_to(grad_x, self.ji_max_y)
+            cr.stroke()
+
+        # Draw graduations
+        for grad in self.ticks:
+            dirgrad = -math.pi / 2. + grad[0] * (math.pi / 180.)
+            cr.move_to(self.center_x + math.cos(dirgrad) * self.r1, self.center_arc_y + math.sin(dirgrad) * self.r1)
+            cr.line_to(self.center_x + math.cos(dirgrad) * self.r2, self.center_arc_y + math.sin(dirgrad) * self.r2)
+            cr.stroke()
+
+        # Draw needle for gap
+        if self.values is not None:
+            # Main needle, proportional gap
+            self.needleGap.set_angle(math.pi / 2. - self.values.get_hdg_gap())
+            self.needleGap.draw(cr, self.center_x, self.center_arc_y, self.r1, self.fore_color)
+            # second needles, derived gap,  predicted heading after 1s and 5s
+            self.needleDerGap.set_angle(math.pi / 2. - self.values.get_hdg_der_gap())
+            self.needleDerGap.draw(cr, self.center_x, self.center_arc_y, self.r1, (0., 0., 1))
+            self.needleDerGap5.set_angle(math.pi / 2. - 5. * self.values.get_hdg_der_gap())
+            self.needleDerGap5.draw(cr, self.center_x, self.center_arc_y, self.r1, (0., 0., 1))
+            # Affichage de la consigne de cap à barrer
+            self.buffer_text = self.info_text.get_buffer()
+            self.buffer_text.set_text(f"{(self.values.hdg * (180. / math.pi)):5.1f}")
+
+            # Integral gap drawing
+            anglerad = self.values.get_hdg_int_gap()  # * (math.pi/180.)
+            grad_x = self.center_x + (anglerad / self.max_int_gap) * (self.ji_max_x - self.ji_min_x) * 0.5
+            cr.set_line_width(self.width * 0.05)
+            cr.set_source_rgb(0., 0., 1.)
+            cr.move_to(grad_x, self.ji_min_y)
+            cr.line_to(grad_x, self.ji_max_y)
+            cr.stroke()
+
 
 class InstrumentHeading(Instrument):
     def __init__(self, parent, config, queue_out):
         super().__init__(parent, config, queue_out)
-        self.values = None
+        self.heading = None
+        self.yawrate = None
         self.r1, self.r2 = None, None
         self.needle = Aiguille("HDG")
+        self.needle1 = Aiguille("THIN")
         # math and cairo libs count counterclockwise from x axis
         self.displayed_values = ["E", "6", "3", "N", "33", "30", "W", "24", "21", "S", "15", "12"]
 
     def set_values(self, values):
         # print("InstrumentHeading : set_values(", values, ")")
-        if values.type == "ATTITUDE":
-            # print (f"Instrument Heading {values.get_heading()}")
-            self.values = values.get_heading()
+        if values.type == "ATTITUDE" and values.valid == True:
+            self.heading = (math.pi / 2.) - values.get_heading()
+            self.yawrate = values.get_yawrate()
         self.queue_draw()
 
     def on_draw(self, widget, cr) -> None:
@@ -587,8 +1058,14 @@ class InstrumentHeading(Instrument):
             cr.restore()
 
         # self.draw_values(widget, cr)
-        self.needle.set_angle(self.values)
+        self.needle.set_angle(self.heading)
         self.needle.draw(cr, self.center_x, self.center_y, self.r_grad, self.fore_color)
+
+        # Dessin de la tendance à partir du taux de virage
+        # cap dans une et trois secondes.
+        if self.heading is not None and self.yawrate is not None:
+            self.needle1.set_angle(self.heading + self.yawrate)
+            self.needle1.draw(cr, self.center_x, self.center_y, self.radius, (1, 0.2, 0.2))
 
     # def draw_values(self, widget, cr) -> None:
     #    self.needle.set_angle(self.values)
@@ -747,8 +1224,10 @@ class InstrumentAttitude(Instrument):
             self.values = values
             self.pitch = values.get_pitch()
             self.roll = values.get_roll()
+            # print (f"ATTITUDE roll : {self.roll}")
             self.queue_draw()
 
+"""
         if values.type == "SysTime":
             if values.timestamp - self.last_values_time > 2:
                 self.values_available = False
@@ -758,7 +1237,7 @@ class InstrumentAttitude(Instrument):
                 self.values_available = True
                 # print(f"Information disponible")
             pass
-
+"""
 
 class InstrumentClock(Instrument):
     """
@@ -990,15 +1469,17 @@ class InstrumentAutoPilotDev(Instrument):
         self.layout.put(self.param_text, 1, 1)
         self.param_text.set_editable(True)
         self.param_text.set_wrap_mode(Gtk.WrapMode.WORD)
-        #self.paramap = "coefficient proportional 1\ncoefficient integral 2\ncoefficient derivative 3"
-        self.paramap =""" 
-        coefficient proportional 3
-        coefficient integral 0
-        coefficient derivative 0
-        coefficient motor_angletime 2
-        coefficient mag_vs_gyr 0.1
-        coefficient motor_threshold 1
-        coefficient motor_hpf_coeff 0
+        # self.paramap = "coefficient proportional 1\ncoefficient integral 2\ncoefficient derivative 3"
+        # Rappel 1 degree is 0,017453293 rad
+        self.paramap = """ 
+        set Kp 1
+        set Ki 0
+        set Kd 0
+        set motor_angletime 2
+        set motor_threshold 0.01
+        set motor_hpf_coeff 0
+        set mag_vs_gyr 0.1
+        AHRS select Simple
         """
 
         self.param_buffer_text = self.param_text.get_buffer()
@@ -1011,7 +1492,6 @@ class InstrumentAutoPilotDev(Instrument):
         super().on_draw(widget, cr)
 
         if self.size_changed:
-
             # Créer un objet Pango.FontDescription
             font_desc = Pango.FontDescription()
             font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
@@ -1034,16 +1514,17 @@ class InstrumentAutoPilotDev(Instrument):
 
         if values.type == "APINFO":
             self.last_values_time = values.timestamp
+            # print (f"Instrument AP dev : {values.initial_frame}")
             try:
-                s = values.initialFrame.upper().split()
+                s = values.initial_frame.upper().split()
                 if (s[0] == "AP"):
-                    if s[1] == "GAP":
+                    if s[1] == "PID_VALUES":
                         if s[2] is not None:
-                            self.infoap["Cur. gap"] = f"{(float(s[2]) * -180./math.pi):8.2f}"
+                            self.infoap["Cur. gap"] = f"{(float(s[2]) * -180. / math.pi):8.2f}"
                             if s[3] is not None:
-                                self.infoap["Int. gap"] = f"{(float(s[3]) * -180./math.pi):8.2f}"
+                                self.infoap["Int. gap"] = f"{(float(s[3]) * -180. / math.pi):8.2f}"
                                 if s[4] is not None:
-                                    self.infoap["Yaw"] = f"{(float(s[4]) * -180./math.pi):8.2f}"
+                                    self.infoap["Yaw"] = f"{(float(s[4]) * -180. / math.pi):8.2f}"
                                     if s[5] is not None:
                                         self.infoap["Command"] = s[5]
             except:
@@ -1099,7 +1580,7 @@ class InstrumentAutoPilot(Instrument):
 
         self.layout = Gtk.Fixed()
         self.add(self.layout)
-        #print(f"Taille {self.width} x {self.height} ")
+        # print(f"Taille {self.width} x {self.height} ")
 
         # création de la zone de texte
         self.info_text = Gtk.TextView()
@@ -1107,8 +1588,8 @@ class InstrumentAutoPilot(Instrument):
         self.info_text.set_wrap_mode(Gtk.WrapMode.WORD)
         self.buffer_text = self.info_text.get_buffer()
         self.buffer_text.set_text("Nauteff !")
-        
-        #Création de la zone de texte de position de barre
+
+        # Création de la zone de texte de position de barre
         self.texte_info_barre = Gtk.TextView()
         self.texte_info_barre.set_editable(False)
         self.texte_info_barre.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -1142,41 +1623,46 @@ class InstrumentAutoPilot(Instrument):
         self.layout.put(self.textinfo, 5, 5)
 
         # Création du cadran
-        #self.start_angle = calculs.deg2rad(-180. + 45.)
-        #self.end_angle = calculs.deg2rad(180. - 45.)
-        #self.cadran = ArcGradue(ArcGradue.ARC, self.start_angle, self.end_angle, 0, 10)
-        #self.arc_stbd = ArcGradue(ArcGradue.ARC, calculs.deg2rad(0), calculs.deg2rad(30), 0,   1)
-        #self.arc_port = ArcGradue(ArcGradue.ARC, calculs.deg2rad(-150), calculs.deg2rad(-20), -60, -30)
-        #self.arc_stbd.set_ticks([(30, "30"), (20, "20"), (10, "10"), (0, "0")])
-        #self.arc_port.set_ticks([(-30, "30"), (-40, "40"), (-50, "50"), (-60, "60")])
-        #self.arc_stbd.add_zone(0, 30, (0, 0.8, 0))
-        #self.arc_port.add_zone(-30, 0, (1, 0, 0))
-        #self.cadran.add(self.arc_stbd)
-        #self.cadran_closed_haul.add(self.arc_port)
-        #self.cadran.add(Aiguille("THIN"))
+        self.start_angle = calculs.deg2rad(-180. + 45.)
+        self.end_angle = calculs.deg2rad(180. - 45.)
+        self.cadran = ArcGradue(ArcGradue.ARC, self.start_angle, self.end_angle, 0, 10)
+        self.arc_stbd = ArcGradue(ArcGradue.ARC, calculs.deg2rad(0), calculs.deg2rad(30), 0, 1)
+        self.arc_port = ArcGradue(ArcGradue.ARC, calculs.deg2rad(-150), calculs.deg2rad(-20), -60, -30)
+        self.arc_stbd.set_ticks([(30, "30"), (20, "20"), (10, "10"), (0, "0")])
+        self.arc_port.set_ticks([(-30, "30"), (-40, "40"), (-50, "50"), (-60, "60")])
+        self.arc_stbd.add_zone(0, 30, (0, 0.8, 0))
+        self.arc_port.add_zone(-30, 0, (1, 0, 0))
+        """
+        self.cadran.add(self.arc_stbd)
+        self.cadran_closed_haul.add(self.arc_port)
+        self.cadran.add(Aiguille("THIN"))
+        """
 
     def set_values(self, values):
+
+        # print ("------->>>>", values)
+        # print ("-------->>>", f"{values.type} {values.valid}")
 
         if values.type in ["APINFO", "ATTITUDE", "MOTOR"]:
             self.last_values_time = values.timestamp
             try:
-                s = values.initialFrame.upper().split()
+                s = values.initial_frame.upper().split()
 
                 if (s[1] == "HEADING") and (s[2] == "GAP"):
-                    #print(f" --> Heading gap {s[3]}")
-                    #buffer = self.texte_info_barre.get_buffer()
-                    #buffer.set_text(f"Ecart {self.estimatedAngle}")
+                    # print(f" --> Heading gap {s[3]}")
+                    # buffer = self.texte_info_barre.get_buffer()
+                    # buffer.set_text(f"Ecart {self.estimatedAngle}")
                     pass
 
                 if s[0] == "MOTOR":
-                    #print (f"------>-> Trame {s}\n")
-                    if s[1] == "RUN" and s[3] == "PORT" :
+                    # print (f"------>-> Trame {s}\n")
+                    if s[1] == "RUN" and s[3] == "PORT":
                         self.motor = "PORT"
-                    if s[1] == "RUN" and s[3] == "STARBOARD" :
+                    if s[1] == "RUN" and s[3] == "STARBOARD":
                         self.motor = "STARBOARD"
-                    if s[1] == "STOP" :
+                    if s[1] == "STOP":
                         self.motor = "STOP"
-                    if s[1] == "ESTIMATED" and s[2] == "ANGLE" :
+                    if s[1] == "ESTIMATED" and s[2] == "ANGLE":
                         self.estimatedAngle = float(s[3])
                         buffer = self.texte_info_barre.get_buffer()
                         buffer.set_text(f"Angle {self.estimatedAngle}")
@@ -1195,8 +1681,10 @@ class InstrumentAutoPilot(Instrument):
 
                     if s[1] == "AHRS":
                         self.infoap["AHRS"] = s[2]
+
             except:
-                print ("Erreur interprétation de trame : {values.initialFrame}\n")
+                print(f"Erreur interprétation de trame : {values.initial_frame}\n")
+                print(f"Erreur interprétation de trame : {values.yawrate}\n")
                 pass
 
             textinfo = self.infoap["Mode"]
@@ -1210,7 +1698,7 @@ class InstrumentAutoPilot(Instrument):
         It makes a dataAPCommand  with the text in textcmd
         and sends it to the main queue.
         """
-        #print("Commande : ", button.get_label(), txtcmd)
+        # print("Commande : ", button.get_label(), txtcmd)
         self.buffer_text.set_text(txtcmd)
         cmd = data.dataAPCommand(time.time(), txtcmd, "Dashboard")
         self.queue_out.put(cmd)
@@ -1219,7 +1707,6 @@ class InstrumentAutoPilot(Instrument):
         super().on_draw(widget, cr)
 
         if self.size_changed:
-
             # Créer un objet Pango.FontDescription
             font_desc = Pango.FontDescription()
             font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
@@ -1233,7 +1720,7 @@ class InstrumentAutoPilot(Instrument):
         # buttonHeight = int(self.height * 0.10)
         i = 0
         for btn in self.buttons:
-            x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.height*0.6 + self.height * (i // 2) * 0.12)
+            x, y = int(self.width * (0.1 + (i % 2) * 0.6)), int(self.height * 0.6 + self.height * (i // 2) * 0.12)
             btn.set_size_request(self.width * 0.25, self.height * 0.1)
             self.layout.move(btn, x, y)
             # btn.modify_font(self.)
@@ -1241,12 +1728,11 @@ class InstrumentAutoPilot(Instrument):
 
         self.textinfo.set_size_request(self.width * 0.5, self.height * 0.1)
         self.layout.move(self.textinfo, self.width * 0.25, self.height * 0.10)
-        
+
         self.texte_info_barre.set_size_request(self.width * 0.5, self.height * 0.2)
         self.layout.move(self.texte_info_barre, self.width * 0.25, self.height * 0.25)
         buffer = self.texte_info_barre.get_buffer()
         buffer.set_text(f"Angle estimé : {self.estimatedAngle}")
-
 
         if self.motor == "STOP":
             cr.set_source_rgb(0.1, 0.1, 0.1)
@@ -1262,8 +1748,102 @@ class InstrumentAutoPilot(Instrument):
         cr.line_to(self.width * 0.80, self.height * 0.20)
         cr.close_path()
         cr.fill()
+        # self.cadran.draw(cr, self.middle_x, self.height*0.8, self.height/4, self.fore_color)
 
-        #self.cadran.draw(cr, self.middle_x, self.height*0.8, self.height/4, self.fore_color)
+class InstrumentMotorOld(Instrument):
+    def __init__(self, parent, config, queue_out):
+        super().__init__(parent, config, queue_out)
+        self.layout = Gtk.Fixed()
+        # Données
+        self.values = None
+        self.engaged = None
+        self.helmAngle = None
+        self.motorStatus = None # Idle, running to port or stbd, stalled, stopping,...
+        # objets graphiques
+        self.cadran = Cadran()
+        self.start_angle = (45.) * (math.pi / 180.)
+        self.end_angle = (45. + 90.) * (math.pi / 180.)
+        self.min_val = -45.
+        self.max_val = +45.
+        self.arc = ArcGradue(ArcGradue.ARC,
+                             self.start_angle, self.end_angle,
+                             self.min_val, self.max_val)
+        ticks = gen_ticks(self.min_val, self.max_val)
+        ticks = [(-40, "40"), (-30, None), (-20, "-20"), (-10, None), (0, "0"), (10, None), (20, "20"), (30, None),
+                 (40, "40")]
+        self.info_text_height = None
+        self.clutchDisplay = Gtk.TextView()
+        self.clutchDisplay.set_justification(Gtk.Justification.CENTER)
+        self.layout.put(self.clutchDisplay, 1, 1)
+        self.clutchDisplay.set_editable(False)
+        self.clutchDisplay.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.buffer_clutchDisplay = self.clutchDisplay.get_buffer()
+        self.buffer_clutchDisplay.set_text("Nauteff !")
+        self.clutchDisplay_width = None
+        self.clutchDisplay_height = None
+
+
+        self.arc.set_ticks(ticks)
+        self.cadran.add(self.arc)
+
+        self.aiguille = Aiguille("THIN")
+
+    def on_draw(self, widget, cr):
+        # print("Instrument Compteur :: on_draw()")
+        super().on_draw(widget, cr)
+
+        if self.size_changed:
+            # Créer un objet Pango.FontDescription
+            font_desc = Pango.FontDescription()
+            font_desc.set_family("Arial")  # Choisir la famille de polices (ex. Arial)
+            self.info_text_height = min (self.width, self.width)*0.1
+            font_desc.set_size(self.info_text_height * Pango.SCALE * .5)  # Définir la taille en points (ici 20 points)
+
+            # Appliquer la police au texte
+            print (f"UUUUUUUUU")
+            #self.clutchDisplay = Gtk.TextView()
+            self.clutchDisplay.modify_font(font_desc)
+            self.clutchDisplay_width = min (self.width, self.height) * 0.4
+            self.clutchDisplay_height = min (self.width, self.height) * 0.2
+            #self.clutchDisplay.set_size_request(self.clutchDisplay_width, self.clutchDisplay_height)
+            self.clutchDisplay.set_size_request(20, 20)
+            #self.layout.move(self.clutchDisplay, self.width * 0.1, self.height * .1)
+            self.layout.move(self.clutchDisplay, 20, 20)
+
+        # Calcul de valeurs utilisées par le dessin
+        middle_x, middle_y = self.width / 2, self.height / 2
+        radius = 0.45 * min(self.width, self.height)
+
+        # dessin du cadran
+        self.cadran.draw(cr, middle_x, middle_y, radius, self.fore_color)
+
+        # dessin de l'aiguille de position estimée
+        if self.helmAngle is not None:
+            #print("Dessin de l'aiguille")
+            self.aiguille.set_angle(-math.pi / 2. - self.helmAngle)
+            self.aiguille.draw(cr, self.center_x, self.center_y, radius, self.fore_color)
+
+        # Clutch Status
+        buffer = self.clutchDisplay.get_buffer()
+        buffer.set_text("AAAAAAAA")
+
+    def set_values(self, values):
+        changed = False
+        if values.type == "MOTOR" and values.valid == True:
+            if values.message_type == DataMotor.ESTIMATED_ANGLE:
+                #print(f"mmmmmmmmm      {values.type}    {type(values)} {values}")
+                self.helmAngle = values.helmAngle
+                print (f"iiiiiiii     {self.helmAngle:8.2f}")
+                changed = True
+            elif values.message_type == DataMotor.CLUTCH_ENGAGE:
+                self.engaged = True
+                changed = True
+            elif values.message_type == DataMotor.CLUTCH_DISENGAGE:
+                self.engaged = False
+                changed = True
+
+            if changed:
+                self.queue_draw()
 
 class InstrumentCompteur(Instrument):
     def __init__(self, parent, config, queue_out):
@@ -1400,9 +1980,10 @@ class Dashboard(data.DataInterface, ABC):
 
     def put_data(self, values):
         GLib.idle_add(self.put_data_threaded, values)
+        # print ("1 Tableau de bord reçoit : ", values.type if values.valid is not None else "?")
 
     def put_data_threaded(self, values):
-        # print(f"tableau de bord reçoit : {data.str4log()}")
+        # print(f"2 Tableau de bord reçoit : {values.str4log()}")
         if self.ready:
             for instr in self.instruments:
                 instr.set_values(values)

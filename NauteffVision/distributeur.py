@@ -57,8 +57,9 @@ class Distributeur:
         # tocante la tocante envoie l'heure dans la queue toutes les secondes.
         self.data_interfaces.append(tocante.Tocante(None, self.main_queue))
 
-        if config.get ("demo"):
-            # self.data_interfaces.append(datafileDemo)
+        demo = config.get("demo")
+        if demo is not None:
+            self.data_interfaces.append(datasimulator.dataFileDemo(None, self.main_queue))
             pass
         else:
             # Fichiers
@@ -76,7 +77,7 @@ class Distributeur:
         Boucle du distributeur. Démarre toutes les instances DataInterfaces
         lit sur la file les données et les distribue aux instances DataInterfaces.
         Cette boucle se termine par break lorsqu'elle reçoit le message "Terminate"
-        Elle arrête alors les DaraInterfaces.
+        Elle arrête alors les DataInterfaces.
         """
         # Start all data interfaces (which run in threads)
         for di in self.data_interfaces:
@@ -89,7 +90,7 @@ class Distributeur:
             if type(data) == str and data == "Terminate":
                 print("Fin détectée")
                 break
-            # print(data.str4log())
+            #print("--> ",data.str4log())
             for di in self.data_interfaces:
                 di.put_data(data)
 

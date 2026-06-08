@@ -44,8 +44,8 @@
   "cell_height": 2,
   "origin": "AP1"
 },
-"WND_1":{
-"type": "wind",
+"AP_VISU":{
+"type": "autopilotAP",
 "cell_origx": 5,
 "cell_origy": 2,
 "cell_width": 2,
@@ -93,6 +93,13 @@
 {
 "type": "autopilot",
 "cell_origx": 3,
+"cell_origy": 0,
+"cell_width": 2,
+"cell_height": 2
+},
+"MOTOR_CTL" : {
+"type" : "motor",
+"cell_origx": 7,
 "cell_origy": 0,
 "cell_width": 2,
 "cell_height": 2

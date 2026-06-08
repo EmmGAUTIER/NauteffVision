@@ -21,18 +21,19 @@
 ###############################################################################
 
 import time
-# import threading
+import math
+import threading
 # import os
 import sys
 import argparse
 
-# import data
-# import math
+from data import DataInterface
+import data
 
 NVConfigDemo = {
-    "title": "Nauteff Vision / Let's start ",
+    "title": "Nauteff Vision / Demo mode ",
 
-    "demo": "",
+    "demo": "Mode 1",
 
     "computations": {
         "att": {
@@ -42,6 +43,55 @@ NVConfigDemo = {
             "destination": "S3"
         }
     },
+
+    "dashboard": {
+        "title": "Nauteff Vision for Kreiz Avel",
+        "instruments": {
+            "CLOCK_LOCAL": {
+                "type": "clock",
+                "cell_origx": 0,
+                "cell_origy": 0,
+                "cell_width": 1,
+                "cell_height": 1,
+                "title": "Brest",
+                "time_zone": "Europe/Paris"
+            },
+            "MOTOR_CTL": {
+                "type": "motor",
+                "cell_origx": 2,
+                "cell_origy": 2,
+                "cell_width": 2,
+                "cell_height": 2
+            },
+            "ATT_1":
+                {
+                    "type": "attitude",
+                    "cell_origx": 2,
+                    "cell_origy": 0,
+                    "cell_width": 2,
+                    "cell_height": 2,
+                    "title": "Assiette",
+                    "origin": "AP1"
+                },
+        }
+    }
+}
+
+NVConfigDemoBack = {
+    "title": "Nauteff Vision / Demo mode ",
+
+    "demo": "Mode 1",
+
+    "computations": {
+        "att": {
+            "type": "attitude",
+            "id": "att",
+            "source": "E1",
+            "destination": "S3"
+        }
+    },
+
+
     "dashboard" : {
         "title" : "Nauteff Vision for Kreiz Avel",
         "instruments": {
@@ -53,22 +103,19 @@ NVConfigDemo = {
                 "cell_height": 2,
                 "origin": "AP1"
             },
-            "WND_1":{
-                "type": "wind",
-                "cell_origx": 3,
-                "cell_origy": 0,
+            "AP_VISU":{
+                "type": "autopilotAP",
+                "cell_origx": 5,
+                "cell_origy": 2,
                 "cell_width": 2,
                 "cell_height": 2
             },
-            "SPEED":{
-                "type": "speed",
+            "APDEV":{
+                "type": "autopilotdev",
                 "cell_origx": 5,
                 "cell_origy": 0,
                 "cell_width": 2,
-                "cell_height": 2,
-                "unit" : "kts",
-                "min_val" : 0,
-                "max_val" : 16
+                "cell_height": 2
             },
 
             "ATT_1" :
@@ -83,7 +130,7 @@ NVConfigDemo = {
                 },
             "CLOCK_LOCAL" : {
                 "type":       "clock",
-                "cell_origx": 6,
+                "cell_origx": 4,
                 "cell_origy": 2,
                 "cell_width": 1,
                 "cell_height": 1,
@@ -93,31 +140,31 @@ NVConfigDemo = {
 
             "CLOCK_RUN" : {
                 "type":       "clock",
-                "cell_origx": 5,
-                "cell_origy": 2,
+                "cell_origx": 4,
+                "cell_origy": 3,
                 "cell_width": 1,
                 "cell_height": 1,
-                "title" :     "Saint Denis de la Réunion",
-                "time_zone" : "Indian/Reunion"
+                "title" :     "Londres",
+                "time_zone" : "Europe/London"
             },
-            "AP_MOT":
+
+            "AP_CTL" :
                 {
-                    "type": "APmotor",
-                    "cell_origx": 4,
-                    "cell_origy": 2,
-                    "cell_width": 1,
-                    "cell_height": 1
-                }, "AP_CTL" :
-                {
-                    "type": "APcontrol",
-                    "cell_origx": 4,
-                    "cell_origy": 3,
-                    "cell_width": 3,
-                    "cell_height": 1
-                }
+                    "type": "autopilot",
+                    "cell_origx": 3,
+                    "cell_origy": 0,
+                    "cell_width": 2,
+                    "cell_height": 2
+                },
+            "MOTOR_CTL" : {
+                "type" : "motor",
+                "cell_origx": 7,
+                "cell_origy": 0,
+                "cell_width": 2,
+                "cell_height": 2
+            }
         }
     }
-
 }
 
 
@@ -175,19 +222,19 @@ sw = [
 
 sw = [
 
-    "ATTITUDE 0.0     0.00 -0.0",
+    "ATTITUDE 0.0     0.00 -0.0 0.0",
     "WIND 25  10.5",
-    "ATTITUDE 0.05    0.10 -0.10",
+    "ATTITUDE 0.05    0.10 -0.10 0.0",
     "WIND 30  10.5",
-    "ATTITUDE 0.10    0.20 -0.30",
+    "ATTITUDE 0.10    0.20 -0.30 0.0",
     "WIND 40  10.5",
-    "ATTITUDE 0.15    0.30 -0.40",
+    "ATTITUDE 0.15    0.30 -0.40 0.0",
     "WIND 50  10.5",
-    "ATTITUDE 0.23    0.40 -0.45",
+    "ATTITUDE 0.23    0.40 -0.45 0.0",
     "WIND 65  14.5",
-    "ATTITUDE 0.43    0.50 -0.38",
+    "ATTITUDE 0.43    0.50 -0.38 0.0",
     "WIND 66  13.5",
-    "ATTITUDE 0.48    0.50 -0.32",
+    "ATTITUDE 0.48    0.50 -0.32 0.0",
     "ATTITUDE 0.53    0.50 -0.28",
     "WIND -35  10.5",
     "ATTITUDE 0.58    0.50 -0.21",
@@ -198,6 +245,80 @@ sw = [
     "WIND -40  12.5",
     "ATTITUDE 0.83    0.00 -0.05"
 ]
+
+demoData = [
+    [
+        "MOTOR LL engage tiller",
+        "MOTOR estimated angle -0.1",
+        "MOTOR LL run to port",
+        "ATTITUDE -3.376595 -0.031386 -0.147962 0.0",
+    ],
+    [
+        "MOTOR estimated angle -0.05",
+        "MOTOR stopping",
+        "ATTITUDE -3.355859 0.136851 0.015687 0.0",
+    ],
+    [
+        "Motor end moving time",
+        "MOTOR LL disengage tiller",
+        "MOTOR estimated angle -0.01",
+        "ATTITUDE -3.583172 -0.017084 -0.156853 0.0",
+    ],
+    [
+        "MOTOR estimated angle 0.",
+        "ATTITUDE -3.593565 -0.024282 -0.06526 0.0",
+    ],
+    [
+        "MOTOR estimated angle 0.01",
+        "ATTITUDE -3.319278 0.00636 0.003276 0.0",
+    ],
+    [
+        "MOTOR estimated angle 0.05",
+        "ATTITUDE -3.234196 0.033798 -0.179385 0.0",
+    ]
+]
+
+
+class dataFileDemo (DataInterface):
+    def __init__(self, config, queue_out):
+        super().__init__(config, queue_out)
+        self._stop_event = threading.Event()
+        self.compteur = 0
+
+    def put_data(self, data):
+        # Nothing to do with data
+        return 0
+
+    def get_data_list_in(self) -> list:
+        # Nothing to do with data
+        return []
+
+    def get_data_list_out(self) :
+        return "all"
+
+    def run(self):
+        index =  0
+        while not self._stop_event.is_set():
+            t = time.time()
+            t = math.floor(10 * t)
+            t = t / 10
+
+            for frame in demoData[index] :
+                ts = data.dataDecode(frame, "Simulation", frame)
+                #print (f"Donnée décodée : {ts.type}, {ts.valid} {frame}")
+                self.queue_out.put(ts)
+
+            next_tic = t + 1.0
+            self._stop_event.wait(next_tic - time.time())
+
+            index += 1
+            if index == len(demoData) :
+                index = 0
+        return
+
+    def terminate(self) -> None:
+        self._stop_event.set()
+
 
 if __name__ == '__main__':
 

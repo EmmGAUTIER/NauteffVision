@@ -61,10 +61,10 @@ class DataFile(data.DataInterface):
             while  not self.file.closed:
                 try:
                     line = self.file.readline()
-                    # print(f"Ligne : {line}")
+                    #print(f"Ligne : {line}")
                     ts = time.time()
                     d = data.dataDecode(ts, self.id, line)
-                    # print (f"Type de donnée : {d.type}")
+                    #print (f"Type de donnée : {d.type}")
                     self.queue_out.put(d)
                 except ValueError:
                     print(f"Erreur IO {self.filename}")
